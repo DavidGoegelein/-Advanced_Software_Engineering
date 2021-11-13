@@ -20,7 +20,9 @@ import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -35,28 +37,27 @@ public class MainActivity extends AppCompatActivity {
     private int Storage_Permission_Code = 1;
     TextView dateSelect;
     ImageView calenderView;
+    EditText titleSelect;
+    EditText locationSelect;
+    EditText descriptionSelect;
     int year;
     int month;
     int day;
-
-    public static final String[] EVENT_PROJECTION = new String[]{
-            CalendarContract.Calendars._ID,                           // 0
-            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
-    };
-
-    private static final int PROJECTION_ID_INDEX = 0;
-    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
-    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
-    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
-
+    long startdateInMilliSec;
+    long enddateInMilliSec;
+    Button addEvent;
+    Switch dailySwitch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dateSelect = findViewById(R.id.dateSelect);
         calenderView = findViewById(R.id.calenderView);
+        titleSelect = findViewById(R.id.titleSelect);
+        locationSelect = findViewById(R.id.locationSelect);
+        descriptionSelect=findViewById(R.id.descriptionSelect);
+        addEvent    = findViewById(R.id.createEvent);
+        dailySwitch = findViewById(R.id.switch1);
 
         // Hier Code für CalenderView, kein erstellen von Events, nur Auslesen von Tag,Monat,Jahr
         Calendar calendar = Calendar.getInstance();
@@ -66,28 +67,53 @@ public class MainActivity extends AppCompatActivity {
                 year = calendar.get(Calendar.YEAR);
                 month = calendar.get(Calendar.MONTH);
                 day = calendar.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog g = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog dateDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        dateSelect.setText(year + "/" + (month + 1) + "/" + dayOfMonth);              //mont +1, starts with index 0
+
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        day = selectedDay;
+                        month = selectedMonth;
+                        year = selectedYear;
+                        dateSelect.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);              //mont +1, starts with index 0
+                        calendar.set(year,month,day,8,0,0);
+                        startdateInMilliSec = calendar.getTimeInMillis();
+                        calendar.set(year,month,day,9,0,0);
+                        enddateInMilliSec =calendar.getTimeInMillis();
                     }
                 }, year, month, day);
-                g.show();
+                dateDialog.show();
             }
         });
+            addEvent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(!titleSelect.getText().toString().isEmpty()&&!locationSelect.getText().toString().isEmpty()&&(startdateInMilliSec!=0)){
+                        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                        //    Toast.makeText(MainActivity.this, "You have already granted this permission",Toast.LENGTH_SHORT).show();
+                        }else{
+                            requestWritePermission();
+                        }
+                        insertEvent(titleSelect.getText().toString(), locationSelect.getText().toString(),descriptionSelect.getText().toString(), dailySwitch.isChecked(), startdateInMilliSec, enddateInMilliSec);
+                    }else{
+                        Toast.makeText(MainActivity.this, "Please fill in all the fields",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
     }
 
-
     //Ab hier: Erstellung, Editieren, Löschen... usw. von Events in Kalender
-
-    public void insertEvent(String title, String location, long begin, long end) {
+    public void insertEvent(String title, String location, String description, boolean value, long begin, long end) {
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.Events.TITLE, title)
                 .putExtra(CalendarContract.Events._ID,2)
                 .putExtra(CalendarContract.Events.EVENT_LOCATION, location)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, begin)
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, end);
+                .putExtra(CalendarContract.Events.DESCRIPTION, description)
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, end)
+                .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, value);
 
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
@@ -95,20 +121,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "There is no app that can support this action",
                     Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void getEvent(View view) {
-        //Check if Permission is granted
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MainActivity.this, "You have already granted this permission",
-                    Toast.LENGTH_SHORT).show(); }else{
-            requestWritePermission();
-        }
-
-        Calendar beginTime = Calendar.getInstance();
-        long begin= System.currentTimeMillis();
-        long end= System.currentTimeMillis();
-        insertEvent("yes", "test", begin, end);
     }
 
     public void viewEvent(View view) {
@@ -127,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 .setData(builder.build());
         startActivity(intent);
 
-// View Events with EventId
+// Instead View Events by EventId
 //        long eventID = 81;
 //        Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
 //        Intent intent = new Intent(Intent.ACTION_VIEW)
@@ -148,71 +160,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "There is no app that can support this action",
                     Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void queryCalendar(View view) {
-        Cursor cursor = getContentResolver().query(Uri.parse("content://com.android.calendar/calendars"),
-                new String[]{"_id", "calendar_displayName"}, null, null, null);
-        // Get calendar names
-        Log.i("@calendar","Cursor count " + cursor.getCount());
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            String[] calendarNames = new String[cursor.getCount()];
-            // Get calendars id
-            int calendarIds[] = new int[cursor.getCount()];
-            for (int i = 0; i < cursor.getCount(); i++) {
-                calendarIds[i] = cursor.getInt(0);
-                calendarNames[i] = cursor.getString(1);
-                Log.i("@calendar","Calendar Name : " + calendarNames[i]);
-                cursor.moveToNext(); }
-        } else {
-            Log.e("@calendar","No calendar found in the device");
-        }
-    }
-
-    public void modifyCalendar(View view) {
-        //Modify a calendar
-        final String DEBUG_TAG = "MyActivity";
-        long calID = 2;
-        ContentValues values = new ContentValues();
-        // The new display name for the calendar
-        values.put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, "Trevor's Calendar");
-        Uri updateUri = ContentUris.withAppendedId(CalendarContract.Calendars.CONTENT_URI, calID);
-        int rows = getContentResolver().update(updateUri, values, null, null);
-        Log.i(DEBUG_TAG, "Rows updated: " + rows);
-    }
-
-    public void addEvent(View view) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MainActivity.this, "You have already granted this permission",
-                    Toast.LENGTH_SHORT).show(); }else{
-            requestWritePermission();
-        }
-
-        long calID = 2;
-        long startMillis = 0;
-        long endMillis = 0;
-
-        //Calendar beginTime = Calendar.getInstance();
-        //beginTime.set(2012, 9, 14, 7, 30);
-        //startMillis = beginTime.getTimeInMillis();
-        //Calendar endTime = Calendar.getInstance();
-        //endTime.set(2012, 9, 14, 8, 45);
-        //endMillis = endTime.getTimeInMillis();
-
-        startMillis = System.currentTimeMillis();
-        endMillis = System.currentTimeMillis();
-        ContentResolver cr = getContentResolver();
-        ContentValues values = new ContentValues();
-        values.put(CalendarContract.Events.DTSTART, startMillis);
-        values.put(CalendarContract.Events.DTEND, endMillis);
-        values.put(CalendarContract.Events.TITLE, "Jazzercise");
-        values.put(CalendarContract.Events.DESCRIPTION, "Group workout");
-        values.put(CalendarContract.Events.CALENDAR_ID, calID);
-        values.put(CalendarContract.Events.EVENT_TIMEZONE, "America/Los_Angeles");
-        Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-        long eventID = Long.parseLong(uri.getLastPathSegment());
-        Toast.makeText(MainActivity.this , "Event ID = "+eventID, Toast.LENGTH_LONG).show();
     }
 
     public void deleteEvent(View view) {
@@ -295,3 +242,46 @@ public class MainActivity extends AppCompatActivity {
 }
 
 
+//    public static final String[] EVENT_PROJECTION = new String[]{
+//            CalendarContract.Calendars._ID,                           // 0
+//            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
+//            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
+//            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
+//    };
+//
+//    private static final int PROJECTION_ID_INDEX = 0;
+//    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
+//    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
+//    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
+
+//    public void queryCalendar(View view) {
+//        Cursor cursor = getContentResolver().query(Uri.parse("content://com.android.calendar/calendars"),
+//                new String[]{"_id", "calendar_displayName"}, null, null, null);
+//        // Get calendar names
+//        Log.i("@calendar","Cursor count " + cursor.getCount());
+//        if (cursor.getCount() > 0) {
+//            cursor.moveToFirst();
+//            String[] calendarNames = new String[cursor.getCount()];
+//            // Get calendars id
+//            int calendarIds[] = new int[cursor.getCount()];
+//            for (int i = 0; i < cursor.getCount(); i++) {
+//                calendarIds[i] = cursor.getInt(0);
+//                calendarNames[i] = cursor.getString(1);
+//                Log.i("@calendar","Calendar Name : " + calendarNames[i]);
+//                cursor.moveToNext(); }
+//        } else {
+//            Log.e("@calendar","No calendar found in the device");
+//        }
+//    }
+
+//    public void modifyCalendar(View view) {
+//        //Modify a calendar
+//        final String DEBUG_TAG = "MyActivity";
+//        long calID = 2;
+//        ContentValues values = new ContentValues();
+//        // The new display name for the calendar
+//        values.put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, "Trevor's Calendar");
+//        Uri updateUri = ContentUris.withAppendedId(CalendarContract.Calendars.CONTENT_URI, calID);
+//        int rows = getContentResolver().update(updateUri, values, null, null);
+//        Log.i(DEBUG_TAG, "Rows updated: " + rows);
+//    }
