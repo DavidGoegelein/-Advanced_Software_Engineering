@@ -18,6 +18,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -60,7 +63,12 @@ public class Calendar extends AppCompatActivity {
     //        // do database insert
     //    }
     //}
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.calendar_menu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +84,13 @@ public class Calendar extends AppCompatActivity {
 
         // Hier Code für CalenderView, kein erstellen von Events, nur Auslesen von Tag,Monat,Jahr
         java.util.Calendar calendar = java.util.Calendar.getInstance();
+
+        //Standard: akutelles Datum übergeben
+        year = calendar.get(java.util.Calendar.YEAR);
+        month = calendar.get(java.util.Calendar.MONTH);
+        day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+        dateSelect.setText(year + "/" + (month + 1) + "/" + day);
+
         calenderView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +118,7 @@ public class Calendar extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(!titleSelect.getText().toString().isEmpty()&&!locationSelect.getText().toString().isEmpty()&&(startdateInMilliSec!=0)){
+                if(!titleSelect.getText().toString().isEmpty()&&!locationSelect.getText().toString().isEmpty()){
                     if (ContextCompat.checkSelfPermission(Calendar.this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
                     }else{
                         requestWritePermission();
@@ -180,6 +195,91 @@ public class Calendar extends AppCompatActivity {
         }
     }
 
+    //Methode zum Aufrufen des Calendar-Menus
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+
+            case R.id.item1:
+                Intent switchActivityIntent = new Intent(this, MainActivity.class);
+                // If data is need to be sent between activities
+                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
+                //      String message = editText.getText().toString();
+                //      intent.putExtra(EXTRA_MESSAGE, message);
+                //Rufe Activity "Kalender" auf
+                startActivity(switchActivityIntent);
+                return true;
+
+            case R.id.item2:
+                Toast.makeText(this,"Transaktionen ausgewählt",Toast.LENGTH_SHORT).show();
+                //Erstellung Intent mit Empfänger, hier BudgetLimit Klasse
+                //Intent switchActivityIntent = new Intent(this, BudgetLimit.class);
+                // If data is need to be sent between activities
+                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
+                //      String message = editText.getText().toString();
+                //      intent.putExtra(EXTRA_MESSAGE, message);
+                //Rufe Activity "Budget Limit" auf
+                //startActivity(switchActivityIntent);
+                // return true;
+
+
+            case R.id.subitem1:
+                Toast.makeText(this,"Einnahmen ausgewählt",Toast.LENGTH_SHORT).show();
+                //Intent switchActivityIntent = new Intent(this, Einnahmen.class);
+                // If data is need to be sent between activities
+                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
+                //      String message = editText.getText().toString();
+                //      intent.putExtra(EXTRA_MESSAGE, message);
+                //startActivity(switchActivityIntent);
+                return true;
+            case R.id.subitem2:
+                Toast.makeText(this,"Ausgaben ausgewählt",Toast.LENGTH_SHORT).show();
+                //Intent switchActivityIntent = new Intent(this, Ausgaben.class);
+                // If data is need to be sent between activities
+                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
+                //      String message = editText.getText().toString();
+                //      intent.putExtra(EXTRA_MESSAGE, message);
+                //startActivity(switchActivityIntent);
+                return true;
+
+            case R.id.item3:
+                Toast.makeText(this,"Budget Limit ausgewählt",Toast.LENGTH_SHORT).show();
+                //Intent switchActivityIntent = new Intent(this, Diagramm.class);
+                // If data is need to be sent between activities
+                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
+                //      String message = editText.getText().toString();
+                //      intent.putExtra(EXTRA_MESSAGE, message);
+                //Rufe Activity "Diagramm" auf
+                //startActivity(switchActivityIntent);
+                return true;
+
+            case R.id.item4:
+                Toast.makeText(this,"Diagramm ausgewählt",Toast.LENGTH_SHORT).show();
+                //Intent switchActivityIntent = new Intent(this, Diagramm.class);
+                // If data is need to be sent between activities
+                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
+                //      String message = editText.getText().toString();
+                //      intent.putExtra(EXTRA_MESSAGE, message);
+                //Rufe Activity "Diagramm" auf
+                //startActivity(switchActivityIntent);
+                return true;
+            case R.id.item5:
+                //Erstellung Intent mit Empfänger, hier To-Do Liste Klasse
+                Toast.makeText(this,"To-Do Liste ausgewählt",Toast.LENGTH_SHORT).show();
+                //Rufe Klasse "To-Do Liste" auf
+                //Intent switchActivityIntent = new Intent(this, ToDoList.class);
+                // If data is need to be sent between activities
+                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
+                //      String message = editText.getText().toString();
+                //      intent.putExtra(EXTRA_MESSAGE, message);
+                //Rufe Activity "To-Do Liste" auf
+                //startActivity(switchActivityIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
     public static long getNewEventId(ContentResolver cr) {
         Cursor cursor = cr.query(CalendarContract.Events.CONTENT_URI, new String [] {"MAX(_id) as max_id"}, null, null, "_id");
         cursor.moveToFirst();
@@ -192,26 +292,6 @@ public class Calendar extends AppCompatActivity {
         cursor.moveToFirst();
         long max_val = cursor.getLong(cursor.getColumnIndexOrThrow("max_id"));
         return max_val;
-    }
-
-    public void deleteEvent(View view,ContentResolver cr) {
-        final String DEBUG_TAG = "MyActivity";
-        long eventID = 81;
-        cr = getContentResolver();
-        Uri deleteUri = null;
-        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
-        int rows = cr.delete(deleteUri, null, null);
-        Log.i(DEBUG_TAG, "Rows deleted: " + rows);
-    }
-
-    public void addReminders(View view, ContentResolver cr) {
-        long eventID = 221;
-        cr = getContentResolver();
-        ContentValues values = new ContentValues();
-        values.put(CalendarContract.Reminders.MINUTES, 15);
-        values.put(CalendarContract.Reminders.EVENT_ID, eventID);
-        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
-        Uri uri = cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
     }
 
     public void requestWritePermission(){
@@ -273,7 +353,6 @@ public class Calendar extends AppCompatActivity {
     }
 }
 
-
 //    public static final String[] EVENT_PROJECTION = new String[]{
 //            CalendarContract.Calendars._ID,                           // 0
 //            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
@@ -316,4 +395,24 @@ public class Calendar extends AppCompatActivity {
 //        Uri updateUri = ContentUris.withAppendedId(CalendarContract.Calendars.CONTENT_URI, calID);
 //        int rows = getContentResolver().update(updateUri, values, null, null);
 //        Log.i(DEBUG_TAG, "Rows updated: " + rows);
+//    }
+
+//    public void addReminders(View view, ContentResolver cr) {
+//        long eventID = 221;
+//        cr = getContentResolver();
+//        ContentValues values = new ContentValues();
+//        values.put(CalendarContract.Reminders.MINUTES, 15);
+//        values.put(CalendarContract.Reminders.EVENT_ID, eventID);
+//        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+//        Uri uri = cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
+//    }
+
+//   public void deleteEvent(View view,ContentResolver cr) {
+//        final String DEBUG_TAG = "MyActivity";
+//        long eventID = 81;
+//        cr = getContentResolver();
+//        Uri deleteUri = null;
+//        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+//        int rows = cr.delete(deleteUri, null, null);
+//        Log.i(DEBUG_TAG, "Rows deleted: " + rows);
 //    }

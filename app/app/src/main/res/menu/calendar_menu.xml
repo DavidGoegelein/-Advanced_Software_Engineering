@@ -3,6 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/item1"
+        android:title="Startseite"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/item2"
         android:title="Transaktionen"
         app:showAsAction="never">
         <menu>
@@ -14,16 +18,12 @@
         </menu>
     </item>
 
-    <item android:id="@+id/item2"
+    <item android:id="@+id/item3"
         android:title="Budget Limit"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/item3"
-        android:title="Diagrammansicht"
-        app:showAsAction="never"/>
-
     <item android:id="@+id/item4"
-        android:title="Kalender"
+        android:title="Diagrammansicht"
         app:showAsAction="never"/>
 
     <item android:id="@+id/item5"
