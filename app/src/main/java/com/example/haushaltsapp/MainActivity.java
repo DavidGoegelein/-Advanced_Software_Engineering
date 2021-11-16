@@ -27,8 +27,6 @@ import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -45,8 +43,25 @@ public class MainActivity extends AppCompatActivity {
     int day;
     long startdateInMilliSec;
     long enddateInMilliSec;
+    long prev_id;
+    long event_id;
     Button addEvent;
     Switch dailySwitch;
+    ContentResolver contenRes;
+    //@Override
+    //public void onResume() {
+    //    super.onResume();
+    //
+    //    long prev_id = getLastEventId(getContentResolver());
+    //
+    //    // if prev_id == mEventId, means there is new events created
+    //    // and we need to insert new events into local sqlite database.
+    //    if (prev_id == mEventID) {
+    //        // do database insert
+    //    }
+    //}
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Ab hier: Erstellung, Editieren, Löschen... usw. von Events in Kalender
     public void insertEvent(String title, String location, String description, boolean value, long begin, long end) {
+        event_id = getNewEventId(contenRes = getContentResolver());
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.Events.TITLE, title)
@@ -125,10 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void viewEvent(View view) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MainActivity.this, "You have already granted this permission",
-                    Toast.LENGTH_SHORT).show(); }else{
-            requestReadPermission();
-        }
+             }else{requestReadPermission();}
 
 // View Events with particular date
         long startMillis = System.currentTimeMillis();
@@ -149,32 +162,52 @@ public class MainActivity extends AppCompatActivity {
 
     public void editEvent(View view) {
 //Use an intent to edit an event
-        long eventID = 81;
-        Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
-        Intent intent = new Intent(Intent.ACTION_EDIT)
-                .setData(uri)
-                .putExtra(CalendarContract.Events.TITLE, "My New Title");
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            Toast.makeText(MainActivity.this, "There is no app that can support this action",
+        prev_id = getLastEventId(getContentResolver());
+        if (prev_id != event_id) {
+            Toast.makeText(MainActivity.this, "No new event was created",
                     Toast.LENGTH_SHORT).show();
+        } else {
+            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, event_id);
+            Intent intent = new Intent(Intent.ACTION_EDIT)
+                    .setData(uri)
+                    .putExtra(CalendarContract.Events.TITLE, "My New Title");
+
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            } else {
+                Toast.makeText(MainActivity.this, "There is no app that can support this action",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
-    public void deleteEvent(View view) {
+    public static long getNewEventId(ContentResolver cr) {
+        Cursor cursor = cr.query(CalendarContract.Events.CONTENT_URI, new String [] {"MAX(_id) as max_id"}, null, null, "_id");
+        cursor.moveToFirst();
+        long max_val = cursor.getLong(cursor.getColumnIndexOrThrow("max_id"));
+        return max_val+1;
+    }
+
+    public static long getLastEventId(ContentResolver cr) {
+        Cursor cursor = cr.query(CalendarContract.Events.CONTENT_URI, new String [] {"MAX(_id) as max_id"}, null, null, "_id");
+        cursor.moveToFirst();
+        long max_val = cursor.getLong(cursor.getColumnIndexOrThrow("max_id"));
+        return max_val;
+    }
+
+    public void deleteEvent(View view,ContentResolver cr) {
         final String DEBUG_TAG = "MyActivity";
         long eventID = 81;
-        ContentResolver cr = getContentResolver();
+        cr = getContentResolver();
         Uri deleteUri = null;
         deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
         int rows = cr.delete(deleteUri, null, null);
         Log.i(DEBUG_TAG, "Rows deleted: " + rows);
     }
 
-    public void addReminders(View view) {
+    public void addReminders(View view, ContentResolver cr) {
         long eventID = 221;
-        ContentResolver cr = getContentResolver();
+        cr = getContentResolver();
         ContentValues values = new ContentValues();
         values.put(CalendarContract.Reminders.MINUTES, 15);
         values.put(CalendarContract.Reminders.EVENT_ID, eventID);
