@@ -10,6 +10,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Haushaltsplaner">
         <activity
+<<<<<<< Updated upstream:app/app/src/main/AndroidManifest.xml
+=======
+            android:name=".AddEntryActivity"
+            android:exported="true" />
+        <activity
+            android:name=".EditEntryActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ShowOutgosActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ShowIntakesActivity"
+            android:exported="true" />
+        <activity
+>>>>>>> Stashed changes:app/src/main/AndroidManifest.xml
             android:name=".Calendar"
             android:exported="true" />
         <activity
