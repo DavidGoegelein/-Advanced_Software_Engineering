@@ -99,19 +99,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.866" />
 
-    <Button
-        android:id="@+id/createEvent4"
-        android:layout_width="241dp"
-        android:layout_height="48dp"
-        android:onClick="editEvent"
-        android:text="Edit Latest Entry"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.064"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.963" />
-
     <Switch
         android:id="@+id/switch1"
         android:layout_width="103dp"

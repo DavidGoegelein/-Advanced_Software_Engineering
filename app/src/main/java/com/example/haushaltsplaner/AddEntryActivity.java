@@ -1,17 +1,21 @@
 package com.example.haushaltsplaner;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -133,4 +138,38 @@ import java.util.Calendar;
             cyclus = spinnerCyclus.getSelectedItem().toString();
 
         }
+
+        public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()){
+
+                case R.id.itemStartseite:
+                    Intent switchToMain = new Intent(this, MainActivity.class);
+                    startActivity(switchToMain);
+                    return true;
+
+                case R.id.itemBudgetLimit:
+                    Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
+                    startActivity(switchToBudgetLimit);
+                    return true;
+
+                case R.id.itemDiagrammansicht:
+                    Intent switchToEditDiagramView = new Intent(this, EditDiagramView.class);
+                    startActivity(switchToEditDiagramView);
+                    return true;
+
+                case R.id.itemKalender:
+                    Intent switchToCalander = new Intent(this, com.example.haushaltsplaner.Calendar.class);
+                    startActivity(switchToCalander);
+                    return true;
+
+                case R.id.itemTodoListe:
+                    Intent switchToDoList = new Intent(this, ToDoList.class);
+                    startActivity(switchToDoList);
+                    return true;
+
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+
     }

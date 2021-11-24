@@ -45,24 +45,11 @@ public class Calendar extends AppCompatActivity {
     int day;
     long startdateInMilliSec;
     long enddateInMilliSec;
-    long prev_id;
-    long event_id;
     Button addEvent;
     Switch dailySwitch;
     ContentResolver contenRes;
 
-    //@Override
-    //public void onResume() {
-    //    super.onResume();
-    //
-    //    long prev_id = getLastEventId(getContentResolver());
-    //
-    //    // if prev_id == mEventId, means there is new events created
-    //    // and we need to insert new events into local sqlite database.
-    //    if (prev_id == mEventID) {
-    //        // do database insert
-    //    }
-    //}
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -132,9 +119,8 @@ public class Calendar extends AppCompatActivity {
         });
     }
 
-    //Ab hier: Erstellung, Editieren, Löschen... usw. von Events in Kalender
+    //Ab hier: Erstellung von Events in Kalender
     public void insertEvent(String title, String location, String description, boolean value, long begin, long end) {
-        event_id = getNewEventId(contenRes = getContentResolver());
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.Events.TITLE, title)
@@ -155,150 +141,58 @@ public class Calendar extends AppCompatActivity {
 
     public void viewEvent(View view) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-        }else{requestReadPermission();}
+            }else{
+            requestReadPermission();
+        }
 
-// View Events with particular date
         long startMillis = System.currentTimeMillis();
         Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
         builder.appendPath("time");
         ContentUris.appendId(builder, startMillis);
-        Intent intent = new Intent(Intent.ACTION_VIEW)
-                .setData(builder.build());
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
         startActivity(intent);
 
-// Instead View Events by EventId
-//        long eventID = 81;
-//        Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
-//        Intent intent = new Intent(Intent.ACTION_VIEW)
-//                .setData(uri);
-//        startActivity(intent);
-    }
-
-    public void editEvent(View view) {
-//Use an intent to edit an event
-        prev_id = getLastEventId(getContentResolver());
-        if (prev_id != event_id) {
-            Toast.makeText(Calendar.this, "No new event was created",
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, event_id);
-            Intent intent = new Intent(Intent.ACTION_EDIT)
-                    .setData(uri)
-                    .putExtra(CalendarContract.Events.TITLE, "My New Title");
-
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);
-            } else {
-                Toast.makeText(Calendar.this, "There is no app that can support this action",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     //Methode zum Aufrufen des Calendar-Menus
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
 
-            case R.id.item1:
-                Intent switchActivityIntent = new Intent(this, MainActivity.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "Kalender" auf
-                startActivity(switchActivityIntent);
+            case R.id.itemStartseite:
+                Intent switchToMain = new Intent(this, MainActivity.class);
+                startActivity(switchToMain);
                 return true;
 
-            case R.id.item2:
-                Toast.makeText(this,"Transaktionen ausgewählt",Toast.LENGTH_SHORT).show();
-                //Erstellung Intent mit Empfänger, hier BudgetLimit Klasse
-                //Intent switchActivityIntent = new Intent(this, BudgetLimit.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "Budget Limit" auf
-                //startActivity(switchActivityIntent);
-                // return true;
+            case R.id.itemEinnahmenAusgaben:
+                Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
+                startActivity(switchToAddEntry);
+                 return true;
 
-
-            case R.id.subitem1:
-                Toast.makeText(this,"Einnahmen ausgewählt",Toast.LENGTH_SHORT).show();
-                //Intent switchActivityIntent = new Intent(this, Einnahmen.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //startActivity(switchActivityIntent);
-                return true;
-            case R.id.subitem2:
-                Toast.makeText(this,"Ausgaben ausgewählt",Toast.LENGTH_SHORT).show();
-                //Intent switchActivityIntent = new Intent(this, Ausgaben.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //startActivity(switchActivityIntent);
+            case R.id.itemBudgetLimit:
+                Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
+                startActivity(switchToBudgetLimit);
                 return true;
 
-            case R.id.item3:
-                Toast.makeText(this,"Budget Limit ausgewählt",Toast.LENGTH_SHORT).show();
-                //Intent switchActivityIntent = new Intent(this, Diagramm.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "Diagramm" auf
-                //startActivity(switchActivityIntent);
+            case R.id.itemDiagrammansicht:
+                Intent switchToEditDiagramView = new Intent(this, EditDiagramView.class);
+                startActivity(switchToEditDiagramView);
+
+                return true;
+            case R.id.itemTodoListe:
+                Intent switchToDoList = new Intent(this, ToDoList.class);
+                startActivity(switchToDoList);
                 return true;
 
-            case R.id.item4:
-                Toast.makeText(this,"Diagramm ausgewählt",Toast.LENGTH_SHORT).show();
-                //Intent switchActivityIntent = new Intent(this, Diagramm.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "Diagramm" auf
-                //startActivity(switchActivityIntent);
-                return true;
-            case R.id.item5:
-                //Erstellung Intent mit Empfänger, hier To-Do Liste Klasse
-                Toast.makeText(this,"To-Do Liste ausgewählt",Toast.LENGTH_SHORT).show();
-                //Rufe Klasse "To-Do Liste" auf
-                //Intent switchActivityIntent = new Intent(this, ToDoList.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "To-Do Liste" auf
-                //startActivity(switchActivityIntent);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
-    }
-
-    public static long getNewEventId(ContentResolver cr) {
-        Cursor cursor = cr.query(CalendarContract.Events.CONTENT_URI, new String [] {"MAX(_id) as max_id"}, null, null, "_id");
-        cursor.moveToFirst();
-        long max_val = cursor.getLong(cursor.getColumnIndexOrThrow("max_id"));
-        return max_val+1;
-    }
-
-    public static long getLastEventId(ContentResolver cr) {
-        Cursor cursor = cr.query(CalendarContract.Events.CONTENT_URI, new String [] {"MAX(_id) as max_id"}, null, null, "_id");
-        cursor.moveToFirst();
-        long max_val = cursor.getLong(cursor.getColumnIndexOrThrow("max_id"));
-        return max_val;
     }
 
     public void requestWritePermission(){
         if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_CALENDAR)){
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")
-                    .setMessage("This permission is needed because of this and that")
+                    .setMessage("This permission is needed to use calendar interface")
                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -321,7 +215,7 @@ public class Calendar extends AppCompatActivity {
         if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_CALENDAR)){
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")
-                    .setMessage("This permission is needed because of this and that")
+                    .setMessage("This permission is needed to use calendar interface")
                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -352,67 +246,3 @@ public class Calendar extends AppCompatActivity {
         }
     }
 }
-
-//    public static final String[] EVENT_PROJECTION = new String[]{
-//            CalendarContract.Calendars._ID,                           // 0
-//            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
-//            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-//            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
-//    };
-//
-//    private static final int PROJECTION_ID_INDEX = 0;
-//    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
-//    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
-//    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
-
-//    public void queryCalendar(View view) {
-//        Cursor cursor = getContentResolver().query(Uri.parse("content://com.android.calendar/calendars"),
-//                new String[]{"_id", "calendar_displayName"}, null, null, null);
-//        // Get calendar names
-//        Log.i("@calendar","Cursor count " + cursor.getCount());
-//        if (cursor.getCount() > 0) {
-//            cursor.moveToFirst();
-//            String[] calendarNames = new String[cursor.getCount()];
-//            // Get calendars id
-//            int calendarIds[] = new int[cursor.getCount()];
-//            for (int i = 0; i < cursor.getCount(); i++) {
-//                calendarIds[i] = cursor.getInt(0);
-//                calendarNames[i] = cursor.getString(1);
-//                Log.i("@calendar","Calendar Name : " + calendarNames[i]);
-//                cursor.moveToNext(); }
-//        } else {
-//            Log.e("@calendar","No calendar found in the device");
-//        }
-//    }
-
-//    public void modifyCalendar(View view) {
-//        //Modify a calendar
-//        final String DEBUG_TAG = "MyActivity";
-//        long calID = 2;
-//        ContentValues values = new ContentValues();
-//        // The new display name for the calendar
-//        values.put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, "Trevor's Calendar");
-//        Uri updateUri = ContentUris.withAppendedId(CalendarContract.Calendars.CONTENT_URI, calID);
-//        int rows = getContentResolver().update(updateUri, values, null, null);
-//        Log.i(DEBUG_TAG, "Rows updated: " + rows);
-//    }
-
-//    public void addReminders(View view, ContentResolver cr) {
-//        long eventID = 221;
-//        cr = getContentResolver();
-//        ContentValues values = new ContentValues();
-//        values.put(CalendarContract.Reminders.MINUTES, 15);
-//        values.put(CalendarContract.Reminders.EVENT_ID, eventID);
-//        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
-//        Uri uri = cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
-//    }
-
-//   public void deleteEvent(View view,ContentResolver cr) {
-//        final String DEBUG_TAG = "MyActivity";
-//        long eventID = 81;
-//        cr = getContentResolver();
-//        Uri deleteUri = null;
-//        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
-//        int rows = cr.delete(deleteUri, null, null);
-//        Log.i(DEBUG_TAG, "Rows deleted: " + rows);
-//    }

@@ -23,7 +23,4 @@
         android:title="Kalender"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemTodoListe"
-        android:title="To-Do Liste"
-        app:showAsAction="never"/>
 </menu>

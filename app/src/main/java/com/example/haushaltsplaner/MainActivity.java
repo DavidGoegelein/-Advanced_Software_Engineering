@@ -172,93 +172,41 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
 
-            case R.id.item1:
-                Toast.makeText(this,"Transaktionen ausgewählt",Toast.LENGTH_SHORT).show();
-                //Erstellung Intent mit Empfänger, hier Transaktion Klasse
-                //Intent switchActivityIntent = new Intent(this, Transaktion.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "Transaktion" auf
-                //startActivity(switchActivityIntent);
+            case R.id.itemEinnahmenAusgaben:
+                Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
+                startActivity(switchToAddEntry);
                 return true;
-            case R.id.subitem1:
-                Toast.makeText(this,"Einnahmen ausgewählt",Toast.LENGTH_SHORT).show();
-                //Intent switchActivityIntent = new Intent(this, Einnahmen.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //startActivity(switchActivityIntent);
-
-
+            case R.id.subitemEinnahmen:
                 ArrayList<Intake> intakes = intakeDB.getAllIntakes();
-                Intent switchActivityIntent1 = new Intent(this, ShowIntakesActivity.class);
-                switchActivityIntent1.putExtra("list",(Serializable) intakes);
-                startActivityForResult(switchActivityIntent1, REQUESTCODE_SHOW);
-                // startActivityForResult(switchActivityIntent1, 10);
+                Intent switchToIntakes = new Intent(this, ShowIntakesActivity.class);
+                switchToIntakes.putExtra("list",(Serializable) intakes);
+                startActivityForResult(switchToIntakes, REQUESTCODE_SHOW);
                 return true;
-            case R.id.subitem2:
+            case R.id.subitemAusgaben:
                 Toast.makeText(this,"Ausgaben ausgewählt",Toast.LENGTH_SHORT).show();
-                //Intent switchActivityIntent = new Intent(this, Ausgaben.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //startActivity(switchActivityIntent);
-                /////////////////////////////////////////////////////
                 ArrayList<Outgo> outgoes = outgoDB.getAllOutgo();
-                Intent switchActivityIntent2 = new Intent(this, ShowOutgosActivity.class);
-                switchActivityIntent2.putExtra("list",(Serializable) outgoes);
-                startActivityForResult(switchActivityIntent2, REQUESTCODE_SHOW);
+                Intent switchToOutgos = new Intent(this, ShowOutgosActivity.class);
+                switchToOutgos.putExtra("list",(Serializable) outgoes);
+                startActivityForResult(switchToOutgos, REQUESTCODE_SHOW);
                 return true;
-            case R.id.item2:
-                Toast.makeText(this,"Budget Limit ausgewählt",Toast.LENGTH_SHORT).show();
-                //Erstellung Intent mit Empfänger, hier BudgetLimit Klasse
-                //Intent switchActivityIntent = new Intent(this, BudgetLimit.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "Budget Limit" auf
-                //startActivity(switchActivityIntent);
-                // return true;
-                Intent switchActivityIntent3 = new Intent(this, AddEntryActivity.class);
-                startActivityForResult(switchActivityIntent3, REQUESTCODE_ADD);
-
-            case R.id.item3:
-                Toast.makeText(this,"Diagrammansicht ausgewählt",Toast.LENGTH_SHORT).show();
-                //Intent switchActivityIntent = new Intent(this, Diagramm.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "Diagramm" auf
-                //startActivity(switchActivityIntent);
+            case R.id.itemBudgetLimit:
+                Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
+                startActivity(switchToBudgetLimit);
                 return true;
 
-            case R.id.item4:
-                //Erstellung Intent mit Empfänger, hier Calender Klasse
-                Intent switchActivityIntent = new Intent(this, Calendar.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "Kalender" auf
-                startActivity(switchActivityIntent);
+            case R.id.itemDiagrammansicht:
+                Intent switchToEditDiagramView = new Intent(this, EditDiagramView.class);
+                startActivity(switchToEditDiagramView);
                 return true;
-            case R.id.item5:
-                //Erstellung Intent mit Empfänger, hier To-Do Liste Klasse
-                Toast.makeText(this,"To-Do Liste ausgewählt",Toast.LENGTH_SHORT).show();
-                //Rufe Klasse "To-Do Liste" auf
-                //Intent switchActivityIntent = new Intent(this, ToDoList.class);
-                // If data is need to be sent between activities
-                //      EditText editText = (EditText) findViewById(R.id.editTextTextPersonName);
-                //      String message = editText.getText().toString();
-                //      intent.putExtra(EXTRA_MESSAGE, message);
-                //Rufe Activity "To-Do Liste" auf
-                //startActivity(switchActivityIntent);
+
+            case R.id.itemKalender:
+                Intent switchToCalander = new Intent(this, Calendar.class);
+                 startActivity(switchToCalander);
+                return true;
+
+            case R.id.itemTodoListe:
+                Intent switchToDoList = new Intent(this, ToDoList.class);
+                startActivity(switchToDoList);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

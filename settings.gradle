@@ -6,9 +6,5 @@ dependencyResolutionManagement {
         jcenter() // Warning: this repository is going to shut down soon
     }
 }
-<<<<<<< Updated upstream
-rootProject.name = "Option Bar"
-=======
 rootProject.name = "Haushaltsplaner"
->>>>>>> Stashed changes
 include ':app'

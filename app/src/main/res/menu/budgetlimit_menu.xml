@@ -11,10 +11,6 @@
         app:showAsAction="never">
     </item>
 
-    <item android:id="@+id/itemBudgetLimit"
-        android:title="Budget Limit festlegen"
-        app:showAsAction="never"/>
-
     <item android:id="@+id/itemDiagrammansicht"
         android:title="Diagrammansicht"
         app:showAsAction="never"/>
@@ -27,3 +23,4 @@
         android:title="To-Do Liste"
         app:showAsAction="never"/>
 </menu>
+
