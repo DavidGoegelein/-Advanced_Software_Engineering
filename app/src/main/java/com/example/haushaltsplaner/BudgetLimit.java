@@ -2,18 +2,12 @@ package com.example.haushaltsplaner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
-import android.os.Bundle;
 
 public class BudgetLimit extends AppCompatActivity {
 
@@ -22,6 +16,7 @@ public class BudgetLimit extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget_limit);
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.budgetlimit_menu, menu);
@@ -30,7 +25,6 @@ public class BudgetLimit extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-
 
             case R.id.itemStartseite:
                 Intent switchToMain = new Intent(this, MainActivity.class);
@@ -47,19 +41,19 @@ public class BudgetLimit extends AppCompatActivity {
                 startActivity(switchToEditDiagramView);
                 return true;
 
+            case R.id.itemTabelle:
+                Intent switchToChart = new Intent(this, Tabelle.class);
+                startActivity(switchToChart);
+                return true;
+
             case R.id.itemKalender:
-                Intent switchToCalander = new Intent(this, Calendar.class);
-                startActivity(switchToCalander);
+                Intent switchToCalendar = new Intent(this, Calendar.class);
+                startActivity(switchToCalendar);
                 return true;
 
             case R.id.itemTodoListe:
                 Intent switchToDoList = new Intent(this, ToDoList.class);
                 startActivity(switchToDoList);
-                return true;
-
-            case R.id.itemTabelle:
-                Intent switchTabelle = new Intent(this, Tabelle.class);
-                startActivity(switchTabelle);
                 return true;
 
             default:

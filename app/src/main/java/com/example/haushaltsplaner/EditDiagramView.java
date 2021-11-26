@@ -43,20 +43,21 @@ public class EditDiagramView extends AppCompatActivity {
                 startActivity(switchToBudgetLimit);
                 return true;
 
+            case R.id.itemTabelle:
+                Intent switchToChart = new Intent(this, Tabelle.class);
+                startActivity(switchToChart);
+                return true;
+
             case R.id.itemKalender:
-                Intent switchToCalander = new Intent(this, Calendar.class);
-                startActivity(switchToCalander);
+                Intent switchToCalendar = new Intent(this, Calendar.class);
+                startActivity(switchToCalendar);
                 return true;
 
             case R.id.itemTodoListe:
-                Intent switchToDoList = new Intent(this, ToDoList.class);
-                startActivity(switchToDoList);
+                Intent switchToToDoList = new Intent(this, ToDoList.class);
+                startActivity(switchToToDoList);
                 return true;
 
-            case R.id.itemTabelle:
-                Intent switchTabelle = new Intent(this, Tabelle.class);
-                startActivity(switchTabelle);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

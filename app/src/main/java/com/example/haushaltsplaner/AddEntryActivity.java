@@ -1,17 +1,21 @@
 package com.example.haushaltsplaner;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /*
@@ -52,17 +56,7 @@ Activity, um Einnahmen und Ausgaben hinzuzufügen
             editTextDate.setText(datumsformat.format(kalender.getTime()));
         }
 
-        /*
-        Funktion, um das Menu darzustellen. Keine Funktion
-         */
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.addentry_menu, menu);
-            return true;
-        }
 
-        /*
         /*
         Eingabe soll eine Einnahme sein
          */
@@ -119,5 +113,50 @@ Activity, um Einnahmen und Ausgaben hinzuzufügen
 
             //Zyklus
             cyclus = spinnerCyclus.getSelectedItem().toString();
+        }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.addentry_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.itemStartseite:
+                Intent switchToMain = new Intent(this, MainActivity.class);
+                startActivity(switchToMain);
+                return true;
+
+            case R.id.itemBudgetLimit:
+                Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
+                startActivity(switchToBudgetLimit);
+                return true;
+
+            case R.id.itemDiagrammansicht:
+                Intent switchToEditDiagramView = new Intent(this, EditDiagramView.class);
+                startActivity(switchToEditDiagramView);
+                return true;
+
+            case R.id.itemTabelle:
+                Intent switchToChart = new Intent(this, Tabelle.class);
+                startActivity(switchToChart);
+                return true;
+
+            case R.id.itemKalender:
+                Intent switchToCalendar = new Intent(this, com.example.haushaltsplaner.Calendar.class);
+                startActivity(switchToCalendar);
+                return true;
+
+            case R.id.itemTodoListe:
+                Intent switchToToDoList = new Intent(this, ToDoList.class);
+                startActivity(switchToToDoList);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+            }
         }
     }

@@ -11,17 +11,8 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-//AUfruf funktioniert noch nicht
-//AUfruf in Klasse to do realisiert, dort funktioniert es
 public class Tabelle extends  AppCompatActivity {
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.tabelle_menu, menu);
-        return true;
-    }
     private static final String TAG = "ActivityTabelle";
 
     @Override
@@ -66,6 +57,13 @@ public class Tabelle extends  AppCompatActivity {
         mListView.setAdapter(adapter);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.tabelle_menu, menu);
+        return true;
+    }
+
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
 
@@ -90,8 +88,8 @@ public class Tabelle extends  AppCompatActivity {
                 return true;
 
             case R.id.itemKalender:
-                Intent switchToCalander = new Intent(this, Calendar.class);
-                startActivity(switchToCalander);
+                Intent switchToCalendar = new Intent(this, Calendar.class);
+                startActivity(switchToCalendar);
                 return true;
 
             case R.id.itemTodoListe:

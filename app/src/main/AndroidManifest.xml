@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Haushaltsplaner">
         <activity
+            android:name=".ToDoList"
+            android:exported="true" />
+        <activity
             android:name=".Tabelle"
             android:exported="true" />
         <activity

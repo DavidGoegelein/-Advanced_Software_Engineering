@@ -8,11 +8,14 @@
 
     <item android:id="@+id/itemEinnahmenAusgaben"
         android:title="Einnahmen/Ausnahmen anlegen"
-        app:showAsAction="never">
-    </item>
+        app:showAsAction="never"/>
 
     <item android:id="@+id/itemDiagrammansicht"
         android:title="Diagrammansicht"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/itemTabelle"
+        android:title="Tabellenansicht"
         app:showAsAction="never"/>
 
     <item android:id="@+id/itemKalender"
@@ -23,7 +26,5 @@
         android:title="To-Do Liste"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemTabelle"
-        android:title="Tabelle"
-        app:showAsAction="never"/>
+
 </menu>

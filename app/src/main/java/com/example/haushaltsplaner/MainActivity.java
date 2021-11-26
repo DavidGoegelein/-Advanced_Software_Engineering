@@ -166,9 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /*
-    Darstellung des Menus aber ohne Funktionalität
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -176,11 +173,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
-
-    // get a passed Item and check which one was clicked
     @Override
-    //Methode zum Aufrufen des Overview-Menus
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()){
@@ -189,12 +182,15 @@ public class MainActivity extends AppCompatActivity {
                 Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
                 startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
                 return true;
+
             case R.id.subitemEinnahmen:
                 ArrayList<Intake> intakes = intakeDB.getMonthIntakes(day,month,year);
                 Intent switchActivityIntent1 = new Intent(this, ShowEntrysActivity.class);
                 switchActivityIntent1.putExtra("list",(Serializable) intakes);
                 switchActivityIntent1.putExtra("entry","Intake");
-                startActivityForResult(switchActivityIntent1, REQUESTCODE_SHOW);   return true;
+                startActivityForResult(switchActivityIntent1, REQUESTCODE_SHOW);
+                return true;
+
             case R.id.subitemAusgaben:
                 ArrayList<Outgo> outgoes = outgoDB.getMonthOutgos(day, month, year);
                 Intent switchActivityIntent2 = new Intent(this, ShowEntrysActivity.class);
@@ -202,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 switchActivityIntent2.putExtra("entry","Outgo");
                 startActivityForResult(switchActivityIntent2, REQUESTCODE_SHOW);
                 return true;
+
             case R.id.itemBudgetLimit:
                 Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
                 startActivity(switchToBudgetLimit);
@@ -212,9 +209,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(switchToEditDiagramView);
                 return true;
 
+            case R.id.itemTabelle:
+                Intent switchToChart = new Intent(this, Tabelle.class);
+                startActivity(switchToChart);
+                return true;
+
             case R.id.itemKalender:
-                Intent switchToCalander = new Intent(this, Calendar.class);
-                startActivity(switchToCalander);
+                Intent switchToCalender = new Intent(this, Calendar.class);
+                startActivity(switchToCalender);
                 return true;
 
             case R.id.itemTodoListe:
@@ -222,14 +224,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(switchToDoList);
                 return true;
 
-            case R.id.itemTabelle:
-                Intent switchTabelle = new Intent(this, Tabelle.class);
-                startActivity(switchTabelle);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
 

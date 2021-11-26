@@ -8,8 +8,8 @@
 
     <item android:id="@+id/itemEinnahmenAusgaben"
         android:title="Einnahmen/Ausnahmen anlegen"
-        app:showAsAction="never">
-    </item>
+        app:showAsAction="never"/>
+
 
     <item android:id="@+id/itemBudgetLimit"
         android:title="Budget Limit festlegen"
@@ -19,12 +19,12 @@
         android:title="Diagrammansicht"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemKalender"
-        android:title="Kalender"
+    <item android:id="@+id/itemTabelle"
+        android:title="Tabellenansicht"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemTabelle"
-        android:title="Tabelle"
+    <item android:id="@+id/itemKalender"
+        android:title="Kalender"
         app:showAsAction="never"/>
 
 </menu>

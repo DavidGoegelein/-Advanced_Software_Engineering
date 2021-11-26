@@ -26,6 +26,10 @@
         android:title="Diagrammansicht"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/itemTabelle"
+        android:title="Tabellenansicht"
+        app:showAsAction="never"/>
+
     <item android:id="@+id/itemKalender"
         android:title="Kalender"
         app:showAsAction="never"/>
@@ -34,7 +38,5 @@
         android:title="To-Do Liste"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemTabelle"
-        android:title="Tabelle"
-        app:showAsAction="never"/>
+
 </menu>
