@@ -2,6 +2,11 @@ package com.example.haushaltsplaner;
 
 import java.io.Serializable;
 
+/*
+Repräsentation einer Ausgabe
+id, name, value, day, month, ywar, cyclus
+-- !! wird später noch um eine Kategorie erweitert !!--
+ */
 public class Outgo implements Serializable {
     private int id;
     private String name;
@@ -24,7 +29,8 @@ public class Outgo implements Serializable {
     }
 
     public String toString(){
-        return "'\n' Ausgabe "+name+ " ,Wert = "+value +" id:"+id;
+
+        return "'\n' "+" id:"+id+" Ausgabe "+name+ " ,Wert = "+value +" datum:"+day+"."+month+"."+year;
     }
 
     public int getId() {

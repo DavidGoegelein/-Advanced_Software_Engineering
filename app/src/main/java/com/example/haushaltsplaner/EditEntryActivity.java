@@ -14,6 +14,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
+/*
+Activity um eine Einnahme oder Ausgabe zu ändern oder zu löschen
+ */
 public class EditEntryActivity extends AppCompatActivity {
 
         private Spinner spinnerCyclus;
@@ -21,8 +26,8 @@ public class EditEntryActivity extends AppCompatActivity {
         private EditText editTextValue;
         private EditText editTextDate;
 
+        private String entry;
         private int id;
-        private String bezeichnung;
         private String name;
         private double value;
         private String dates;
@@ -44,25 +49,38 @@ public class EditEntryActivity extends AppCompatActivity {
                 return;
             }
 
-
             id = extras.getInt("id");
-            name = extras.getString("name");
-            value = extras.getDouble("value");
-            day = extras.getInt("day");
-            month = extras.getInt("month");
-            year= extras.getInt("year");
-            cyclus = extras.getString("cyclus");
+            entry = extras.getString("entry");
+            if(entry.equals("Intake")){
+                Intake intake = (Intake) extras.getSerializable("object");
+              //  id = intake.getId();
+                name = intake.getName();
+                value = intake.getValue();
+                day = intake.getDay();
+                month = intake.getMonth();
+                year = intake.getYear();
+                cyclus = intake.getCycle();
+            }else{
+                Outgo outgo = (Outgo) extras.getSerializable("object");
+               // id = outgo.getId();
+                name = outgo.getName();
+                value = outgo.getValue();
+                day = outgo.getDay();
+                month = outgo.getMonth();
+                year = outgo.getYear();
+                cyclus = outgo.getCycle();
+            }
 
 
-            bezeichnung = extras.getString("Bezeichnung");
+            //Überschrift setzten
             TextView textView = findViewById(R.id.Name);
-            if(bezeichnung.equals("Outgo")){
+            if(entry.equals("Outgo")){
                 textView.setText("Ausgabe");
             }else{
                 textView.setText("Einnahme");
             }
 
-            //Spinner "befüllen"
+            //Spinner Zyklus
             spinnerCyclus = (Spinner) findViewById(R.id.spinnerCyclus);
             ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,  R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -70,55 +88,43 @@ public class EditEntryActivity extends AppCompatActivity {
             int index = adapter2.getPosition(cyclus);
             spinnerCyclus.setSelection(index);
 
+            //name setzen
             editTextName = (EditText) findViewById(R.id.Bezeichnung);
             editTextName.setText(name);
 
+            //value setzen
             editTextValue = (EditText) findViewById(R.id.editTextNumberDecimal);
             editTextValue.setText(String.valueOf(value));
 
+            //Datum setzen
             editTextDate = (EditText) findViewById(R.id.editTextDate);
             String dateStr = String.valueOf(day)+"."+String.valueOf(month)+"."+String.valueOf(year);
             editTextDate.setText(dateStr);
         }
 
         public void onClickchange(View view){
-            getValues();
-
+            getValues(); //erhalte die gewünschten Werte
             Intent intent = new Intent();
-            intent.putExtra("entry",bezeichnung); //bezeichnung ändern
             intent.putExtra("selection","update");
+            intent.putExtra("entry",entry);
             intent.putExtra("id",id);
-            intent.putExtra("name",name);
-            intent.putExtra("value",value);
-            intent.putExtra("day",day);
-            intent.putExtra("month",month);
-            intent.putExtra("year",year);
-            intent.putExtra("cyclus",cyclus);
+
+            if(entry.equals("Intake")){
+                Intake intake = new Intake(name, value, day, month, year, cyclus);
+                intent.putExtra("object", (Serializable) intake);
+            }else{
+                Outgo outgo = new Outgo(name, value, day, month, year, cyclus);
+                intent.putExtra("object", (Serializable) outgo);
+            }
+
+
             setResult(RESULT_OK, intent);
             super.finish();
-/*
-            Intent data = new Intent();
-            data.putExtra("selection","change");
-            data.putExtra("Bezeichnung",bezeichnung);
-            data.putExtra("id",id);
-            getValues();
-
-
-            data.putExtra("name",name);
-            data.putExtra("value",value);
-            data.putExtra("day",day);
-            data.putExtra("month",month);
-            data.putExtra("year",year);
-            data.putExtra("cyclus",cyclus);
-
-            setResult(RESULT_OK, data);
-            super.finish();
-*/
         }
 
         public void onClickdeli(View view){
             Intent intent = new Intent();
-            intent.putExtra("entry",bezeichnung); //bezeichnung ändern
+            intent.putExtra("entry",entry); //bezeichnung ändern
             intent.putExtra("selection","clear");
             intent.putExtra("id",id);
             setResult(RESULT_OK, intent);
@@ -140,10 +146,8 @@ public class EditEntryActivity extends AppCompatActivity {
             day = Integer.parseInt(dates.substring(0,2));
             month = Integer.parseInt(dates.substring(3,5));
             year = Integer.parseInt(dates.substring(6,10));
-            //dates = editTextDate.getText().toString().substring(6,10);
 
             //Zyklus
             cyclus = spinnerCyclus.getSelectedItem().toString();
-
         }
     }

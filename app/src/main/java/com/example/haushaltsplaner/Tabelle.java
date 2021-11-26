@@ -7,14 +7,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
-
+import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
+//AUfruf funktioniert noch nicht
+//AUfruf in Klasse to do realisiert, dort funktioniert es
+public class Tabelle extends  AppCompatActivity {
 
-public class ToDoList extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -22,13 +22,12 @@ public class ToDoList extends AppCompatActivity {
         inflater.inflate(R.menu.tabelle_menu, menu);
         return true;
     }
-
     private static final String TAG = "ActivityTabelle";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_to_do_list); //noch umbenennen zu activity_Tabelle
+        setContentView(R.layout.activity_tabelle);
 
         Log.d(TAG, "onCreate: Started.");
         ListView mListView = (ListView) findViewById(R.id.listView);
@@ -67,10 +66,6 @@ public class ToDoList extends AppCompatActivity {
         mListView.setAdapter(adapter);
     }
 
-
-
-
-
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
 
@@ -99,9 +94,9 @@ public class ToDoList extends AppCompatActivity {
                 startActivity(switchToCalander);
                 return true;
 
-            case R.id.itemTabelle:
-                Intent switchTabelle = new Intent(this, Tabelle.class);
-                startActivity(switchTabelle);
+            case R.id.itemTodoListe:
+                Intent switchToDoList = new Intent(this, ToDoList.class);
+                startActivity(switchToDoList);
                 return true;
 
             default:

@@ -31,8 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Calendar extends AppCompatActivity {
-
-
     private static final int MY_CAL_WRITE_REQ = 1;
     private int Storage_Permission_Code = 1;
     TextView dateSelect;
@@ -141,7 +139,7 @@ public class Calendar extends AppCompatActivity {
 
     public void viewEvent(View view) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-            }else{
+        }else{
             requestReadPermission();
         }
 
@@ -166,7 +164,7 @@ public class Calendar extends AppCompatActivity {
             case R.id.itemEinnahmenAusgaben:
                 Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
                 startActivity(switchToAddEntry);
-                 return true;
+                return true;
 
             case R.id.itemBudgetLimit:
                 Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
@@ -181,6 +179,11 @@ public class Calendar extends AppCompatActivity {
             case R.id.itemTodoListe:
                 Intent switchToDoList = new Intent(this, ToDoList.class);
                 startActivity(switchToDoList);
+                return true;
+
+            case R.id.itemTabelle:
+                Intent switchTabelle = new Intent(this, Tabelle.class);
+                startActivity(switchTabelle);
                 return true;
 
             default:
@@ -245,4 +248,5 @@ public class Calendar extends AppCompatActivity {
             }
         }
     }
+
 }

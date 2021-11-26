@@ -3,6 +3,10 @@ package com.example.haushaltsplaner;
 
 import java.io.Serializable;
 
+/*
+Repräsentation einer Einnahme
+id, name, value, day, month, ywar, cyclus
+ */
 public class Intake implements Serializable {
     private int id;
     private String name;
@@ -25,7 +29,7 @@ public class Intake implements Serializable {
     }
 
     public String toString(){
-        return "'\n' Einnahme "+name+ " ,Wert = "+value +" id:"+id;
+        return "'\n' "+" id:"+id+"Einnahme "+name+ " ,Wert = "+value +" datum:"+day+"."+month+"."+year;
     }
 
     public int getId() {

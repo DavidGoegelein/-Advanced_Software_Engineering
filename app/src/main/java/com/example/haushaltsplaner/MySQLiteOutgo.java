@@ -43,6 +43,9 @@ public class MySQLiteOutgo extends SQLiteOpenHelper{
     private static final String KEY_CYCLE = "cycle";
 
 
+    /*
+    Funktion dient dazu, die übergebene Ausgabe in die Datenbank einzutragen
+     */
     public void addOutgo(Outgo outgo){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -58,6 +61,11 @@ public class MySQLiteOutgo extends SQLiteOpenHelper{
         Log.d("addOutgo", outgo.toString());
     }
 
+
+   /*
+   Funktion gibt eine ArrayList zurück, welche alle Ausgaben der Datenbank
+   beinhaltet
+    */
     public ArrayList<Outgo> getAllOutgo(){
         ArrayList<Outgo> outgos = new ArrayList<Outgo>();
 
@@ -90,6 +98,11 @@ public class MySQLiteOutgo extends SQLiteOpenHelper{
         return outgos;
     }
 
+
+    /*
+    Die Funktion liefert die Ausgabe zurück welche die übergebene id besitzt
+    Sollte diese Id nicht existieren so wird eine "leere" Ausgabe (ohne name, value ect) zurück gegeben
+     */
     public Outgo getOutgoById(int id){
         Outgo outgo = new Outgo();
 
@@ -112,6 +125,11 @@ public class MySQLiteOutgo extends SQLiteOpenHelper{
         return outgo;
     }
 
+    /*
+    Funktion löscht die Ausgabe welche die übergebne Id besitzt.
+    Sollte ein solcher Eintrag nicht exestieren wird die Datenbank ohne
+    einen weiteren Vorgang geschlossen
+     */
     public void deleteOutgoById(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_ID+" = "+id;
@@ -124,43 +142,29 @@ public class MySQLiteOutgo extends SQLiteOpenHelper{
         db.close();
     }
 
-    public void deleteOutgos(Outgo outgo){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_NAME+" = \""+outgo.getName()+"\" AND "+KEY_VALUE+" = "+outgo.getValue()+" AND "+KEY_DAY+" = "+outgo.getDay()+" AND "+KEY_MONTH+" = "+outgo.getMonth()+" AND "+KEY_YEAR+" = "+outgo.getYear()+" AND "+KEY_CYCLE+" = \""+outgo.getCycle()+"\"";
 
-        Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()){
-            String idOutgo = cursor.getString(0);
-            db.delete(TABLE_OUTGO, KEY_ID+" = ?", new String[]{idOutgo});
-            db.close();
-        }
-    }
-
+    /*
+    Funktion dient dazu, die Zeile mit der übergebnen id mit den Informationen der
+    übergebenen Ausgabe zu überschreiben. Sollte eine solche Id nicht exestieren, wird
+    ein neuer Eintrag mit den gewünschten Daten angelegt.
+     */
     public int updateOutgo(Outgo outgo, int id){
         int i = -1;
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues value = new ContentValues();
-
-        value.put(KEY_NAME, outgo.getName());
-        value.put(KEY_VALUE, outgo.getValue());
-        value.put(KEY_DAY, outgo.getDay());
-        value.put(KEY_MONTH, outgo.getMonth());
-        value.put(KEY_YEAR, outgo.getYear());
-        value.put(KEY_CYCLE, outgo.getCycle());
-
-        String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_ID+" = "+id;
-        Cursor cursor = db.rawQuery(query, null);
-
-        if(cursor != null){
-            cursor.moveToFirst();
-            String idOutgo = cursor.getString(0);
-            i = db.update(TABLE_OUTGO, value, KEY_ID+" = ?", new String[]{idOutgo});
+        try {
+            deleteOutgoById(id);
+            addOutgo(outgo);
+            i = 1;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        db.close();
         return i;
     }
 
-    //////////////////////////////////////////
+    /*
+   Funktion gibt eine ArrayList zurück, welche alle Ausgaben der Datenbank
+   beinhaltet, welche vom 1.month.year bis day.month.year getätigt wurden.
+   Periodische Ausgaben wurden dabei berücksichtigt.
+    */
     public ArrayList<Outgo> getMonthOutgos(int day, int month, int year) {
         ArrayList<Outgo> outgos = new ArrayList<Outgo>();
 
@@ -196,7 +200,11 @@ public class MySQLiteOutgo extends SQLiteOpenHelper{
         return outgos;
     }
 
-
+    /*
+   Funktion gibt eine Float-Wert zurück, welche alle Ausgaben der Datenbank
+   berücksichtigt, welche vom 1.month.year bis day.month.year getätigt wurden.
+   Periodische Ausgaben wurden dabei berücksichtigt.
+    */
     public float getValueOutgosMonth(int day, int month, int year) {
         List<Outgo> outgos = getMonthOutgos( day, month, year);
 
@@ -206,5 +214,4 @@ public class MySQLiteOutgo extends SQLiteOpenHelper{
         }
         return value;
     }
-
 }

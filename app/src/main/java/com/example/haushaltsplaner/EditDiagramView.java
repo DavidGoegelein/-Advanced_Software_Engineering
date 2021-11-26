@@ -3,6 +3,8 @@ package com.example.haushaltsplaner;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Bundle;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -49,6 +51,11 @@ public class EditDiagramView extends AppCompatActivity {
             case R.id.itemTodoListe:
                 Intent switchToDoList = new Intent(this, ToDoList.class);
                 startActivity(switchToDoList);
+                return true;
+
+            case R.id.itemTabelle:
+                Intent switchTabelle = new Intent(this, Tabelle.class);
+                startActivity(switchTabelle);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

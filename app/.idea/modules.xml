@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Haushaltsplaner.iml" filepath="$PROJECT_DIR$/.idea/modules/Haushaltsplaner.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Haushaltsplaner.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Haushaltsplaner.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app.iml" />
     </modules>
   </component>
 </project>

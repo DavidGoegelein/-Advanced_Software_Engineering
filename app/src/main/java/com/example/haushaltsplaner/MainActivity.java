@@ -34,12 +34,19 @@ public class MainActivity extends AppCompatActivity {
     BarChart mBarChart;
     ValueLineChart LineChart;
 
+    //beide Datanbanken anlegen für die Einnahmen und Ausgaben
     private MySQLiteIntake intakeDB = new MySQLiteIntake(this, null, null, 0);
     private MySQLiteOutgo outgoDB = new MySQLiteOutgo(this, null, null, 0);
 
-    private final int REQUESTCODE_ADD = 12;
-    private final int REQUESTCODE_SHOW = 13;
-    private final int REQUESTCODE_EDIT = 14;
+    //REQUESTCODES
+    private final int REQUESTCODE_ADD = 12; //AddEntryActivity
+    private final int REQUESTCODE_SHOW = 13; //ShowEntryActivity
+    private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
+
+    //aktuelles Datum
+    private int day;
+    private int month;
+    private int year;
 
 
     @Override
@@ -47,10 +54,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Ermittle das aktuelle Datum:
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        year = calendar.get(java.util.Calendar.YEAR);
+        month = calendar.get(java.util.Calendar.MONTH);
+        day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+
         //Setzen der Texte im textview und pie Chart und Barchart
         tvEinnahmen=findViewById(R.id.tvEinnahmen);
         tvAusgaben=findViewById(R.id.tvAusgaben);
         tvRestbudget=findViewById(R.id.tvRestbudget);
+
         pieChart = findViewById(R.id.piechart);
         mBarChart = findViewById(R.id.barchart);
         LineChart= findViewById(R.id.linechart);
@@ -65,14 +79,10 @@ public class MainActivity extends AppCompatActivity {
         //Daten aus Datenbank:
         //Datum muss noch als zeitraum und nicht als Datum angegeben werden, sonst kann nur ein Tag geholt werden
 
-        //MEthode noch alte Methode von Kategorie, neue noch ergänzen
-        //float Ausgaben =dboutgo.getValuesOutgosCategory(1,11,2021,  "Sonstiges");
-        //float Einnahmen =dboutgo.getValuesOutgosCategory(1,11,2021,  "Sonstiges");
+        float Ausgaben = outgoDB.getValueOutgosMonth(30,11,2021);
+        float Einnahmen = intakeDB.getValueIntakesMonth(30,11,2021);
         //Testdaten
         //float Ausgaben =888.0f;
-        float Ausgaben = outgoDB.getValueOutgosMonth(22,11,2021);
-        float Einnahmen = intakeDB.getValueIntakesMonth(22,11,2021);
-
         //float Einnahmen =1000.0f;
 
         //Eventuell noch differenz für Restbudget
@@ -100,8 +110,12 @@ public class MainActivity extends AppCompatActivity {
                         "Ausgaben",
                         Float.parseFloat(tvAusgaben.getText().toString()),
                         Color.parseColor("#EF5350")));
+        pieChart.addPieSlice(
+                new PieModel(
+                        "Restbudget",
+                        Float.parseFloat(tvRestbudget.getText().toString()),
+                        Color.parseColor("#FFA726")));
 
-        pieChart.setInnerPaddingOutline(5);
         pieChart.setInnerPaddingOutline(5);
 
         // To animate the pie chart
@@ -148,12 +162,13 @@ public class MainActivity extends AppCompatActivity {
 
         LineChart.addSeries(series);
         LineChart.startAnimation();
-
     }
 
 
 
-
+    /*
+    Darstellung des Menus aber ohne Funktionalität
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -161,33 +176,31 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
+
     // get a passed Item and check which one was clicked
     @Override
     //Methode zum Aufrufen des Overview-Menus
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        int year = calendar.get(java.util.Calendar.YEAR);
-        int month = calendar.get(java.util.Calendar.MONTH);
-        int day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
 
         switch (item.getItemId()){
 
             case R.id.itemEinnahmenAusgaben:
                 Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
-                startActivity(switchToAddEntry);
+                startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
                 return true;
             case R.id.subitemEinnahmen:
-                ArrayList<Intake> intakes = intakeDB.getAllIntakes();
-                Intent switchToIntakes = new Intent(this, ShowIntakesActivity.class);
-                switchToIntakes.putExtra("list",(Serializable) intakes);
-                startActivityForResult(switchToIntakes, REQUESTCODE_SHOW);
-                return true;
+                ArrayList<Intake> intakes = intakeDB.getMonthIntakes(day,month,year);
+                Intent switchActivityIntent1 = new Intent(this, ShowEntrysActivity.class);
+                switchActivityIntent1.putExtra("list",(Serializable) intakes);
+                switchActivityIntent1.putExtra("entry","Intake");
+                startActivityForResult(switchActivityIntent1, REQUESTCODE_SHOW);   return true;
             case R.id.subitemAusgaben:
-                Toast.makeText(this,"Ausgaben ausgewählt",Toast.LENGTH_SHORT).show();
-                ArrayList<Outgo> outgoes = outgoDB.getAllOutgo();
-                Intent switchToOutgos = new Intent(this, ShowOutgosActivity.class);
-                switchToOutgos.putExtra("list",(Serializable) outgoes);
-                startActivityForResult(switchToOutgos, REQUESTCODE_SHOW);
+                ArrayList<Outgo> outgoes = outgoDB.getMonthOutgos(day, month, year);
+                Intent switchActivityIntent2 = new Intent(this, ShowEntrysActivity.class);
+                switchActivityIntent2.putExtra("list",(Serializable) outgoes);
+                switchActivityIntent2.putExtra("entry","Outgo");
+                startActivityForResult(switchActivityIntent2, REQUESTCODE_SHOW);
                 return true;
             case R.id.itemBudgetLimit:
                 Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
@@ -201,12 +214,17 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.itemKalender:
                 Intent switchToCalander = new Intent(this, Calendar.class);
-                 startActivity(switchToCalander);
+                startActivity(switchToCalander);
                 return true;
 
             case R.id.itemTodoListe:
                 Intent switchToDoList = new Intent(this, ToDoList.class);
                 startActivity(switchToDoList);
+                return true;
+
+            case R.id.itemTabelle:
+                Intent switchTabelle = new Intent(this, Tabelle.class);
+                startActivity(switchTabelle);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -215,154 +233,69 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //Trägt die gewünschten Daten in die Datenbank ein
+
+    //Funktion um die empfanenen Daten weiter zu verwerten
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ///////////////////////////////////////////////////////////////
-        //Daten hinzufügen
-        //////////////////////////////////////////////////////////////
+
+        // Von AddEntryActivity
         if (resultCode == RESULT_OK && requestCode == REQUESTCODE_ADD) {
-            //Später abfragen ob Einnahme oder Ausgabe
             String entry = data.getExtras().getString("entry");
-
-            String name = data.getExtras().getString("name");
-            double value = data.getExtras().getDouble("value");
-            int day = data.getExtras().getInt("day");
-            int month = data.getExtras().getInt("month");
-            int year = data.getExtras().getInt("year");
-            String cycle = data.getExtras().getString("cycle");
-
             if(entry.equals("Intake")){ //Eingabe
-                Intake intake = new Intake( name,  value,  day,  month,  year, cycle);
+                Intake intake = (Intake) data.getSerializableExtra("object");
                 intakeDB.addIntake(intake);
             }else{ //Ausgabe
-                Outgo outgo = new Outgo( name,  value,  day,  month,  year, cycle);
+                Outgo outgo = (Outgo) data.getSerializableExtra("object");
                 outgoDB.addOutgo(outgo);
             }
-
         }
 
-        ///////////////////////////////////////////////////////////////
-        //Daten ausgeben
-        //////////////////////////////////////////////////////////////
+        // Von ShoEntryActivity
         if (resultCode == RESULT_OK && requestCode == REQUESTCODE_SHOW) {
             String entry = data.getExtras().getString("entry");
             int id = data.getExtras().getInt("id");
 
-            if(entry.equals("Intake") && (id > -1)){
-                Intake intake = intakeDB.getIntakeById(id);
-                Intent switchActivityIntent1 = new Intent(this, EditEntryActivity.class);
-                switchActivityIntent1.putExtra("Bezeichnung","Intake");
-                switchActivityIntent1.putExtra("id",id);
-                switchActivityIntent1.putExtra("name",intake.getName());
-                switchActivityIntent1.putExtra("value",intake.getValue());
-                switchActivityIntent1.putExtra("day",intake.getDay());
-                switchActivityIntent1.putExtra("month",intake.getMonth());
-                switchActivityIntent1.putExtra("year",intake.getYear());
-                switchActivityIntent1.putExtra("cyclus",intake.getCycle());
-                startActivityForResult(switchActivityIntent1, REQUESTCODE_EDIT);
+            Intent i = new Intent(this, EditEntryActivity.class);
+
+            if(id > -1) {
+                if (entry.equals("Intake")) { //Einnahme
+                    Intake intake = intakeDB.getIntakeById(id);
+                    i.putExtra("object", (Serializable) intake);
+                } else { //Ausgabe
+                    Outgo outgo = outgoDB.getOutgoById(id);
+                    i.putExtra("object", (Serializable) outgo);
+                }
+                i.putExtra("id", id);
+                i.putExtra("entry", entry);
+                startActivityForResult(i, REQUESTCODE_EDIT);
             }
-
-            /*
-            int id = data.getExtras().getInt("id");
-            if(data.getExtras().getString("entry").equals("intake") && (id > -1)){ //Intake
-                Intake intake = intakeDB.getIntakeById(id);
-
-                Intent switchActivityIntent = new Intent(this, EditEntryActivity.class);
-                switchActivityIntent.putExtra("Bezeichnung","Intake");
-                switchActivityIntent.putExtra("id",intake.getId());
-                switchActivityIntent.putExtra("name",intake.getName());
-                switchActivityIntent.putExtra("value",intake.getValue());
-                switchActivityIntent.putExtra("day",intake.getDay());
-                switchActivityIntent.putExtra("month",intake.getMonth());
-                switchActivityIntent.putExtra("year",intake.getYear());
-                switchActivityIntent.putExtra("cyclus",intake.getCycle());
-
-                startActivityForResult(switchActivityIntent,REQUESTCODE_EDIT);
-
-
-
-            }else if(id > -1){ //Outgo
-                Outgo outgo = outgoDB.getOutgoById(id);
-
-                Intent switchActivityIntent = new Intent(this, EditEntryActivity.class);
-                switchActivityIntent.putExtra("Bezeichnung","Outgo");
-                switchActivityIntent.putExtra("id",outgo.getId());
-                switchActivityIntent.putExtra("name",outgo.getName());
-                switchActivityIntent.putExtra("value",outgo.getValue());
-                switchActivityIntent.putExtra("day",outgo.getDay());
-                switchActivityIntent.putExtra("month",outgo.getMonth());
-                switchActivityIntent.putExtra("year",outgo.getYear());
-                switchActivityIntent.putExtra("cyclus",outgo.getCycle());
-
-                startActivityForResult(switchActivityIntent,REQUESTCODE_EDIT);
-            }
-
-             */
         }
 
-        ///////////////////////////////////////////////////////////////
-        //Daten löschen oder ändern
-        //////////////////////////////////////////////////////////////
-        if (resultCode == RESULT_OK && requestCode == REQUESTCODE_EDIT){
+        //Eintrag löschen oder ändern
+        if(resultCode == RESULT_OK && requestCode == REQUESTCODE_EDIT){
             String selection = data.getExtras().getString("selection");
-            int id = data.getExtras().getInt("id");
             String entry = data.getExtras().getString("entry");
-            if(selection.equals("clear") && entry.equals("Intake")){
-                intakeDB.deleteIntakeById(id);
-            }else if(selection.equals("update") && entry.equals("Intake")){
-                String name = data.getExtras().getString("name");
-                double value = data.getExtras().getDouble("value");
-                int day = data.getExtras().getInt("day");
-                int month = data.getExtras().getInt("month");
-                int year = data.getExtras().getInt("year");
-                String cycle = data.getExtras().getString("cycle");
+            int id = data.getExtras().getInt("id");
 
-                Intake intake = new Intake(name, value, day, month, year, cycle);
-                intakeDB.updateIntake(intake, id);
-            }
-
-
-            /*
-            String selection = data.getExtras().getString("selection");
-            if(selection.equals("loeschen")){
-                int id = data.getExtras().getInt("id");
-            }
-            /*
-            String selction = data.getExtras().getString("selection");
-            if(selction.equals("clear")){
-                String entry = data.getExtras().getString("Bezeichnung");
-                if(entry.equals("Outgo")){
-                    outgoDB.deleteOutgoById(data.getExtras().getInt("id"));
-                }else{
-                    intakeDB.deleteIntakeById(data.getExtras().getInt("id"));
+            if(selection.equals("clear")){ //löschen
+                if(entry.equals("Intake")){ //Intake
+                    intakeDB.deleteIntakeById(id);
+                }else{ //Outgo
+                    outgoDB.deleteOutgoById(id);
                 }
-
-
-
-            }else{
-                String entry = data.getExtras().getString("Bezeichnung");
-                String name = data.getExtras().getString("name");
-                double value = data.getExtras().getDouble("value");
-                int day = data.getExtras().getInt("day");
-                int month = data.getExtras().getInt("month");
-                int year = data.getExtras().getInt("year");
-                String cycle = data.getExtras().getString("cycle");
-                if(entry.equals("Outgo")){
-                    Outgo outgo = new Outgo( name,  value,  day,  month,  year, cycle);
-                    outgoDB.updateOutgo(outgo,data.getExtras().getInt("id"));
-                }else{
-                    Intake intake = new Intake( name,  value,  day,  month,  year, cycle);
-                    intakeDB.updateIntake(intake,data.getExtras().getInt("id"));
+            }else{ //ändern
+                if(entry.equals("Intake")){ //Intake
+                    Intake intake = (Intake) data.getSerializableExtra("object");
+                    intakeDB.updateIntake(intake, id);
+                }else{ //Outgo
+                    Outgo outgo = (Outgo) data.getSerializableExtra("object");
+                    outgoDB.updateOutgo(outgo, id);
                 }
             }
-
-             */
-
 
         }
-        setData();
+       //setData();
     }
 
 }

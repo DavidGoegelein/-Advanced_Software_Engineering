@@ -2,28 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/itemStartseite"
-        android:title="Startseite"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/itemEinnahmenAusgaben"
-        android:title="Einnahmen/Ausnahmen anlegen"
+    <item android:id="@+id/item1"
+        android:title="Auflistung"
         app:showAsAction="never">
+        <menu>
+            <item android:id="@+id/subitem1"
+                android:title="Einnahmen"/>
+        </menu>
     </item>
 
-    <item android:id="@+id/itemBudgetLimit"
-        android:title="Budget Limit festlegen"
+    <item android:id="@+id/item2"
+        android:title="Einnahme/Ausgabe hinzufügen"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemDiagrammansicht"
+    <item android:id="@+id/item3"
         android:title="Diagrammansicht"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemKalender"
+    <item android:id="@+id/item4"
         android:title="Kalender"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemTodoListe"
+    <item android:id="@+id/item5"
         android:title="To-Do Liste"
         app:showAsAction="never"/>
 </menu>

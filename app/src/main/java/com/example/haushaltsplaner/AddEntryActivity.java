@@ -1,42 +1,30 @@
 package com.example.haushaltsplaner;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-import android.view.View;
-import android.content.Intent;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/*
+Activity, um Einnahmen und Ausgaben hinzuzufügen
+-- !! Um Kalenderbutton erweitern !! --
+-- !! Erweiterung von Kategorien fehlt noch !! --
+ */
     public class AddEntryActivity extends AppCompatActivity {
 
-        private Spinner spinnerCyclus;
-        private EditText editTextDate;
+        private Spinner spinnerCyclus; //Zyklus
+        private EditText editTextDate; //Datum
 
+        //Werte der Einnahme oder Ausgabe
         private String name;
         private double value;
         private String dates;
@@ -44,19 +32,18 @@ import java.util.Calendar;
         private int month;
         private int year;
         private String cyclus;
+        private String choice = "";
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_add_entry);
 
-            //Spinner "befüllen"
+            //Spinner um den Zyklus anzugeben
             spinnerCyclus = (Spinner) findViewById(R.id.spinnerCyclus);
             ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,  R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerCyclus.setAdapter(adapter2);
-
-
 
             //Aktuelles Datum anzeigen
             editTextDate = (EditText) findViewById(R.id.editTextDate);
@@ -65,6 +52,9 @@ import java.util.Calendar;
             editTextDate.setText(datumsformat.format(kalender.getTime()));
         }
 
+        /*
+        Funktion, um das Menu darzustellen. Keine Funktion
+         */
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
             MenuInflater inflater = getMenuInflater();
@@ -72,48 +62,45 @@ import java.util.Calendar;
             return true;
         }
 
+        /*
+        /*
+        Eingabe soll eine Einnahme sein
+         */
         public void onClickIntake(View view){
-            finishIntake();
+            choice = "Intake";
+            finish();
         }
 
+         /*
+         Ausgabe soll eine Ausgabe sein
+         */
         public void onClickOutgo(View view){
-            finishOutgo();
+            choice = "Outgo";
+            finish();
         }
 
-        public void finishOutgo() {
-            getValues();
-
+        @Override
+        public void finish(){
+            getValues(); //Eingaben einlesen
+          //  Intent i = getTheIntent(); //Eingaben "intent" geben
             Intent i = new Intent();
 
-            i.putExtra("entry","Outgo");
-            i.putExtra("name",name);
-            i.putExtra("value",value);
-            i.putExtra("day",day);
-            i.putExtra("month",month);
-            i.putExtra("year",year);
-            i.putExtra("cyclus",cyclus);
-            setResult(RESULT_OK, i);
-            super.finish();
-
-        }
-
-        public void finishIntake(){
-            getValues();
-
-            Intent i = new Intent();
-
-            i.putExtra("entry","Intake");
-            i.putExtra("name",name);
-            i.putExtra("value",value);
-            i.putExtra("day",day);
-            i.putExtra("month",month);
-            i.putExtra("year",year);
-            i.putExtra("cyclus",cyclus);
+            if(choice.equals("Intake")){
+                Intake intake = new Intake(name, value, day, month, year, cyclus);
+                i.putExtra("object", intake);
+            }else{
+                Outgo outgo = new Outgo(name, value, day, month, year, cyclus);
+                i.putExtra("object", outgo);
+            }
+            i.putExtra("entry",choice);
 
             setResult(RESULT_OK, i);
             super.finish();
         }
 
+        /*
+        Funktion um die eingegebenen Werte zu ermitteln
+         */
         private void getValues(){
             //Name
             EditText editTextName = (EditText) findViewById(R.id.Bezeichnung);
@@ -130,46 +117,7 @@ import java.util.Calendar;
             month = Integer.parseInt(dates.substring(3,5));
             year = Integer.parseInt(dates.substring(6,10));
 
-
-
-            dates = editTextDate.getText().toString().substring(6,10);
-
             //Zyklus
             cyclus = spinnerCyclus.getSelectedItem().toString();
-
         }
-
-        public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()){
-
-                case R.id.itemStartseite:
-                    Intent switchToMain = new Intent(this, MainActivity.class);
-                    startActivity(switchToMain);
-                    return true;
-
-                case R.id.itemBudgetLimit:
-                    Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
-                    startActivity(switchToBudgetLimit);
-                    return true;
-
-                case R.id.itemDiagrammansicht:
-                    Intent switchToEditDiagramView = new Intent(this, EditDiagramView.class);
-                    startActivity(switchToEditDiagramView);
-                    return true;
-
-                case R.id.itemKalender:
-                    Intent switchToCalander = new Intent(this, com.example.haushaltsplaner.Calendar.class);
-                    startActivity(switchToCalander);
-                    return true;
-
-                case R.id.itemTodoListe:
-                    Intent switchToDoList = new Intent(this, ToDoList.class);
-                    startActivity(switchToDoList);
-                    return true;
-
-                default:
-                    return super.onOptionsItemSelected(item);
-            }
-        }
-
     }

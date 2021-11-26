@@ -21,4 +21,8 @@
     <item android:id="@+id/itemTodoListe"
         android:title="To-Do Liste"
         app:showAsAction="never"/>
+
+    <item android:id="@+id/itemTabelle"
+        android:title="Tabelle"
+        app:showAsAction="never"/>
 </menu>

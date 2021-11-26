@@ -1,7 +1,7 @@
 package com.example.haushaltsplaner;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import android.os.Bundle;
 
 public class BudgetLimit extends AppCompatActivity {
 
@@ -53,6 +55,11 @@ public class BudgetLimit extends AppCompatActivity {
             case R.id.itemTodoListe:
                 Intent switchToDoList = new Intent(this, ToDoList.class);
                 startActivity(switchToDoList);
+                return true;
+
+            case R.id.itemTabelle:
+                Intent switchTabelle = new Intent(this, Tabelle.class);
+                startActivity(switchTabelle);
                 return true;
 
             default:

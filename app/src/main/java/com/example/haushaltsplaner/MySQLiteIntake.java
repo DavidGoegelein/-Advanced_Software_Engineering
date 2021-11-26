@@ -43,7 +43,9 @@ public class MySQLiteIntake extends SQLiteOpenHelper{
     private static final String KEY_YEAR = "year";
     private static final String KEY_CYCLE = "cycle";
 
-
+    /*
+        Funktion dient dazu, die übergebene Einnahme in die Datenbank einzutragen
+         */
     public void addIntake(Intake intake){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -58,7 +60,10 @@ public class MySQLiteIntake extends SQLiteOpenHelper{
         db.close();
     }
 
-
+    /*
+       Funktion gibt eine ArrayList zurück, welche alle Einnahmen der Datenbank
+       beinhaltet
+        */
     public ArrayList<Intake> getAllIntakes(){
         ArrayList<Intake> intakes = new ArrayList<Intake>();
 
@@ -92,6 +97,10 @@ public class MySQLiteIntake extends SQLiteOpenHelper{
         return intakes;
     }
 
+    /*
+    Die Funktion liefert die Einnahme zurück welche die übergebene id besitzt
+    Sollte diese Id nicht existieren so wird eine "leere" Ausgabe (ohne name, value ect) zurück gegeben
+    */
     public Intake getIntakeById(int id){
         Intake intake = new Intake();
 
@@ -114,6 +123,11 @@ public class MySQLiteIntake extends SQLiteOpenHelper{
         return intake;
     }
 
+    /*
+    Funktion löscht die Einnahme welche die übergebne Id besitzt.
+    Sollte ein solcher Eintrag nicht exestieren wird die Datenbank ohne
+    einen weiteren Vorgang geschlossen
+    */
     public void deleteIntakeById(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_ID+" = "+id;
@@ -125,19 +139,12 @@ public class MySQLiteIntake extends SQLiteOpenHelper{
         }
         db.close();
     }
-    public void deleteIntake(Intake intake){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_NAME+" = \""+intake.getName()+"\" AND "+KEY_VALUE+" = "+intake.getValue()+" AND "+KEY_DAY+" = "+intake.getDay()+" AND "+KEY_MONTH+" = "+intake.getMonth()+" AND "+KEY_YEAR+" = "+intake.getYear()+" AND "+KEY_CYCLE+" = \""+intake.getCycle()+"\"";
 
-        Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()){
-            String idIntake = cursor.getString(0);
-            db.delete(TABLE_INTAKE, KEY_ID+" = ?", new String[]{idIntake});
-        }
-        db.close();
-    }
-
-
+    /*
+    Funktion dient dazu, die Zeile mit der übergebnen id mit den Informationen der
+    übergebenen Einnahme zu überschreiben. Sollte eine solche Id nicht exestieren, wird
+    ein neuer Eintrag mit den gewünschten Daten angelegt.
+     */
     public int updateIntake(Intake intake, int id){
         int i = -1;
         try {
@@ -147,35 +154,14 @@ public class MySQLiteIntake extends SQLiteOpenHelper{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        /*
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues value = new ContentValues();
-
-        value.put(KEY_NAME, intake.getName());
-        value.put(KEY_VALUE, intake.getValue());
-        value.put(KEY_DAY, intake.getDay());
-        value.put(KEY_MONTH, intake.getMonth());
-        value.put(KEY_YEAR, intake.getYear());
-        value.put(KEY_CYCLE, intake.getCycle());
-
-        String query = "SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_ID+" = "+id;
-        Cursor cursor = db.rawQuery(query, null);
-
-        if(cursor != null){
-            cursor.moveToFirst();
-            String idIntake = cursor.getString(0);
-            i = db.update(TABLE_INTAKE, value, KEY_ID+" = ?", new String[]{idIntake});
-        }
-        db.close();
-
-         */
-
         return i;
     }
 
-
+    /*
+    Funktion gibt eine ArrayList zurück, welche alle Einnahmen der Datenbank
+    beinhaltet, welche vom 1.month.year bis day.month.year getätigt wurden.
+    Periodische Ausgaben wurden dabei berücksichtigt.
+     */
     public float getValueIntakesMonth(int day, int month, int year) {
         List<Intake> intakes = getMonthIntakes( day, month, year);
 
@@ -186,7 +172,11 @@ public class MySQLiteIntake extends SQLiteOpenHelper{
         return value;
     }
 
-
+    /*
+    Funktion gibt eine Float-Wert zurück, welche alle Einnahmen der Datenbank
+    berücksichtigt, welche vom 1.month.year bis day.month.year getätigt wurden.
+    Periodische Ausgaben wurden dabei berücksichtigt.
+    */
     public ArrayList<Intake> getMonthIntakes(int day, int month, int year) {
         ArrayList<Intake> intakes = new ArrayList<Intake>();
 
