@@ -194,7 +194,7 @@ public class MySQLiteIntake extends SQLiteOpenHelper{
                     intake = new Intake();
                     String cycle = cursor.getString(6);
 
-                    if (( "monatlich".equals(cycle) && (Integer.parseInt(cursor.getString(4)) <= month) ) || (Integer.parseInt(cursor.getString(3)) <= day)) {
+                    if (( "monatlich".equals(cycle) && (Integer.parseInt(cursor.getString(4)) < month) && (Integer.parseInt(cursor.getString(5)) <= year)) || (Integer.parseInt(cursor.getString(3)) <= day)) {
 
                         intake.setId(Integer.parseInt(cursor.getString(0)));
                         intake.setName(cursor.getString(1));
@@ -213,6 +213,5 @@ public class MySQLiteIntake extends SQLiteOpenHelper{
         db.close();
 
         return intakes;
-
     }
 }

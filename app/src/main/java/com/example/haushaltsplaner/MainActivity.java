@@ -8,11 +8,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.widget.TextView;
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.PieChart;
@@ -27,12 +27,11 @@ import org.eazegraph.lib.models.ValueLineSeries;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Create the object of TextView
-    // and PieChart class
-    TextView tvAusgaben, tvEinnahmen, tvRestbudget;
-    PieChart pieChart;
-    BarChart mBarChart;
-    ValueLineChart LineChart;
+    //Textviews und Diagramme
+    private TextView tvOutgo, tvIntake, tvResidualbudget;
+    private PieChart pieChart;
+    private BarChart mBarChart;
+    private ValueLineChart LineChart;
 
     //beide Datanbanken anlegen für die Einnahmen und Ausgaben
     private MySQLiteIntake intakeDB = new MySQLiteIntake(this, null, null, 0);
@@ -48,132 +47,181 @@ public class MainActivity extends AppCompatActivity {
     private int month;
     private int year;
 
+    // Setzt die Variablen day, month, year
+    private void getDate(){
+        java.util.Calendar calender = java.util.Calendar.getInstance();
+        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
+        String dates = datumsformat.format(calender.getTime());
+        day = Integer.parseInt(dates.substring(0,2));
+        month = Integer.parseInt(dates.substring(3,5));
+        year = Integer.parseInt(dates.substring(6,10));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Ermittle das aktuelle Datum:
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        year = calendar.get(java.util.Calendar.YEAR);
-        month = calendar.get(java.util.Calendar.MONTH);
-        day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
-
+        //Erhalte das aktuelle Datum
+        getDate();
         //Setzen der Texte im textview und pie Chart und Barchart
-        tvEinnahmen=findViewById(R.id.tvEinnahmen);
-        tvAusgaben=findViewById(R.id.tvAusgaben);
-        tvRestbudget=findViewById(R.id.tvRestbudget);
+        tvIntake = findViewById(R.id.tvEinnahmen); //warum hier?
+        tvOutgo = findViewById(R.id.tvAusgaben);
+        tvResidualbudget = findViewById(R.id.tvRestbudget);
 
         pieChart = findViewById(R.id.piechart);
         mBarChart = findViewById(R.id.barchart);
-        LineChart= findViewById(R.id.linechart);
+        LineChart = findViewById(R.id.linechart);
 
-        // Creating a method setData()
+        //Daten anzeigen
         setData();
     }
 
-
+    //Werte aus der Datenbank
     private void setData()
     {
         //Daten aus Datenbank:
-        //Datum muss noch als zeitraum und nicht als Datum angegeben werden, sonst kann nur ein Tag geholt werden
+        //später noch Fester zur Datumsauswahl einfügen
+        float outgo = outgoDB.getValueOutgosMonth(day,month,year);
+        float intake = intakeDB.getValueIntakesMonth(day,month,year);
+        float residualBudget = intake-outgo;
 
-        float Ausgaben = outgoDB.getValueOutgosMonth(30,11,2021);
-        float Einnahmen = intakeDB.getValueIntakesMonth(30,11,2021);
-        //Testdaten
-        //float Ausgaben =888.0f;
-        //float Einnahmen =1000.0f;
+        //Setzen von Einnahmen und Ausgaben als Stirng in Textview
+        tvIntake.setText(Float.toString(intake));
+        tvOutgo.setText(Float.toString(outgo));
+        tvResidualbudget.setText(Float.toString(residualBudget));
 
-        //Eventuell noch differenz für Restbudget
-        float Restbudget = Einnahmen-Ausgaben;
+        //Diagramme zurücksetzten
+        pieChart.clearChart();
+        mBarChart.clearChart();
+        LineChart.clearChart();
+        //Diagram Methoden aufrufen
+        PieChart(intake,outgo,residualBudget);
+        BarGraph(intake,outgo,residualBudget);
+        LineGraphMonth();
 
-        //Setzen von EInnahmen und Ausgaben als Stirng in Textview
-        tvEinnahmen.setText(Float.toString(Einnahmen));
-        tvAusgaben.setText(Float.toString(Ausgaben));
-        tvRestbudget.setText(Float.toString(Restbudget));
-        //zum Testen bei direkter EIngabe von Geldwerten
-        //tvEinnahmen.setText(Integer.toString(1000));
-        //tvAusgaben.setText(Integer.toString(888));
-        //tvRestbudget.setText(Integer.toString(112));
+    }
 
-        //Daten und Farben dem PieChart zuordnen
+
+    public void PieChart (float Einnahmen,float Ausgaben, float Restbudget)
+    {
+        //Daten und Farben zuordnen
         //es geht noch nicht die Farbe aus colors.xml zu übernehmen
-        pieChart.addPieSlice(
+        pieChart.addPieSlice(new PieModel(
+                "Einnahmen",
+                Einnahmen,
+                Color.parseColor("#66BB6A")));
+        pieChart.addPieSlice(new PieModel(
+                "Ausgaben",
+                Ausgaben,
+                Color.parseColor("#EF5350")));
+        pieChart.addPieSlice(new PieModel(
+                "Restbudget",
+                Restbudget,
+                Color.parseColor("#FFA726")));
 
-                new PieModel(
-                        "Einnahmen",
-                        Float.parseFloat(tvEinnahmen.getText().toString()),
-                        Color.parseColor("#66BB6A")));
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Ausgaben",
-                        Float.parseFloat(tvAusgaben.getText().toString()),
-                        Color.parseColor("#EF5350")));
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Restbudget",
-                        Float.parseFloat(tvRestbudget.getText().toString()),
-                        Color.parseColor("#FFA726")));
-
+        //Darstellungsoptionen
         pieChart.setInnerPaddingOutline(5);
-
-        // To animate the pie chart
         pieChart.startAnimation();
         pieChart.setBackgroundColor(0);
+    }
 
-
-        //BarGraph
-        BarChart mBarChart = (BarChart) findViewById(R.id.barchart);
-
-        mBarChart.addBar(new BarModel(Einnahmen,  Color.parseColor("#66BB6A")));
-        mBarChart.addBar(new BarModel(Ausgaben, Color.parseColor("#EF5350")));
-        mBarChart.addBar(new BarModel(Restbudget, Color.parseColor("#FFA726")));
-
+    public void BarGraph(float Einnahmen,float Ausgaben, float Restbudget)
+    {
+        //Daten und Farben zuordnen
+        mBarChart.addBar(new BarModel(
+                Einnahmen,
+                Color.parseColor("#66BB6A")));
+        mBarChart.addBar(new BarModel(
+                Ausgaben,
+                Color.parseColor("#EF5350")));
+        mBarChart.addBar(new BarModel(
+                Restbudget,
+                Color.parseColor("#FFA726")));
+        //Darstellungsoptionen
         mBarChart.startAnimation();
-        mBarChart.setShowValues(true);  //keine Kommazahl darzustellen auf Balken
+        mBarChart.setShowValues(true);  //werte Aus Balken
         mBarChart.setActivated(false);
 
-        //LineChart
-        //für Monatsvergleich später verwenden
-        //Benötigt Monat als Sting und Geldwert als Float
+    }
 
+    public void LineGraphMonth()
+    {
+        //Benötigt Monat als Sting und Geldwert als Float
+        //für Monatsvergleich der Ausgaben
         ValueLineSeries series = new ValueLineSeries();
         series.setColor(0xFF56B7F1);
+        int i =1; //monate hochzählen
 
-        //Beschreibung
-        //series.addPoint(new ValueLinePoint("Achsenbeschriftung", floatwert Übergeben));
+        //aktuelles Datum abfragen über month
+        //letzer Monata wird die Achse nicht beschriftet
+        while (i<=(month+1))
+        {
+            //Für Achsenbeschriftung
+            String monatJahresansicht ="leer";
 
-        //Hier kannst du in den Werten noch die einzelenen Monate im Vergleich zueinander darstellen.
-        //als float wert den Monatswert übergeben
+            switch(i) {
+                case 1:
+                    monatJahresansicht = "Jan";
+                    break;
+                case 2:
+                    monatJahresansicht = "Feb";
+                    break;
+                case 3:
+                    monatJahresansicht = "Mar";
+                    break;
+                case 4:
+                    monatJahresansicht = "Apr";
+                    break;
+                case 5:
+                    monatJahresansicht = "Mai";
+                    break;
+                case 6:
+                    monatJahresansicht = "Jun";
+                    break;
+                case 7:
+                    monatJahresansicht = "Jul";
+                    break;
+                case 8:
+                    monatJahresansicht = "Aug";
+                    break;
+                case 9:
+                    monatJahresansicht = "Sep";
+                    break;
+                case 10:
+                    monatJahresansicht = "Okt";
+                    break;
+                case 11:
+                    monatJahresansicht = "Nov";
+                    break;
+                case 12:
+                    monatJahresansicht = "Dez";
+                    break;
+            }
+            //Datnbankzugriff:
+            float AusgabeMonateX = outgoDB.getValueOutgosMonth(31, i, year);
+            series.addPoint(new ValueLinePoint(monatJahresansicht, AusgabeMonateX));
 
-        series.addPoint(new ValueLinePoint("Jan", 2.0f));
-        series.addPoint(new ValueLinePoint("Feb", 1.0f));
-        series.addPoint(new ValueLinePoint("Mar", 1.5f));
-        series.addPoint(new ValueLinePoint("Apr", 2.0f));
-        series.addPoint(new ValueLinePoint("Mai", 0.5f));
-        series.addPoint(new ValueLinePoint("Jun", 4.0f));
-        series.addPoint(new ValueLinePoint("Jul", 3.5f));
-        series.addPoint(new ValueLinePoint("Aug", 2.4f));
-        series.addPoint(new ValueLinePoint("Sep", 2.4f));
-        series.addPoint(new ValueLinePoint("Oct", 3.4f));
-        series.addPoint(new ValueLinePoint("Nov", .4f));
-        series.addPoint(new ValueLinePoint("Dec", 1.3f));
+            i++;
+        }
+        //Noch Jahresübergang einbringen
+        //prüfen bis wann Ausgabe vorhaneden sind
 
+        //Darstellungsoptionen
         LineChart.addSeries(series);
         LineChart.startAnimation();
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.overview_menu, menu);
+        inflater.inflate(R.menu.main_menu, menu);
         return true;
     }
 
-    @Override
+
+        @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()){
@@ -185,43 +233,47 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.subitemEinnahmen:
                 ArrayList<Intake> intakes = intakeDB.getMonthIntakes(day,month,year);
-                Intent switchActivityIntent1 = new Intent(this, ShowEntrysActivity.class);
-                switchActivityIntent1.putExtra("list",(Serializable) intakes);
-                switchActivityIntent1.putExtra("entry","Intake");
-                startActivityForResult(switchActivityIntent1, REQUESTCODE_SHOW);
+                Intent getIntakes = new Intent(this, ShowEntriesActivity.class);
+                getIntakes.putExtra("list",(Serializable) intakes);
+                getIntakes.putExtra("entry","Intake");
+                startActivityForResult(getIntakes, REQUESTCODE_SHOW);
                 return true;
 
             case R.id.subitemAusgaben:
                 ArrayList<Outgo> outgoes = outgoDB.getMonthOutgos(day, month, year);
-                Intent switchActivityIntent2 = new Intent(this, ShowEntrysActivity.class);
-                switchActivityIntent2.putExtra("list",(Serializable) outgoes);
-                switchActivityIntent2.putExtra("entry","Outgo");
-                startActivityForResult(switchActivityIntent2, REQUESTCODE_SHOW);
+                Intent getOutgoes = new Intent(this, ShowEntriesActivity.class);
+                getOutgoes.putExtra("list",(Serializable) outgoes);
+                getOutgoes.putExtra("entry","Outgo");
+                startActivityForResult(getOutgoes, REQUESTCODE_SHOW);
                 return true;
 
             case R.id.itemBudgetLimit:
-                Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
+                Intent switchToBudgetLimit = new Intent(this, BudgetLimitActivity.class);
                 startActivity(switchToBudgetLimit);
                 return true;
 
             case R.id.itemDiagrammansicht:
-                Intent switchToEditDiagramView = new Intent(this, EditDiagramView.class);
-                startActivity(switchToEditDiagramView);
+                Intent switchToDiagramView = new Intent(this, DiagramViewActivity.class);
+                startActivity(switchToDiagramView);
                 return true;
 
             case R.id.itemTabelle:
-                Intent switchToChart = new Intent(this, Tabelle.class);
-                startActivity(switchToChart);
+                Intent switchToChartView = new Intent(this, ChartViewActivity.class);
+                Intent switchToAdapter = new Intent(this,OutgoListAdapter.A.class);
+                ArrayList<Outgo> outgoesT = outgoDB.getMonthOutgos(day,month,year);
+                switchToChartView.putExtra("list",(Serializable) outgoesT);
+                switchToAdapter.putExtra("list", (Serializable) outgoesT);
+                startActivity(switchToChartView);
                 return true;
 
             case R.id.itemKalender:
-                Intent switchToCalender = new Intent(this, Calendar.class);
+                Intent switchToCalender = new Intent(this, CalendarEventActivity.class);
                 startActivity(switchToCalender);
                 return true;
 
-            case R.id.itemTodoListe:
-                Intent switchToDoList = new Intent(this, ToDoList.class);
-                startActivity(switchToDoList);
+            case R.id.itemToDoListe:
+                Intent switchToToDoList = new Intent(this, ToDoListActivity.class);
+                startActivity(switchToToDoList);
                 return true;
 
             default:
@@ -269,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //Eintrag löschen oder ändern
+        //Eintrag löschen oder ändern von EditEntryActivity
         if(resultCode == RESULT_OK && requestCode == REQUESTCODE_EDIT){
             String selection = data.getExtras().getString("selection");
             String entry = data.getExtras().getString("entry");
@@ -292,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-       //setData();
+       setData();
     }
 
 }

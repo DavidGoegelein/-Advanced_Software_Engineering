@@ -12,14 +12,19 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+//Name geändert, ursprünglich: AusgabeListAdapter
 
-public class AusgabeListAdapter extends ArrayAdapter<class_Ausgabe> {
+//für die erzeugung der Tabelle mit einer klasse
+//kein zugriff auf Datenbank hier realisiert
+public class ExpendituresListAdapter extends ArrayAdapter<Expenditures> {
 
     private Context mContext;
     int mResource;
 
-    public AusgabeListAdapter(Context context, int resource, ArrayList<class_Ausgabe> objects){
-        super(context,resource,objects);
+    public ExpendituresListAdapter(Context context, int resource, ArrayList<Expenditures> objects){
+        super(context,
+                resource,
+                objects);
         mContext =context;
         mResource = resource;
     }
@@ -27,13 +32,14 @@ public class AusgabeListAdapter extends ArrayAdapter<class_Ausgabe> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        //Ausgabe Infos
+
         String ausgabe = getItem(position).getAusgabe();
         String wert = getItem(position).getWert();
         String datum = getItem(position).getDatum();
 
+
         //Erzeugen von Ausgabe Object mit Infos
-        class_Ausgabe ausgabeObject =new class_Ausgabe(ausgabe,wert,datum);
+        Expenditures ausgabeObject =new Expenditures(ausgabe,wert,datum);
 
         LayoutInflater inflater =LayoutInflater.from(mContext);
         convertView =inflater.inflate(mResource,parent,false);

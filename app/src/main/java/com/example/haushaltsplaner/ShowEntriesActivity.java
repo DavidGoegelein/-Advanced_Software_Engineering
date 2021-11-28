@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,9 +13,9 @@ import android.widget.TextView;
 import java.util.List;
 
 /*
-Repräsentation von Einnahmen bzw Ausgaben einer übergebnen Array
+Repräsentation von Einnahmen bzw Ausgaben eines übergebenen Array
  */
-public class ShowEntrysActivity extends AppCompatActivity {
+public class ShowEntriesActivity extends AppCompatActivity {
 
     private String entry; //Intake oder Outgo
 
@@ -27,7 +26,7 @@ public class ShowEntrysActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_entrys);
+        setContentView(R.layout.activity_show_entries);
 
         TextView tv = (TextView) findViewById(R.id.textViewEntry);
 

@@ -13,9 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 /*
@@ -131,27 +129,27 @@ Activity, um Einnahmen und Ausgaben hinzuzufügen
                 return true;
 
             case R.id.itemBudgetLimit:
-                Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
+                Intent switchToBudgetLimit = new Intent(this, BudgetLimitActivity.class);
                 startActivity(switchToBudgetLimit);
                 return true;
 
             case R.id.itemDiagrammansicht:
-                Intent switchToEditDiagramView = new Intent(this, EditDiagramView.class);
-                startActivity(switchToEditDiagramView);
+                Intent switchToDiagramView = new Intent(this, DiagramViewActivity.class);
+                startActivity(switchToDiagramView);
                 return true;
 
             case R.id.itemTabelle:
-                Intent switchToChart = new Intent(this, Tabelle.class);
+                Intent switchToChart = new Intent(this, ChartViewActivity.class);
                 startActivity(switchToChart);
                 return true;
 
             case R.id.itemKalender:
-                Intent switchToCalendar = new Intent(this, com.example.haushaltsplaner.Calendar.class);
+                Intent switchToCalendar = new Intent(this, CalendarEventActivity.class);
                 startActivity(switchToCalendar);
                 return true;
 
             case R.id.itemTodoListe:
-                Intent switchToToDoList = new Intent(this, ToDoList.class);
+                Intent switchToToDoList = new Intent(this, ToDoListActivity.class);
                 startActivity(switchToToDoList);
                 return true;
 

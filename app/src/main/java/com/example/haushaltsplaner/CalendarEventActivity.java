@@ -1,9 +1,5 @@
 package com.example.haushaltsplaner;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -25,22 +21,29 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import java.util.Calendar;
 
-public class Calendar extends AppCompatActivity {
-    private static final int MY_CAL_WRITE_REQ = 1;
+public class CalendarEventActivity extends AppCompatActivity {
+
     private int Storage_Permission_Code = 1;
-    TextView dateSelect;
-    ImageView calenderView;
-    EditText titleSelect;
-    EditText locationSelect;
-    EditText descriptionSelect;
-    int year;
-    int month;
-    int day;
-    long startdateInMilliSec;
-    long enddateInMilliSec;
-    Button addEvent;
-    Switch dailySwitch;
+
+    private TextView dateSelect;
+    private ImageView calenderView;
+    private EditText titleSelect;
+    private EditText locationSelect;
+    private EditText descriptionSelect;
+    private Button addEvent;
+    private Switch dailySwitch;
+
+    private  int year;
+    private  int month;
+    private  int day;
+    private  long startDateInMilliSec;
+    private  long endDateInMilliSec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,86 +55,91 @@ public class Calendar extends AppCompatActivity {
         locationSelect = findViewById(R.id.locationSelect);
         descriptionSelect=findViewById(R.id.descriptionSelect);
         addEvent    = findViewById(R.id.createEvent);
-        dailySwitch = findViewById(R.id.switch1);
+        dailySwitch = findViewById(R.id.switchDaily);
 
-        //java.util notwendig, da Klasse selbst Calendar heißt und somit kein import java.util.Calendar angewendet werden kann
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        year = calendar.get(java.util.Calendar.YEAR);
-        month = calendar.get(java.util.Calendar.MONTH);
-        day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
         dateSelect.setText(year + "/" + (month + 1) + "/" + day);
 
+        //Setzen von Listener auf dem Kalender Symbol
         calenderView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                DatePickerDialog dateDialog = new DatePickerDialog(Calendar.this, new DatePickerDialog.OnDateSetListener() {
+            public void onClick(View dateView) {
+                DatePickerDialog dateDialog = new DatePickerDialog(CalendarEventActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
                         day = selectedDay;
-                        month = selectedMonth;
+                        month = selectedMonth + 1;
                         year = selectedYear;
-                        dateSelect.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);   //month +1, starts with index 0
+
+                        //Addition bei Monat von 1, Index beginnend bei 0
+                        dateSelect.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);
+
+                        //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
                         calendar.set(year,month,day,8,0,0);
-                        startdateInMilliSec = calendar.getTimeInMillis();
+                        startDateInMilliSec = calendar.getTimeInMillis();
                         calendar.set(year,month,day,9,0,0);
-                        enddateInMilliSec =calendar.getTimeInMillis();
+                        endDateInMilliSec =calendar.getTimeInMillis();
                     }
                 }, year, month, day);
                 dateDialog.show();
             }
         });
 
+
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View insertButtonView) {
 
                 if(!titleSelect.getText().toString().isEmpty()&&!locationSelect.getText().toString().isEmpty()){
-                    if (ContextCompat.checkSelfPermission(Calendar.this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(CalendarEventActivity.this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
                     }else{
                         requestWritePermission();
                     }
-                    insertEvent(titleSelect.getText().toString(), locationSelect.getText().toString(),descriptionSelect.getText().toString(), dailySwitch.isChecked(), startdateInMilliSec, enddateInMilliSec);
+                    insertEvent(titleSelect.getText().toString(), locationSelect.getText().toString(),descriptionSelect.getText().toString(), dailySwitch.isChecked(), startDateInMilliSec, endDateInMilliSec);
                 }else{
-                    Toast.makeText(Calendar.this, "Please fill in all the fields",
+                    Toast.makeText(CalendarEventActivity.this, "Please fill in all the fields",
                             Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    //Intent zum Einfügen von Events in eine Kalender Applikation
-    public void insertEvent(String title, String location, String description, boolean value, long begin, long end) {
-        Intent intent = new Intent(Intent.ACTION_INSERT)
+    //Intent zum Einfügen von Events in einer Kalender Applikation
+    public void insertEvent(String title, String location, String description, boolean isAllDay, long beginTime, long endTime) {
+        Intent insertEvent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.Events.TITLE, title)
-                .putExtra(CalendarContract.Events._ID,2)
                 .putExtra(CalendarContract.Events.EVENT_LOCATION, location)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, begin)
                 .putExtra(CalendarContract.Events.DESCRIPTION, description)
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, end)
-                .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, value);
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime)
+                .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, isAllDay);
 
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
+        if (insertEvent.resolveActivity(getPackageManager()) != null) {
+            startActivity(insertEvent);
         } else {
-            Toast.makeText(Calendar.this, "There is no app that can support this action",
+            Toast.makeText(CalendarEventActivity.this, "There is no app that can support this action",
                     Toast.LENGTH_SHORT).show();
         }
     }
 
-    //Intent zur Ansicht von Events in eine Kalender Applikation
-    public void viewEvent(View view) {
+    //Intent zur Ansicht einer Kalender Applikation
+    public void viewEvent(View eventView) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
              }else{
                    requestReadPermission();
              }
 
-        long startMillis = System.currentTimeMillis();
+        //
+        long timeInMilliSec = System.currentTimeMillis();
         Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
         builder.appendPath("time");
-        ContentUris.appendId(builder, startMillis);
-        Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
-        startActivity(intent);
+        ContentUris.appendId(builder, timeInMilliSec);
+        Intent viewCalendar = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+        startActivity(viewCalendar);
     }
 
     @Override
@@ -155,22 +163,22 @@ public class Calendar extends AppCompatActivity {
                 return true;
 
             case R.id.itemBudgetLimit:
-                Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
+                Intent switchToBudgetLimit = new Intent(this, BudgetLimitActivity.class);
                 startActivity(switchToBudgetLimit);
                 return true;
 
             case R.id.itemDiagrammansicht:
-                Intent switchToEditDiagramView = new Intent(this, EditDiagramView.class);
-                startActivity(switchToEditDiagramView);
+                Intent switchToDiagramView = new Intent(this, DiagramViewActivity.class);
+                startActivity(switchToDiagramView);
                 return true;
 
             case R.id.itemTabelle:
-                Intent switchToChart = new Intent(this, Tabelle.class);
+                Intent switchToChart = new Intent(this, ChartViewActivity.class);
                 startActivity(switchToChart);
                 return true;
 
             case R.id.itemTodoListe:
-                Intent switchToToDoList = new Intent(this, ToDoList.class);
+                Intent switchToToDoList = new Intent(this, ToDoListActivity.class);
                 startActivity(switchToToDoList);
                 return true;
 
@@ -187,7 +195,7 @@ public class Calendar extends AppCompatActivity {
                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(Calendar.this, new String[]{Manifest.permission.WRITE_CALENDAR},Storage_Permission_Code);
+                            ActivityCompat.requestPermissions(CalendarEventActivity.this, new String[]{Manifest.permission.WRITE_CALENDAR},Storage_Permission_Code);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -210,7 +218,7 @@ public class Calendar extends AppCompatActivity {
                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(Calendar.this, new String[]{Manifest.permission.READ_CALENDAR},Storage_Permission_Code);
+                            ActivityCompat.requestPermissions(CalendarEventActivity.this, new String[]{Manifest.permission.READ_CALENDAR},Storage_Permission_Code);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

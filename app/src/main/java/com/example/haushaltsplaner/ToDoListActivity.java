@@ -2,26 +2,23 @@ package com.example.haushaltsplaner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-public class EditDiagramView extends AppCompatActivity {
+public class ToDoListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_diagram_view);
+        setContentView(R.layout.activity_to_do_list);
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.editdiagramview_menu, menu);
+        inflater.inflate(R.menu.todolist_menu, menu);
         return true;
     }
 
@@ -39,23 +36,23 @@ public class EditDiagramView extends AppCompatActivity {
                 return true;
 
             case R.id.itemBudgetLimit:
-                Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
+                Intent switchToBudgetLimit = new Intent(this, BudgetLimitActivity.class);
                 startActivity(switchToBudgetLimit);
                 return true;
 
+            case R.id.itemDiagrammansicht:
+                Intent switchToDiagramView = new Intent(this, DiagramViewActivity.class);
+                startActivity(switchToDiagramView);
+                return true;
+
             case R.id.itemTabelle:
-                Intent switchToChart = new Intent(this, Tabelle.class);
+                Intent switchToChart = new Intent(this, ChartViewActivity.class);
                 startActivity(switchToChart);
                 return true;
 
             case R.id.itemKalender:
-                Intent switchToCalendar = new Intent(this, Calendar.class);
+                Intent switchToCalendar = new Intent(this, CalendarEventActivity.class);
                 startActivity(switchToCalendar);
-                return true;
-
-            case R.id.itemTodoListe:
-                Intent switchToToDoList = new Intent(this, ToDoList.class);
-                startActivity(switchToToDoList);
                 return true;
 
             default:

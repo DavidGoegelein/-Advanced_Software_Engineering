@@ -34,7 +34,7 @@
         android:title="Kalender"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemTodoListe"
+    <item android:id="@+id/itemToDoListe"
         android:title="To-Do Liste"
         app:showAsAction="never"/>
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Calendar">
+    tools:context=".CalendarEventActivity">
 
 
     <TextView
@@ -100,7 +100,7 @@
         app:layout_constraintVertical_bias="0.866" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switchDaily"
         android:layout_width="103dp"
         android:layout_height="48dp"
         android:text="All day"

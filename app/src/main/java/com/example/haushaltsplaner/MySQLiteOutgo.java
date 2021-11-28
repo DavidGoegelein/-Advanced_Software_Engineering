@@ -180,7 +180,7 @@ public class MySQLiteOutgo extends SQLiteOpenHelper{
                     outgo = new Outgo();
                     String cycle = cursor.getString(6);
 
-                    if (( "monatlich".equals(cycle) && (Integer.parseInt(cursor.getString(4)) <= month) ) || Integer.parseInt(cursor.getString(3)) <= day) {
+                    if (( "monatlich".equals(cycle) && (Integer.parseInt(cursor.getString(4)) < month) && (Integer.parseInt(cursor.getString(5)) <= year)) || Integer.parseInt(cursor.getString(3)) <= day) {
 
                         outgo.setId(Integer.parseInt(cursor.getString(0)));
                         outgo.setName(cursor.getString(1));

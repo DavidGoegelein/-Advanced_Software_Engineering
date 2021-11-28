@@ -10,19 +10,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Haushaltsplaner">
         <activity
-            android:name=".ToDoList"
+            android:name=".ToDoListActivity"
             android:exported="true" />
         <activity
-            android:name=".Tabelle"
+            android:name=".ChartViewActivity"
             android:exported="true" />
         <activity
-            android:name=".EditDiagramView"
+            android:name=".DiagramViewActivity"
             android:exported="true" />
         <activity
-            android:name=".BudgetLimit"
+            android:name=".BudgetLimitActivity"
             android:exported="true" />
         <activity
-            android:name=".ShowEntrysActivity"
+            android:name=".ShowEntriesActivity"
             android:exported="true" />
         <activity
             android:name=".AddEntryActivity"
@@ -31,7 +31,7 @@
             android:name=".EditEntryActivity"
             android:exported="true" />
         <activity
-            android:name=".Calendar"
+            android:name=".CalendarEventActivity"
             android:exported="true" />
         <activity
             android:name=".MainActivity"

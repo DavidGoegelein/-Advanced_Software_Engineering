@@ -2,40 +2,37 @@ package com.example.haushaltsplaner;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListView;
+
 import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class Tabelle extends  AppCompatActivity {
-
-    private static final String TAG = "ActivityTabelle";
+public class ChartViewActivity extends  AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tabelle);
+        setContentView(R.layout.activity_chart_view);
 
-        Log.d(TAG, "onCreate: Started.");
         ListView mListView = (ListView) findViewById(R.id.listView);
 
+        Intent intent = getIntent();
+        ArrayList<Outgo> ListeOut = (ArrayList<Outgo>) intent.getSerializableExtra("list");
+        //zum TEsten ohne Datenbankzugriff
         //Erzeugen die AUsgabe objects
-        //Hier die Daten später aus Datenbank holen
-        //hier alle Daten als String
-        class_Ausgabe T1 = new class_Ausgabe("Tanken","54","11.11.2021");
-        class_Ausgabe T2 = new class_Ausgabe("Einkaufen Lidl","24","13.11.2021");
-        class_Ausgabe T3 = new class_Ausgabe("Handy","3.99","01.11.2021");
-        class_Ausgabe T4 = new class_Ausgabe("Penny","10","20.11.2021");
-        class_Ausgabe T5 = new class_Ausgabe("Penny EInk.","34.87","21.11.2021");
+        Expenditures T1 = new Expenditures("Tanken", "54", "11.11.2021");
+        Expenditures T2 = new Expenditures("Einkaufen Lidl", "24", "13.11.2021");
+        Expenditures T3 = new Expenditures("Handy", "3.99", "01.11.2021");
+        Expenditures T4 = new Expenditures("Penny", "10", "20.11.2021");
+        Expenditures T5 = new Expenditures("Penny EInk.", "34.87", "21.11.2021");
 
-
-        //Add the Person objects to an ArrayList
-        //kann hier die Liste vielleicht gleich aus der Datenbank geholt werden???
-        ArrayList<class_Ausgabe> AusgabeList = new ArrayList<>();
+        //füllen der Array List
+        ArrayList<Expenditures> AusgabeList = new ArrayList<>();
         AusgabeList.add(T1);
         AusgabeList.add(T2);
         AusgabeList.add(T3);
@@ -52,15 +49,23 @@ public class Tabelle extends  AppCompatActivity {
         AusgabeList.add(T4);
         AusgabeList.add(T2);
 
-        AusgabeListAdapter adapter = new AusgabeListAdapter(this, R.layout.activity_adapter_list_view, AusgabeList);
-        //mListView.setAdapter((ListAdapter) adapter);
+        //Zum Test ohne Datenbank
+        ExpendituresListAdapter adapter = new ExpendituresListAdapter(this, R.layout.activity_adapter_list_view, AusgabeList);
         mListView.setAdapter(adapter);
+
+        /*OutgoListAdapter adapter = new OutgoListAdapter(this,R.layout.activity_adapter_list_view,ListeOut);
+        mListView.setAdapter(adapter);
+
+        Intent switchOutgoListAdapter =new Intent(this, OutgoListAdapter.A.class);
+        ArrayList<Outgo> outgoes1 = ListeOut;
+        switchOutgoListAdapter.putExtra("list",(Serializable) outgoes1);*/
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.tabelle_menu, menu);
+        inflater.inflate(R.menu.chart_menu, menu);
         return true;
     }
 
@@ -78,23 +83,23 @@ public class Tabelle extends  AppCompatActivity {
                 return true;
 
             case R.id.itemBudgetLimit:
-                Intent switchToBudgetLimit = new Intent(this, BudgetLimit.class);
+                Intent switchToBudgetLimit = new Intent(this, BudgetLimitActivity.class);
                 startActivity(switchToBudgetLimit);
                 return true;
 
             case R.id.itemDiagrammansicht:
-                Intent switchToEditDiagramView = new Intent(this, EditDiagramView.class);
-                startActivity(switchToEditDiagramView);
+                Intent switchToDiagramView = new Intent(this, DiagramViewActivity.class);
+                startActivity(switchToDiagramView);
                 return true;
 
             case R.id.itemKalender:
-                Intent switchToCalendar = new Intent(this, Calendar.class);
+                Intent switchToCalendar = new Intent(this, CalendarEventActivity.class);
                 startActivity(switchToCalendar);
                 return true;
 
             case R.id.itemTodoListe:
-                Intent switchToDoList = new Intent(this, ToDoList.class);
-                startActivity(switchToDoList);
+                Intent switchToToDoList = new Intent(this, ToDoListActivity.class);
+                startActivity(switchToToDoList);
                 return true;
 
             default:
