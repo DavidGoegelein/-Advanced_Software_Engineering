@@ -42,7 +42,7 @@ public class ChartViewActivity extends  AppCompatActivity {
         setContentView(R.layout.activity_chart_view);
 
         Intent intent = getIntent();
-        ArrayList<Outgo> ListeOut = (ArrayList<Outgo>) intent.getSerializableExtra("list");
+        ArrayList<Outgo> ListeOut = (ArrayList<Outgo>) intent.getSerializableExtra("monthlist");
 
 
         final HorizontalScrollView tblHeaderhorzScrollView = (HorizontalScrollView) findViewById(R.id.tblHeaderhorzScrollView);
@@ -91,7 +91,7 @@ public class ChartViewActivity extends  AppCompatActivity {
     private void fillTable() {
 
         Intent intent = getIntent();
-        ArrayList<Outgo> ListeOut = (ArrayList<Outgo>) intent.getSerializableExtra("list");
+        ArrayList<Outgo> ListeOut = (ArrayList<Outgo>) intent.getSerializableExtra("monthlist");
 
         Context ctx = getApplicationContext();
         int lenghtOutgos = ListeOut.size();

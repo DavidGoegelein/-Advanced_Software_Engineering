@@ -20,7 +20,7 @@ public class Outgo extends EntryFinance{
     }
 
     public String toString(){
-        return "'\n' "+" id:"+id_PK+"Ausgabe "+name+ " ,Wert = "+category +" datum:"+day+"."+month+"."+year;
+        return "'\n' "+" id:"+id_PK+"Ausgabe "+name+ " ,Wert = "+value+", Kategorie ="+category +" datum:"+day+"."+month+"."+year;
     }
 
     public String getCategory() {

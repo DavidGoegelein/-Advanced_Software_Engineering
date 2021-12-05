@@ -1,6 +1,7 @@
 package com.example.haushaltsapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.haushaltsapp.ToDoListPackage.AddNewTask;
-import com.example.haushaltsapp.ToDoListPackage.DialogCloseListener;
+import com.example.haushaltsapp.ToDoListPackage.ToDoInterface;
 import com.example.haushaltsapp.ToDoListPackage.SwipeHandler;
 import com.example.haushaltsapp.ToDoListPackage.ToDoAdapter;
 import com.example.haushaltsapp.ToDoListPackage.TaskModel;
@@ -24,7 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Collections;
 import java.util.List;
 
-public class ToDoListActivity extends AppCompatActivity implements DialogCloseListener {
+public class ToDoListActivity extends AppCompatActivity implements ToDoInterface {
 
     private MySQLite db;
     private RecyclerView tasksRecyclerView;
@@ -41,7 +42,7 @@ public class ToDoListActivity extends AppCompatActivity implements DialogCloseLi
         db.openDatabase();
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        tasksAdapter = new ToDoAdapter(db,this);
+        tasksAdapter = new ToDoAdapter(db,this,this);
         tasksRecyclerView.setAdapter(tasksAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeHandler(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
@@ -119,4 +120,24 @@ public class ToDoListActivity extends AppCompatActivity implements DialogCloseLi
         tasksAdapter.notifyDataSetChanged();
     }
 
+    public void onTaskClick(int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(tasksAdapter.getContext());
+        builder.setTitle("Delete Task");
+        builder.setMessage("Are you sure you want to delete this Task?");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tasksAdapter.deleteItem(position);
+                    }
+                });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                tasksAdapter.notifyItemChanged(position);
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 }

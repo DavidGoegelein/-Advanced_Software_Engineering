@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,11 +24,13 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     private List<TaskModel> todoList;
     private MySQLite db;
     private ToDoListActivity activity;
+    private static ToDoInterface toDoInterface;
 
-
-    public ToDoAdapter(MySQLite db, ToDoListActivity activity) {
+    public ToDoAdapter(MySQLite db, ToDoListActivity activity, ToDoInterface toDoInterface) {
         this.db = db;
         this.activity = activity;
+        this.toDoInterface = toDoInterface;
+
     }
 
     @NonNull
@@ -59,11 +60,15 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         });
     }
 
-    //Anzeige aller Elemente bis zum Ende der toDoListe
     @Override
     public int getItemCount() {
-        return todoList.size();
+        int size = 0;
+        if(todoList != null) {
+            size = todoList.size();
+        }
+        return size;
     }
+
 
     private boolean toBoolean(int n) {
         return n != 0;
@@ -105,9 +110,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             task.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                  int pos = getAdapterPosition();
-                  Toast.makeText(v.getContext(), "You clicked this" + pos, Toast.LENGTH_SHORT).show();
-
+                    int pos = getAdapterPosition();
+                    toDoInterface.onTaskClick(pos);
                 }
             });
         }

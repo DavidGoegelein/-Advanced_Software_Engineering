@@ -20,8 +20,8 @@ public class Category implements Serializable {
     }
 
     public String toString(){
-        return name_PK;
-       // return "'\n' "+"Kategorie "+name_PK+ " ,Farbe = "+color +" Limit:"+border;
+       return name_PK;
+       // return "'\n' "+"Kategorie "+name_PK+ " ,Farbe = "+color +" Limit:"+border+"id ="+id;
     }
 
     public int getId() {

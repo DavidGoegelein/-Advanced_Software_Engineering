@@ -76,7 +76,7 @@
                             app:egBarWidth="20dp"
                             app:egLegendHeight="40dp"/>
 
-                        <org.eazegraph.lib.charts.ValueLineChart
+                       <!-- <org.eazegraph.lib.charts.ValueLineChart
                             android:layout_width="400dp"
                             android:layout_height="300dp"
                             android:id="@+id/linechart"
@@ -84,6 +84,7 @@
                             android:layout_marginTop="15dp"
                             android:padding="6dp"
                             />
+                            -->
 
                     </LinearLayout>
                 </HorizontalScrollView>

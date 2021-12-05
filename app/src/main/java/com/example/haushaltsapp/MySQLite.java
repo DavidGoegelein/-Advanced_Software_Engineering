@@ -74,10 +74,10 @@ public class MySQLite extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // Tabelle intake: id, name, calue, day, month, year, cycle
+    //////////////////////////////////////////////////////////////////////////////////////////
 
-    /*
-    Tabelle intake: id, name, calue, day, month, year, cycle
-     */
     public void addIntake(Intake intake){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -95,7 +95,7 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
        Funktion gibt eine ArrayList zurück, welche alle Einnahmen der Datenbank
        beinhaltet
-        */
+    */
     public ArrayList<Intake> getAllIntakes(){
         ArrayList<Intake> intakes = new ArrayList<Intake>();
 
@@ -123,7 +123,7 @@ public class MySQLite extends SQLiteOpenHelper {
             }
 
         }
-
+        cursor.close();
         db.close();
         Log.d("getAllIntakes", intakes.toString());
         return intakes;
@@ -168,6 +168,7 @@ public class MySQLite extends SQLiteOpenHelper {
             db.delete(TABLE_INTAKE, KEY_ID+" = ?", new String[]{idOutgo});
 
         }
+        cursor.close();
         db.close();
     }
 
@@ -239,7 +240,7 @@ public class MySQLite extends SQLiteOpenHelper {
                 }while (cursor.moveToNext()) ;
             }
         }
-
+        cursor.close();
         db.close();
         return intakes;
     }
@@ -300,8 +301,8 @@ public class MySQLite extends SQLiteOpenHelper {
                     outgos.add(outgo);
                 }while(cursor.moveToNext());
             }
-
         }
+        cursor.close();
         db.close();
         Log.d("getAllOutgos", outgos.toString());
         return outgos;
@@ -330,8 +331,8 @@ public class MySQLite extends SQLiteOpenHelper {
             outgo.setCycle(cursor.getString(6));
             outgo.setCategory(cursor.getString(7));
         }
+        cursor.close();
         db.close();
-
         return outgo;
     }
 
@@ -349,6 +350,7 @@ public class MySQLite extends SQLiteOpenHelper {
             db.delete(TABLE_OUTGO, KEY_ID+" = ?", new String[]{idOutgo});
 
         }
+        cursor.close();
         db.close();
     }
 
@@ -407,8 +409,8 @@ public class MySQLite extends SQLiteOpenHelper {
                 while (cursor.moveToNext()) ;
             }
         }
+        cursor.close();
         db.close();
-
         return outgos;
     }
 
@@ -448,6 +450,31 @@ public class MySQLite extends SQLiteOpenHelper {
         Log.d("addCategory", category.toString());
     }
 
+    // Lösche Kategorie mit id
+    public void deleteCategoryById(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM "+TABLE_CATEGORY+" WHERE "+KEY_ID+" = "+id;
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            String idcategory = cursor.getString(0);
+            db.delete(TABLE_CATEGORY, KEY_ID+" = ?", new String[]{idcategory});
+        }
+        cursor.close();
+        db.close();
+    }
+
+    // Lösche Kategorie mit namen
+    public void deleteCategoryByName(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM "+TABLE_CATEGORY+" WHERE "+KEY_NAME+" = \""+name+"\"";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            String idcategory = cursor.getString(0);
+            db.delete(TABLE_CATEGORY, KEY_ID+" = ?", new String[]{idcategory});
+        }
+        cursor.close();
+        db.close();
+    }
 
     /*
     Alle Categorien bekommen
@@ -477,6 +504,7 @@ public class MySQLite extends SQLiteOpenHelper {
             }
 
         }
+        cursor.close();
         db.close();
         Log.d("getAllCategories", categories.toString());
         return categories;
@@ -496,6 +524,7 @@ public class MySQLite extends SQLiteOpenHelper {
             category.setColor(cursor.getInt(2));
             category.setBorder(cursor.getDouble(3));
         }
+        cursor.close();
         db.close();
 
         return category;
