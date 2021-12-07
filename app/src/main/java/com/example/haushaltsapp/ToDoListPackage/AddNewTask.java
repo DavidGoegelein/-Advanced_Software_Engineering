@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.example.haushaltsapp.MySQLite;
+import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -116,8 +116,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog){
         Activity activity = getActivity();
-        if(activity instanceof ToDoInterface){
-            ((ToDoInterface)activity).handleDialogClose(dialog);
+        if(activity instanceof DialogCloseListener){
+            ((DialogCloseListener)activity).handleDialogClose(dialog);
         }
 
     }

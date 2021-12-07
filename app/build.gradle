@@ -49,4 +49,7 @@ dependencies {
 
     // Für die Farbauswahl
     implementation 'com.github.duanhong169:colorpicker:1.1.6'
+
+    //Für die PDF
+    implementation 'com.itextpdf:itext7-core:7.1.8'
 }

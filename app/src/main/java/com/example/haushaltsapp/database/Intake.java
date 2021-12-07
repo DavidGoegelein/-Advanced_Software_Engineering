@@ -1,13 +1,13 @@
-package com.example.haushaltsapp;
+package com.example.haushaltsapp.database;
 
 
-import java.io.Serializable;
+import com.example.haushaltsapp.database.EntryFinance;
 
 /*
 Repräsentation einer Einnahme
 id, name, value, day, month, ywar, cyclus
  */
-public class Intake extends EntryFinance{
+public class Intake extends EntryFinance {
 
     public Intake(){
         super();
@@ -20,5 +20,6 @@ public class Intake extends EntryFinance{
     public String toString(){
         return "'\n' "+" id:"+id_PK+"Einnahme "+name+ " ,Wert = "+value +" datum:"+day+"."+month+"."+year;
     }
+
 
 }

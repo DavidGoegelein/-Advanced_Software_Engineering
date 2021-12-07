@@ -6,18 +6,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import android.graphics.Color;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.haushaltsapp.database.Category;
+import com.example.haushaltsapp.database.Intake;
+import com.example.haushaltsapp.database.MySQLite;
+import com.example.haushaltsapp.database.Outgo;
 
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.PieChart;
@@ -162,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 Intake intake = new Intake(titel, value, 1, month, year, "einmalig");
                 mySQLite.addIntake(intake);
             }else{ //Ausgabe
+                value = value * (-1);
                 Outgo outgo = new Outgo(titel, value, 1, month, year, "einmalig","Sonstiges");
                 mySQLite.addOutgo(outgo);
             }
@@ -307,10 +311,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
+        inflater.inflate(R.menu.navigation_menu, menu);
+
+        //Die aktuelle Activity im Menü ausblenden
+        MenuItem item = menu.findItem(R.id.itemMainPage);
+        item.setEnabled(false);
         return true;
     }
 
@@ -319,27 +328,37 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()){
+            case R.id.itemMainPage:
+                Intent switchToMain = new Intent(this, MainActivity.class);
+                startActivity(switchToMain);
+                return true;
 
-            case R.id.itemEinnahmenAusgaben:
+            case R.id.itemAddIntakesOutgoes:
+                mySQLite = new MySQLite(this);
                 ArrayList<Category> categories = mySQLite.getAllCategory();
                 Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
                 switchToAddEntry.putExtra("list",categories);
+                mySQLite.close();
                 startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
                 return true;
 
-            case R.id.subitemEinnahmen:
+            case R.id.subitemIntakes:
+                mySQLite = new MySQLite(this);
                 ArrayList<Intake> intakes = mySQLite.getMonthIntakes(day,month,year);
                 Intent getIntakes = new Intent(this, ShowEntriesActivity.class);
                 getIntakes.putExtra("list",(Serializable) intakes);
                 getIntakes.putExtra("entry","Intake");
+                mySQLite.close();
                 startActivityForResult(getIntakes, REQUESTCODE_SHOW);
                 return true;
 
-            case R.id.subitemAusgaben:
+            case R.id.subitemOutgoes:
+                mySQLite = new MySQLite(this);
                 ArrayList<Outgo> outgoes = mySQLite.getMonthOutgos(day, month, year);
                 Intent getOutgoes = new Intent(this, ShowEntriesActivity.class);
                 getOutgoes.putExtra("list",(Serializable) outgoes);
                 getOutgoes.putExtra("entry","Outgo");
+                mySQLite.close();
                 startActivityForResult(getOutgoes, REQUESTCODE_SHOW);
                 return true;
 
@@ -348,7 +367,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(switchToBudgetLimit);
                 return true;
 
-            case R.id.itemDiagrammansicht:
+            case R.id.itemDiagramView:
+                mySQLite = new MySQLite(this);
                 Intent switchToDiagramView = new Intent(this, DiagramViewActivity.class);
                 //Alle Ausgaben in Datenbank
                 ArrayList<Outgo> AlloutgoD =mySQLite.getAllOutgo();
@@ -356,10 +376,12 @@ public class MainActivity extends AppCompatActivity {
                 //Alle Einnahmen in Datenbank
                 ArrayList<Intake> AllIntakeD =mySQLite.getAllIntakes();
                 switchToDiagramView.putExtra("dataIn",AllIntakeD);
+                mySQLite.close();
                 startActivity(switchToDiagramView);
                 return true;
 
-            case R.id.itemTabelle:
+            case R.id.itemTableView:
+                mySQLite = new MySQLite(this);
                 Intent switchToChartView = new Intent(this, ChartViewActivity.class);
                 //Alle Ausgaben in Datenbank
                 ArrayList<Outgo> AlloutgoT =mySQLite.getAllOutgo();
@@ -370,10 +392,11 @@ public class MainActivity extends AppCompatActivity {
                 //Alle Einnahmen in Datenbank
                 ArrayList<Outgo> AllintakeT =mySQLite.getAllOutgo();
                 switchToChartView.putExtra("dataIn",AllintakeT);
+                mySQLite.close();
                 startActivity(switchToChartView);
                 return true;
 
-            case R.id.itemKalender:
+            case R.id.itemCalendar:
                 Intent switchToCalender = new Intent(this, CalendarEventActivity.class);
                 startActivity(switchToCalender);
                 return true;
@@ -383,13 +406,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(switchToToDoList);
                 return true;
 
-            case R.id.itemaddCategory:
+            case R.id.itemAddCategory:
+                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-
                 ArrayList<Category> categories1 = mySQLite.getAllCategory();
                 switchToAddCategory.putExtra("list",(Serializable) categories1);
-
+                mySQLite.close();
                 startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                return true;
+
+            case R.id.itemPdfCreator:
+                Intent switchToPdfCreator = new Intent(this, PDFCreatorActivity.class);
+                startActivity(switchToPdfCreator);
                 return true;
 
             default:
@@ -406,13 +434,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Von AddEntryActivity
         if (resultCode == RESULT_OK && requestCode == REQUESTCODE_ADD) {
-            String entry = data.getExtras().getString("entry");
-            if (entry.equals("Intake")) { //Eingabe
-                Intake intake = (Intake) data.getSerializableExtra("object");
-                mySQLite.addIntake(intake);
-            } else { //Ausgabe
-                Outgo outgo = (Outgo) data.getSerializableExtra("object");
-                mySQLite.addOutgo(outgo);
+            String selection = data.getExtras().getString("selection");
+            if(selection.equals("add")) {
+                String entry = data.getExtras().getString("entry");
+                if (entry.equals("Intake")) { //Eingabe
+                    Intake intake = (Intake) data.getSerializableExtra("object");
+                    mySQLite.addIntake(intake);
+                } else { //Ausgabe
+                    Outgo outgo = (Outgo) data.getSerializableExtra("object");
+                    mySQLite.addOutgo(outgo);
+                }
             }
         }
 

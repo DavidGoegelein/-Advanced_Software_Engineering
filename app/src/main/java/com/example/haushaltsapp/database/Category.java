@@ -1,4 +1,4 @@
-package com.example.haushaltsapp;
+package com.example.haushaltsapp.database;
 
 import java.io.Serializable;
 

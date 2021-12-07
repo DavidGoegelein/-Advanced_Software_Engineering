@@ -1,13 +1,13 @@
-package com.example.haushaltsapp;
+package com.example.haushaltsapp.database;
 
-import java.io.Serializable;
+import com.example.haushaltsapp.database.EntryFinance;
 
 /*
 Repräsentation einer Ausgabe
 id, name, value, day, month, year, cyclus, category
 -- !! wird später noch um eine Kategorie erweitert !!--
  */
-public class Outgo extends EntryFinance{
+public class Outgo extends EntryFinance {
     String category;
 
     public Outgo(){

@@ -1,7 +1,6 @@
 package com.example.haushaltsapp;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,18 +15,35 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.haushaltsapp.ToDoListPackage.AddNewTask;
-import com.example.haushaltsapp.ToDoListPackage.ToDoInterface;
+import com.example.haushaltsapp.ToDoListPackage.DialogCloseListener;
 import com.example.haushaltsapp.ToDoListPackage.SwipeHandler;
 import com.example.haushaltsapp.ToDoListPackage.ToDoAdapter;
 import com.example.haushaltsapp.ToDoListPackage.TaskModel;
+import com.example.haushaltsapp.database.Category;
+import com.example.haushaltsapp.database.Intake;
+import com.example.haushaltsapp.database.MySQLite;
+import com.example.haushaltsapp.database.Outgo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ToDoListActivity extends AppCompatActivity implements ToDoInterface {
+public class ToDoListActivity extends AppCompatActivity implements DialogCloseListener {
 
-    private MySQLite db;
+    ////Variabeln zur Menünavigation
+    private MySQLite mySQLite;
+    private final int REQUESTCODE_ADD = 12; //AddEntryActivity
+    private final int REQUESTCODE_SHOW = 13; //ShowEntryActivity
+    private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
+    private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
+
+    private int day;
+    private int month;
+    private int year;
+    ///////////////////////////////
+
     private RecyclerView tasksRecyclerView;
     private ToDoAdapter tasksAdapter;
     private FloatingActionButton fabAddTask;
@@ -38,17 +54,17 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do_list);
 
-        db = new MySQLite(this);
-        db.openDatabase();
+        mySQLite = new MySQLite(this);
+        mySQLite.openDatabase();
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        tasksAdapter = new ToDoAdapter(db,this,this);
+        tasksAdapter = new ToDoAdapter(mySQLite,this);
         tasksRecyclerView.setAdapter(tasksAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeHandler(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
         fabAddTask = findViewById(R.id.fab);
         //Holen der Einträge aus der Datenbank
-        taskList = db.getAllTasks();
+        taskList = mySQLite.getAllTasks();
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
 
@@ -65,24 +81,54 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
 
 
 
-
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.todolist_menu, menu);
+        inflater.inflate(R.menu.navigation_menu, menu);
+
+        //Die aktuelle Activity im Menü ausblenden
+        MenuItem item = menu.findItem(R.id.itemToDoListe);
+        item.setEnabled(false);
         return true;
     }
 
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
 
-            case R.id.itemStartseite:
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.itemMainPage:
                 Intent switchToMain = new Intent(this, MainActivity.class);
                 startActivity(switchToMain);
                 return true;
 
-            case R.id.itemEinnahmenAusgaben:
+            case R.id.itemAddIntakesOutgoes:
+                mySQLite = new MySQLite(this);
+                ArrayList<Category> categories = mySQLite.getAllCategory();
                 Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
-                startActivity(switchToAddEntry);
+                switchToAddEntry.putExtra("list",categories);
+                mySQLite.close();
+                startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
+                return true;
+
+            case R.id.subitemIntakes:
+                mySQLite = new MySQLite(this);
+                ArrayList<Intake> intakes = mySQLite.getMonthIntakes(day,month,year);
+                Intent getIntakes = new Intent(this, ShowEntriesActivity.class);
+                getIntakes.putExtra("list",(Serializable) intakes);
+                getIntakes.putExtra("entry","Intake");
+                mySQLite.close();
+                startActivityForResult(getIntakes, REQUESTCODE_SHOW);
+                return true;
+
+            case R.id.subitemOutgoes:
+                mySQLite = new MySQLite(this);
+                ArrayList<Outgo> outgoes = mySQLite.getMonthOutgos(day, month, year);
+                Intent getOutgoes = new Intent(this, ShowEntriesActivity.class);
+                getOutgoes.putExtra("list",(Serializable) outgoes);
+                getOutgoes.putExtra("entry","Outgo");
+                mySQLite.close();
+                startActivityForResult(getOutgoes, REQUESTCODE_SHOW);
                 return true;
 
             case R.id.itemBudgetLimit:
@@ -90,19 +136,57 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
                 startActivity(switchToBudgetLimit);
                 return true;
 
-            case R.id.itemDiagrammansicht:
+            case R.id.itemDiagramView:
+                mySQLite = new MySQLite(this);
                 Intent switchToDiagramView = new Intent(this, DiagramViewActivity.class);
+                //Alle Ausgaben in Datenbank
+                ArrayList<Outgo> AlloutgoD =mySQLite.getAllOutgo();
+                switchToDiagramView.putExtra("dataOut",AlloutgoD);
+                //Alle Einnahmen in Datenbank
+                ArrayList<Intake> AllIntakeD =mySQLite.getAllIntakes();
+                switchToDiagramView.putExtra("dataIn",AllIntakeD);
+                mySQLite.close();
                 startActivity(switchToDiagramView);
                 return true;
 
-            case R.id.itemTabelle:
-                Intent switchToChart = new Intent(this, ChartViewActivity.class);
-                startActivity(switchToChart);
+            case R.id.itemTableView:
+                mySQLite = new MySQLite(this);
+                Intent switchToChartView = new Intent(this, ChartViewActivity.class);
+                //Alle Ausgaben in Datenbank
+                ArrayList<Outgo> AlloutgoT =mySQLite.getAllOutgo();
+                switchToChartView.putExtra("dataOut",AlloutgoT);
+                //Ausgaben von aktuellem Monat
+                ArrayList<Outgo> outgoesT = mySQLite.getMonthOutgos(day,month,year);
+                switchToChartView.putExtra("monthlist",outgoesT);
+                //Alle Einnahmen in Datenbank
+                ArrayList<Outgo> AllintakeT =mySQLite.getAllOutgo();
+                switchToChartView.putExtra("dataIn",AllintakeT);
+                mySQLite.close();
+                startActivity(switchToChartView);
                 return true;
 
-            case R.id.itemKalender:
-                Intent switchToCalendar = new Intent(this, CalendarEventActivity.class);
-                startActivity(switchToCalendar);
+            case R.id.itemCalendar:
+                Intent switchToCalender = new Intent(this, CalendarEventActivity.class);
+                startActivity(switchToCalender);
+                return true;
+
+            case R.id.itemToDoListe:
+                Intent switchToToDoList = new Intent(this, ToDoListActivity.class);
+                startActivity(switchToToDoList);
+                return true;
+
+            case R.id.itemAddCategory:
+                mySQLite = new MySQLite(this);
+                Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
+                ArrayList<Category> categories1 = mySQLite.getAllCategory();
+                switchToAddCategory.putExtra("list",(Serializable) categories1);
+                mySQLite.close();
+                startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                return true;
+
+            case R.id.itemPdfCreator:
+                Intent switchToPdfCreator = new Intent(this, PDFCreatorActivity.class);
+                startActivity(switchToPdfCreator);
                 return true;
 
             default:
@@ -114,30 +198,10 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
 
     @Override
     public void handleDialogClose(DialogInterface dialog){
-        taskList = db.getAllTasks();
+        taskList = mySQLite.getAllTasks();
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
     }
 
-    public void onTaskClick(int position){
-        AlertDialog.Builder builder = new AlertDialog.Builder(tasksAdapter.getContext());
-        builder.setTitle("Delete Task");
-        builder.setMessage("Are you sure you want to delete this Task?");
-        builder.setPositiveButton("Confirm",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        tasksAdapter.deleteItem(position);
-                    }
-                });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                tasksAdapter.notifyItemChanged(position);
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
 }

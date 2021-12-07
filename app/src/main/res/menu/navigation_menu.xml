@@ -2,35 +2,43 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/itemEinnahmenAusgaben"
-        android:title="Einnahmen/Ausnahmen anlegen"
+    <item android:id="@+id/itemMainPage"
+        android:title="Startseite"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemAuflistung"
+    <item android:id="@+id/itemAddIntakesOutgoes"
+        android:title="Einnahmen/Ausnahmen anlegen"
+        app:showAsAction="never"        />
+
+    <item android:id="@+id/itemEdit"
         android:title="Editiere"
         app:showAsAction="never">
         <menu>
-            <item android:id="@+id/subitemEinnahmen"
+            <item android:id="@+id/subitemIntakes"
                 android:title="Einnahmen"/>
 
-            <item android:id="@+id/subitemAusgaben"
+            <item android:id="@+id/subitemOutgoes"
                 android:title="Ausgaben"/>
         </menu>
     </item>
+
+    <item android:id="@+id/itemAddCategory"
+        android:title="Kategorie hinzufügen"
+        app:showAsAction="never"/>
 
     <item android:id="@+id/itemBudgetLimit"
         android:title="Budget Limit festlegen"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemDiagrammansicht"
+    <item android:id="@+id/itemDiagramView"
         android:title="Diagrammansicht"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemTabelle"
+    <item android:id="@+id/itemTableView"
         android:title="Tabellenansicht"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemKalender"
+    <item android:id="@+id/itemCalendar"
         android:title="Kalender"
         app:showAsAction="never"/>
 
@@ -38,8 +46,8 @@
         android:title="To-Do Liste"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemaddCategory"
-        android:title="Kategorie hinzufügen"
+    <item android:id="@+id/itemPdfCreator"
+        android:title="Generiere PDF"
         app:showAsAction="never"/>
 
 
