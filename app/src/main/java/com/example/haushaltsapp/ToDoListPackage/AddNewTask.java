@@ -27,6 +27,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
     private EditText newTaskText;
     private Button newTaskSaveButton;
     private MySQLite db;
+    ToDoType toDoType;
 
     //Wiedergabe eines AddNewTask-Objekts zur Verwendung in Aktivitäten
     public static AddNewTask newInstance(){
@@ -37,6 +38,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.DialogStyle);
+
     }
 
     @Nullable
@@ -103,9 +105,17 @@ public class AddNewTask extends BottomSheetDialogFragment {
                     db.updateTask(bundle.getInt("id"), text);
                 }
                 else {
+
                     TaskModel task = new TaskModel();
                     task.setTask(text);
                     task.setStatus(0);
+
+                    ////////////////////Hab es vorerst so getestet
+                    task.setType("Eins");
+                    // Hier übergabe des Types an die anzulgende Task
+
+
+
                     db.insertTask(task);
                 }
                 dismiss();

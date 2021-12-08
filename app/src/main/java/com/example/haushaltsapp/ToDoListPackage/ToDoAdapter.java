@@ -63,7 +63,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     //Anzeige aller Elemente bis zum Ende der toDoListe
     @Override
     public int getItemCount() {
-        return todoList.size();
+        int size = 0;
+        if(todoList != null) {
+            size = todoList.size();
+        }
+        return size;
     }
 
     private boolean toBoolean(int n) {
@@ -95,7 +99,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
     }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox task;

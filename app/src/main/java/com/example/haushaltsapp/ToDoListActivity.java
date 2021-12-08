@@ -13,12 +13,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.example.haushaltsapp.ToDoListPackage.AddNewTask;
 import com.example.haushaltsapp.ToDoListPackage.ToDoInterface;
 import com.example.haushaltsapp.ToDoListPackage.SwipeHandler;
 import com.example.haushaltsapp.ToDoListPackage.ToDoAdapter;
 import com.example.haushaltsapp.ToDoListPackage.TaskModel;
+import com.example.haushaltsapp.ToDoListPackage.ToDoType;
 import com.example.haushaltsapp.database.Category;
 import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
@@ -30,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import androidx.appcompat.app.AlertDialog;
-public class ToDoListActivity extends AppCompatActivity implements ToDoInterface {
+public class ToDoListActivity extends AppCompatActivity implements ToDoInterface, AdapterView.OnItemSelectedListener {
 
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
@@ -48,11 +53,24 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     private ToDoAdapter tasksAdapter;
     private FloatingActionButton fabAddTask;
     private List<TaskModel> taskList;
+    private Spinner spinner;
+    private String type;
+    ToDoType toDoType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do_list);
+        spinner = findViewById(R.id.ToDoListSpinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_ToDoList, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+        type = String.valueOf(spinner.getSelectedItem());
+
+        ///// Hier die Übergabe von dieser type Variable an die TO DO Classe für das Anlegen neuer Tasks in Abhängigkeit der Types
+
+        /////
 
         mySQLite = new MySQLite(this);
         mySQLite.openDatabase();
@@ -64,22 +82,18 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
         fabAddTask = findViewById(R.id.fab);
         //Holen der Einträge aus der Datenbank
-        taskList = mySQLite.getAllTasks();
+        taskList = mySQLite.getTaskByType(type);
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
 
-        //
         fabAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+                 AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
             }
         });
 
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -198,11 +212,12 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
 
     @Override
     public void handleDialogClose(DialogInterface dialog){
-        taskList = mySQLite.getAllTasks();
+        taskList = mySQLite.getTaskByType(type);
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
     }
+
     public void onTaskClick(int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(tasksAdapter.getContext());
         builder.setTitle("Delete Task");
@@ -224,4 +239,16 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         dialog.show();
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        type = String.valueOf(spinner.getSelectedItem());
+        taskList = mySQLite.getTaskByType(type);
+        tasksAdapter.setTasks(taskList);
+        tasksAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

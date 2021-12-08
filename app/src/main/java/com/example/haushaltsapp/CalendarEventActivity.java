@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +24,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -69,7 +67,7 @@ public class CalendarEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calender);
-        dateSelect = findViewById(R.id.dateSelect);
+        dateSelect = findViewById(R.id.ToDoListSpinner);
         calenderView = findViewById(R.id.calenderView);
         titleSelect = findViewById(R.id.titleSelect);
         locationSelect = findViewById(R.id.locationSelect);
