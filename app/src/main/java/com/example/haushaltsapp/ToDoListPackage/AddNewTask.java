@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.example.haushaltsapp.ToDoListActivity;
 import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -27,12 +29,17 @@ public class AddNewTask extends BottomSheetDialogFragment {
     private EditText newTaskText;
     private Button newTaskSaveButton;
     private MySQLite db;
+    public static String type ="";
 
+    public static void setNewType(String newType){
+        type=newType;
+    }
 
     //Wiedergabe eines AddNewTask-Objekts zur Verwendung in Aktivitäten
     public static AddNewTask newInstance(){
         return new AddNewTask();
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +62,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         newTaskText = requireView().findViewById(R.id.newTaskText);
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
-
+        Toast.makeText(getContext().getApplicationContext(), "This"+type, Toast.LENGTH_SHORT).show();
         //Check, um zu überprüfen ob neue Task angelegt wird oder vorheriger Task editiert
         boolean isUpdate = false;
         final Bundle bundle = getArguments();
@@ -109,13 +116,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
                     TaskModel task = new TaskModel();
                     task.setTask(text);
                     task.setStatus(0);
-                    // Hier übergabe des Types an die anzulgende Task
-                    ////////////////////Hab es vorerst so getestet
-                    task.setType("Eins");
-
-
-
-
+                    task.setType(type);
+                    Toast.makeText(getContext().getApplicationContext(), "This"+type, Toast.LENGTH_SHORT).show();
                     db.insertTask(task);
                 }
                 dismiss();

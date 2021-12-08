@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.haushaltsapp.ToDoListPackage.AddNewTask;
 import com.example.haushaltsapp.ToDoListPackage.ToDoInterface;
@@ -26,6 +27,7 @@ import com.example.haushaltsapp.database.Category;
 import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.database.Outgo;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.Serializable;
@@ -52,7 +54,7 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     private FloatingActionButton fabAddTask;
     private List<TaskModel> taskList;
     private Spinner spinner;
-    private String type;
+    private static String type;
 
 
     @Override
@@ -64,11 +66,6 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-        type = String.valueOf(spinner.getSelectedItem());
-
-        ///// Hier die Übergabe von dieser type Variable an die AddNewTask Klasse für das Anlegen neuer Tasks in Abhängigkeit der Types
-
-        /////
 
         mySQLite = new MySQLite(this);
         mySQLite.openDatabase();
@@ -207,7 +204,6 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     }
 
 
-
     @Override
     public void handleDialogClose(DialogInterface dialog){
         taskList = mySQLite.getTaskByType(type);
@@ -240,6 +236,8 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         type = String.valueOf(spinner.getSelectedItem());
+        AddNewTask.setNewType(type);
+        Toast.makeText(this, "This"+type, Toast.LENGTH_SHORT).show();
         taskList = mySQLite.getTaskByType(type);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
