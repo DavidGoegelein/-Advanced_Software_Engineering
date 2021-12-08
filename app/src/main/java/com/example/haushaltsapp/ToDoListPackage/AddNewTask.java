@@ -116,8 +116,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog){
         Activity activity = getActivity();
-        if(activity instanceof DialogCloseListener){
-            ((DialogCloseListener)activity).handleDialogClose(dialog);
+        if(activity instanceof ToDoInterface){
+            ((ToDoInterface)activity).handleDialogClose(dialog);
         }
 
     }

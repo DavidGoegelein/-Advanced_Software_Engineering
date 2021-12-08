@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.haushaltsapp.ToDoListPackage.AddNewTask;
-import com.example.haushaltsapp.ToDoListPackage.DialogCloseListener;
+import com.example.haushaltsapp.ToDoListPackage.ToDoInterface;
 import com.example.haushaltsapp.ToDoListPackage.SwipeHandler;
 import com.example.haushaltsapp.ToDoListPackage.ToDoAdapter;
 import com.example.haushaltsapp.ToDoListPackage.TaskModel;
@@ -29,8 +29,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-public class ToDoListActivity extends AppCompatActivity implements DialogCloseListener {
+import androidx.appcompat.app.AlertDialog;
+public class ToDoListActivity extends AppCompatActivity implements ToDoInterface {
 
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
@@ -58,7 +58,7 @@ public class ToDoListActivity extends AppCompatActivity implements DialogCloseLi
         mySQLite.openDatabase();
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        tasksAdapter = new ToDoAdapter(mySQLite,this);
+        tasksAdapter = new ToDoAdapter(mySQLite,this,this);
         tasksRecyclerView.setAdapter(tasksAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeHandler(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
@@ -202,6 +202,26 @@ public class ToDoListActivity extends AppCompatActivity implements DialogCloseLi
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
+    }
+    public void onTaskClick(int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(tasksAdapter.getContext());
+        builder.setTitle("Delete Task");
+        builder.setMessage("Are you sure you want to delete this Task?");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tasksAdapter.deleteItem(position);
+                    }
+                });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                tasksAdapter.notifyItemChanged(position);
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

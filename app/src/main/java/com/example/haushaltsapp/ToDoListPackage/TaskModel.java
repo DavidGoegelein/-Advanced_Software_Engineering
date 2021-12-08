@@ -5,6 +5,7 @@ package com.example.haushaltsapp.ToDoListPackage;
 public class TaskModel {
     private int id, status;
     private String task;
+    private String type;
 
     public int getId() {
         return id;
@@ -28,5 +29,13 @@ public class TaskModel {
 
     public void setTask(String task) {
         this.task = task;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
