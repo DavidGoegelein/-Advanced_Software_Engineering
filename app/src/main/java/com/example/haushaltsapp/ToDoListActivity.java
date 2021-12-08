@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -23,7 +22,6 @@ import com.example.haushaltsapp.ToDoListPackage.ToDoInterface;
 import com.example.haushaltsapp.ToDoListPackage.SwipeHandler;
 import com.example.haushaltsapp.ToDoListPackage.ToDoAdapter;
 import com.example.haushaltsapp.ToDoListPackage.TaskModel;
-import com.example.haushaltsapp.ToDoListPackage.ToDoType;
 import com.example.haushaltsapp.database.Category;
 import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
@@ -55,7 +53,7 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     private List<TaskModel> taskList;
     private Spinner spinner;
     private String type;
-    ToDoType toDoType;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +66,7 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         spinner.setOnItemSelectedListener(this);
         type = String.valueOf(spinner.getSelectedItem());
 
-        ///// Hier die Übergabe von dieser type Variable an die TO DO Classe für das Anlegen neuer Tasks in Abhängigkeit der Types
+        ///// Hier die Übergabe von dieser type Variable an die AddNewTask Klasse für das Anlegen neuer Tasks in Abhängigkeit der Types
 
         /////
 
