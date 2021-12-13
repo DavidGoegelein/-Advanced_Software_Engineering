@@ -156,6 +156,33 @@ public class MySQLite extends SQLiteOpenHelper {
         return intake;
     }
 
+
+    public int getIntakeIdbyName(String name){
+        int result = -1;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_NAME+" = \""+name+"\"";
+
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            result = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
+        }
+        db.close();
+        return result;
+    }
+
+    public int getOutgoIdbyName(String name){
+        int result = -1;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_NAME+" = \""+name+"\"";
+
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            result = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
+        }
+        db.close();
+        return result;
+    }
+
     /*
     Funktion löscht die Einnahme welche die übergebne Id besitzt.
     Sollte ein solcher Eintrag nicht exestieren wird die Datenbank ohne
@@ -178,14 +205,16 @@ public class MySQLite extends SQLiteOpenHelper {
     ein neuer Eintrag mit den gewünschten Daten angelegt.
      */
     public int updateIntake(Intake intake, int id){
-        int i = -1;
-        try {
-            deleteIntakeById(id);
-            addIntake(intake);
-            i = 1;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+        value.put(KEY_NAME, intake.getName());
+        value.put(KEY_VALUE, intake.getValue());
+        value.put(KEY_DAY, intake.getDay());
+        value.put(KEY_MONTH, intake.getMonth());
+        value.put(KEY_YEAR, intake.getYear());
+        value.put(KEY_CYCLE, intake.getCycle());
+        int i = db.update(TABLE_INTAKE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
+        db.close();
         return i;
     }
 
@@ -353,14 +382,17 @@ public class MySQLite extends SQLiteOpenHelper {
     ein neuer Eintrag mit den gewünschten Daten angelegt.
      */
     public int updateOutgo(Outgo outgo, int id){
-        int i = -1;
-        try {
-            deleteOutgoById(id);
-            addOutgo(outgo);
-            i = 1;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+        value.put(KEY_NAME, outgo.getName());
+        value.put(KEY_VALUE, outgo.getValue());
+        value.put(KEY_DAY, outgo.getDay());
+        value.put(KEY_MONTH, outgo.getMonth());
+        value.put(KEY_YEAR, outgo.getYear());
+        value.put(KEY_CYCLE, outgo.getCycle());
+        value.put(KEY_CATEGORY, outgo.getCategory());
+        int i = db.update(TABLE_OUTGO, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
+        db.close();
         return i;
     }
 
@@ -421,6 +453,58 @@ public class MySQLite extends SQLiteOpenHelper {
         }
         return value;
     }
+
+    /*
+    Funktion gibt einen Float-Wert zurück, wlecher alle Ausgabe der Datenbank
+    berücksichtigt, welche in einem bestimmtem Monat in einer bestimmten Kategorie getätigt wurden.
+    Periodische Ausgaben wurden babei berücksichtigt
+     */
+    public  float getCategorieOutgosMonth(int day,int month,int year, String categorie)
+    {
+        ArrayList<Outgo> outgos = new ArrayList<Outgo>();
+
+        // Einträge der vergangenen Monate mit dem zyklus monatlich
+        String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" AND "+KEY_CATEGORY+"= \""+ String.valueOf(categorie)+"\")";
+        // Einträge des ausgewählten Monats bis day 31
+        String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(31) + "\" AND "+KEY_CATEGORY+"= \""+ String.valueOf(categorie)+"\")";
+        String query = "SELECT * FROM " + TABLE_OUTGO + " WHERE "+condition1+" OR " +condition2;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor != null) {
+            Outgo outgoCat = null;
+            if (cursor.moveToFirst()) {
+                do {
+                    outgoCat = new Outgo();
+
+                    outgoCat.setId_PK(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID)));
+                    outgoCat.setName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_NAME)));
+                    outgoCat.setValue(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_VALUE)));
+                    outgoCat.setDay(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_DAY)));
+                    outgoCat.setMonth(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_MONTH)));
+                    outgoCat.setYear(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_YEAR)));
+                    outgoCat.setCycle(cursor.getString(cursor.getColumnIndexOrThrow(KEY_CYCLE)));
+                    outgoCat.setCategory(cursor.getString(cursor.getColumnIndexOrThrow(KEY_CATEGORY)));
+
+                    outgos.add(outgoCat);
+                }
+                while (cursor.moveToNext()) ;
+            }
+        }
+        db.close();
+
+        float valueCat = 0;
+        for(int i = 0; i < outgos.size(); i++){
+            valueCat = valueCat + (float) outgos.get(i).getValue();
+        }
+        return valueCat;
+    }
+
+
+
+
+
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -579,6 +663,7 @@ public class MySQLite extends SQLiteOpenHelper {
     public void deleteTask(int id){
         db.delete(TABLE_TODO, KEY_ID + "= ?", new String[] {String.valueOf(id)});
     }
+
     public List<TaskModel> getTaskByType(String type){
             List<TaskModel> taskList = new ArrayList<>();
             db = this.getWritableDatabase();

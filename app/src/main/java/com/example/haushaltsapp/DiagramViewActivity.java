@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.haushaltsapp.database.Category;
@@ -40,11 +42,25 @@ public class DiagramViewActivity extends AppCompatActivity {
     private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
     ///////////////////////////////
 
+    private MySQLite db;
+
     private Button changeToAnnual;
 
-    private TextView tvWohnen, tvLebensmittel, tvGesundheit, tvVerkehrsmittel, tvFreizeit, tvSonstiges;
+    //noch erweitern um tv+, bei zufügen von weiteren Kategorien
+
+    private View wohnencolor,lebensmittelcolor,gesundheitcolor,verkehrsmittelcolor,freizeitcolor, sonstigescolor;
+    private LinearLayout letc1, letc2,letc3;
+    private View etc1color, etc2color, etc3color;
+    private TextView etc1n, etc2n, etc3n;
+
+    private RelativeLayout retc1, retc2, retc3;
+    private TextView tvWohnen, tvLebensmittel, tvGesundheit, tvVerkehrsmittel, tvFreizeit, tvSonstiges,tvetc1, tvetc2, tvetc3;
+    private TextView etc1name, etc2name, etc3name;
+    private View lineetc1, lineetc2, lineetc3;
+
+
     private PieChart pieChart;
-    private BarChart mBarChart;
+    private BarChart BarChart;
 
     //aktuelles Datum
     private int day;
@@ -53,10 +69,6 @@ public class DiagramViewActivity extends AppCompatActivity {
 
     private EditText editTextDate; //Datum
     private String dates;
-
-    //zur Jahresansicht
-    private static final int REQUESTCODE = 30;
-
 
     private void getDate(){
         java.util.Calendar calender = java.util.Calendar.getInstance();
@@ -72,6 +84,8 @@ public class DiagramViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_diagram_view);
         changeToAnnual = findViewById(R.id.changeView);
 
+        db = new MySQLite(this);
+        db.openDatabase();
         //Erhalte das aktuelle Datum
         getDate();
 
@@ -84,150 +98,199 @@ public class DiagramViewActivity extends AppCompatActivity {
         setData();
     }
 
-    //Monatliche AUsgaben nach Kategorie
-    public double MonthOutgoCategorie (int day, int month, int year, ArrayList<Outgo> Data, String categorie)
-    {
-        int lenght = Data.size();
-        int i = 0;
-        double monthOutgo = 0;
-        double outvalue = 0;
-
-        while (i < lenght) {
-            if(Data.get(i).getYear()==year) {
-                if (Data.get(i).getMonth() == month) {
-                    String cat = Data.get(i).getCategory();
-
-                    if (categorie.equals(cat)) {
-                        outvalue = Data.get(i).getValue();
-                        monthOutgo = monthOutgo + outvalue;
-                    }
-                }
-            }
-            i++;
-        }
-        return monthOutgo;
-    }
-
     private void setData() {
 
-        Intent intent = getIntent();
-        ArrayList<Outgo> Data = (ArrayList<Outgo>) intent.getSerializableExtra("dataOut");
         //Datum von Textfeld
         dates = editTextDate.getText().toString();
         day = Integer.parseInt(dates.substring(0,2));
         month = Integer.parseInt(dates.substring(3,5));
         year = Integer.parseInt(dates.substring(6,10));
 
-        //Setzen der Texte im textview und pie Chart und Barchart
+        pieChart = findViewById(R.id.piechart);
+        BarChart = findViewById(R.id.barchart);
+
         tvWohnen =findViewById(R.id.tvWohnen);
         tvLebensmittel = findViewById(R.id.tvLebensmittel);
         tvVerkehrsmittel = findViewById(R.id.tvVerkehrsmittel);
         tvGesundheit = findViewById(R.id.tvGesundheit);
         tvFreizeit = findViewById(R.id.tvFreizeit);
         tvSonstiges = findViewById(R.id.tvSonstiges);
-        pieChart = findViewById(R.id.piechart);
-        mBarChart = findViewById(R.id.barchart);
 
-        float Kosten_Wohnen = (float) MonthOutgoCategorie(day,month,year,Data,"Wohnen");
-        float Kosten_Lebensmittel = (float) MonthOutgoCategorie(day,month,year,Data,"Lebensmittel");
-        float Kosten_Verkehrsmittel = (float) MonthOutgoCategorie(day,month,year,Data,"Verkehrsmittel");
-        float Kosten_Gesundheit = (float) MonthOutgoCategorie(day,month,year,Data,"Gesundheit");
-        float Kosten_Freizeit = (float) MonthOutgoCategorie(day,month,year,Data,"Freitzeit");
-        float Kosten_Sonstiges = (float) MonthOutgoCategorie(day,month,year,Data,"Sonstiges");
+        //Anzeige von weitern Kategorien in verschiedenen Textfeldern und Views
+        tvetc1 = findViewById(R.id.tvetc1);
+        tvetc2 = findViewById(R.id.tvect2);
+        tvetc3 = findViewById(R.id.tvetc3);
 
-        //Direktes Einbinden von Geldwert in TV
-        tvWohnen.setText(Float.toString(Kosten_Wohnen));
-        tvLebensmittel.setText(Float.toString(Kosten_Lebensmittel));
-        tvVerkehrsmittel.setText(Float.toString(Kosten_Verkehrsmittel));
-        tvGesundheit.setText(Float.toString(Kosten_Gesundheit));
-        tvFreizeit.setText(Float.toString(Kosten_Freizeit));
-        tvSonstiges.setText(Float.toString(Kosten_Sonstiges));
+        letc1 = findViewById(R.id.LinearLayoutetc1);
+        letc2 = findViewById(R.id.LinearLayoutetc2);
+        letc3 = findViewById(R.id.LinearLayoutetc3);
+
+        wohnencolor =findViewById(R.id.ColorWohnen);
+        lebensmittelcolor =findViewById(R.id.ColorLebensmittel);
+        verkehrsmittelcolor =findViewById(R.id.ColorVerkehrsmittel);
+        gesundheitcolor = findViewById(R.id.ColorGesundheit);
+        freizeitcolor = findViewById(R.id.ColorFreizeit);
+        sonstigescolor =findViewById(R.id.COlorSonstiges);
+
+        etc1color = findViewById(R.id.etc1color);
+        etc2color = findViewById(R.id.etc2color);
+        etc3color = findViewById(R.id.etc3color);
+
+        etc1n =findViewById(R.id.etc1);
+        etc2n =findViewById(R.id.etc2);
+        etc3n =findViewById(R.id.etc3);
+
+        retc1 =findViewById(R.id.RelativLayoutetc1);
+        retc2 =findViewById(R.id.RelativLayoutetc2);
+        retc3 =findViewById(R.id.RelativLayoutetc3);
+
+        etc1name = findViewById(R.id.etc1name);
+        etc2name = findViewById(R.id.etc2name);
+        etc3name = findViewById(R.id.etc3name);
+
+        lineetc1 = findViewById(R.id.Lineetc1);
+        lineetc2 = findViewById(R.id.Lineetc2);
+        lineetc3 = findViewById(R.id.Lineetc3);
+
+        ArrayList<Category> Categories =db.getAllCategory();
+        int numCat= Categories.size();
+        int n =0;
+        String CatName;
+        int CatColor;
+
+        //Ausgelegt auf max 3 extra Kategorien!!!
+        while ( n < numCat)
+        {
+            CatName = Categories.get(n).getName_PK();
+            CatColor =Categories.get(n).getColor();
+
+            switch (n)
+            {
+                case 0:
+                    tvVerkehrsmittel.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                    verkehrsmittelcolor.setBackgroundColor(CatColor);
+                    break;
+                case 1:
+                    tvWohnen.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                    wohnencolor.setBackgroundColor(CatColor);
+                    break;
+                case 2:
+                    tvLebensmittel.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                    lebensmittelcolor.setBackgroundColor(CatColor);
+                    break;
+                case 3:
+                    tvGesundheit.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                    gesundheitcolor.setBackgroundColor(CatColor);
+                    break;
+                case 4:
+                    tvFreizeit.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                    freizeitcolor.setBackgroundColor(CatColor);
+                    break;
+                case 5:
+                    tvSonstiges.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                    sonstigescolor.setBackgroundColor(CatColor);
+
+                //Wenn weiter Kategorien eingetragen sind, weden diese angezeigt
+                //wenn nicht sind sie standardmäßig ausgeblendet
+                case 6:
+                    etc1color.setBackgroundColor(CatColor);
+                    etc1n.setText(CatName);
+                    letc1.setVisibility(View.VISIBLE);
+
+                    etc1name.setText(CatName);
+                    tvetc1.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                    retc1.setVisibility(View.VISIBLE);
+                    break;
+                case 7:
+                    etc2color.setBackgroundColor(CatColor);
+                    etc2n.setText(CatName);
+                    letc2.setVisibility(View.VISIBLE);
+
+                    etc2name.setText(CatName);
+                    tvetc2.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                    retc2.setVisibility(View.VISIBLE);
+                    break;
+                case 8:
+                    etc3color.setBackgroundColor(CatColor);
+                    etc3n.setText(CatName);
+                    letc3.setVisibility(View.VISIBLE);
+
+                    etc3name.setText(CatName);
+                    tvetc3.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                    retc3.setVisibility(View.VISIBLE);
+                    break;
+            }
+            n=n+1;
+        }
 
         //Diagramme zurücksetzten
         pieChart.clearChart();
-        mBarChart.clearChart();
+        BarChart.clearChart();
         //Diagram Methoden aufrufen
-        PieChartKat(Kosten_Wohnen, Kosten_Lebensmittel, Kosten_Verkehrsmittel, Kosten_Gesundheit, Kosten_Freizeit, Kosten_Sonstiges);//hier noch float von Kosten übergeben
-        BarGraphKat(Kosten_Wohnen, Kosten_Lebensmittel, Kosten_Verkehrsmittel, Kosten_Gesundheit, Kosten_Freizeit, Kosten_Sonstiges);//hier noch float von Kosten übergeben
-
+        PieChartKat(Categories);
+        BarGraphKat(Categories);
     }
-    public void PieChartKat (float Wohnen,float Lebensmittel, float Verkehrsmittel, float Gesundheit, float Freizeit,float Sonstiges)
-    {
-        //Daten und Farben dem PieChart zuordnen
-        //es geht noch nicht die Farbe aus colors.xml zu übernehmen
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Wohnen",
-                        Wohnen,
-                        Color.parseColor("#66BB6A")));
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Lebensmittel",
-                        Lebensmittel,
-                        Color.parseColor("#FFA726")));
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Verkehrsmittel",
-                        Verkehrsmittel,
-                        Color.parseColor("#EF5350")));
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Gesundheit",
-                        Gesundheit,
-                        Color.parseColor("#29B6F6")));
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Freizeit",
-                        Freizeit,
-                        Color.parseColor("#A5B6DF")));
-        pieChart.addPieSlice(
-                new PieModel(
-                        "Sonstiges",
-                        Sonstiges,
-                        Color.parseColor("#FF3AFA")));
+
+    public void PieChartKat (ArrayList<Category> Categories){
+        int n=0;
+        int Catnum =Categories.size();
+        String CatName;
+        float Costs;
+        int CatColor;
+        //Diagram werden so viele Kategorien zugeordnet, wie in der Datenbank vorhanden sind
+
+        while (n<Catnum)
+        {
+            CatName = Categories.get(n).getName_PK();
+            Costs = db.getCategorieOutgosMonth(day,month,year,CatName );
+            CatColor =Categories.get(n).getColor();
+
+            pieChart.addPieSlice(
+                    new PieModel(
+                            CatName,
+                            Costs,
+                            CatColor));
+
+            n++;
+        }
+
         pieChart.setInnerPaddingOutline(5);
         pieChart.setInnerPaddingOutline(5);
 
-        // To animate the pie chart
         pieChart.startAnimation();
         pieChart.setBackgroundColor(0);
     }
 
-    public void BarGraphKat(float Wohnen,float Lebensmittel, float Verkehrsmittel, float Gesundheit, float Freizeit,float Sonstiges)
+    public void BarGraphKat(ArrayList<Category> Categories)
     {
-        mBarChart.addBar(new BarModel(
-                "Wohnen",//Über weite in activity einstellen, welcher Text lesbar ist
-                Wohnen,
-                Color.parseColor("#66BB6A")));
-        mBarChart.addBar(new BarModel(
-                "Lebensmittel",
-                Lebensmittel,
-                Color.parseColor("#FFA726")));
-        mBarChart.addBar(new BarModel(
-                "Verkehrsmittel",
-                Verkehrsmittel,
-                Color.parseColor("#EF5350")));
-        mBarChart.addBar(new BarModel(
-                "Gesundheit",
-                Gesundheit,
-                Color.parseColor("#29B6F6")));
-        mBarChart.addBar(new BarModel(
-                "Freizeit",
-                Freizeit,
-                Color.parseColor("#A5B6DF")));
-        mBarChart.addBar(new BarModel(
-                "Sonstiges",
-                Sonstiges,
-                Color.parseColor("#FF3AFA")));
-        //letzter Balken hat keine Beschriftung??? Breite von Darstellung in XML
-        //EIn Balken dann ohne Wert und Farbe einfügen?
+        int n=0;
+        int Catnum =Categories.size();
+        String CatName;
+        float Costs;
+        int CatColor;
+        //Diagram werden so viele Kategorien zugeordnet, wie in der Datenbank vorhanden sind
+
+        while (n<Catnum)
+        {
+            CatName = Categories.get(n).getName_PK();
+            Costs = db.getCategorieOutgosMonth(day,month,year,CatName );
+            CatColor =Categories.get(n).getColor();
+
+            BarChart.addBar(new BarModel(
+                    //CatName,
+                    Costs,
+                    CatColor
+            ));
+            n++;
+        }
 
         //mBarChart.callOnClick();
-        mBarChart.startAnimation();
-        mBarChart.setShowValues(true);  //keine Kommazahl darzustellen
-        //mBarChart.setAccessibilityHeading(true);
-        mBarChart.setActivated(false);
+        BarChart.startAnimation();
+        BarChart.setShowValues(false);  //keine Kommazahl darzustellen
+        //BarChart.setAccessibilityHeading(true);
+        BarChart.setActivated(false);
     }
+
 
 
     public void changeMonth(View view)
@@ -260,6 +323,10 @@ public class DiagramViewActivity extends AppCompatActivity {
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemDiagramView);
         item.setEnabled(false);
+        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
+        item2.setEnabled(false);
+        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
+        item3.setEnabled(false);
         return true;
     }
 

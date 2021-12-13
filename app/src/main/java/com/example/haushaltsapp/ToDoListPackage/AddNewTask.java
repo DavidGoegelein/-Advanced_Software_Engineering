@@ -62,7 +62,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         newTaskText = requireView().findViewById(R.id.newTaskText);
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
-        Toast.makeText(getContext().getApplicationContext(), "This"+type, Toast.LENGTH_SHORT).show();
+
         //Check, um zu überprüfen ob neue Task angelegt wird oder vorheriger Task editiert
         boolean isUpdate = false;
         final Bundle bundle = getArguments();
@@ -117,7 +117,6 @@ public class AddNewTask extends BottomSheetDialogFragment {
                     task.setTask(text);
                     task.setStatus(0);
                     task.setType(type);
-                    Toast.makeText(getContext().getApplicationContext(), "This"+type, Toast.LENGTH_SHORT).show();
                     db.insertTask(task);
                 }
                 dismiss();

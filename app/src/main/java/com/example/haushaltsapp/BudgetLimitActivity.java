@@ -46,6 +46,9 @@ public class BudgetLimitActivity extends AppCompatActivity {
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemBudgetLimit);
         item.setEnabled(false);
+        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
+        item2.setEnabled(false);
+
         return true;
     }
 

@@ -13,8 +13,8 @@
     <color name="Ausgaben">#EF5350</color>
     <color name="Restbudget">#FFA726</color>
     <!--hier sind die Namen den Farben zugeordnet -->
-    <color name="Lebensmittel">#FFA726</color>
     <color name="Wohnen">#66BB6A</color>
+    <color name="Lebensmittel">#FFA726</color>
     <color name="Verkehrsmittel">#EF5350</color>
     <color name="Gesundheit">#29B6F6</color>
     <color name="Freizeit">#A5B6DF</color>

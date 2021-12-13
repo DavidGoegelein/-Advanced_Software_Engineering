@@ -7,31 +7,46 @@
     tools:context=".EditEntryActivity">
 
     <TextView
-        android:id="@+id/Name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Beschreibung"
-        />
+    android:id="@+id/Name"
+    android:layout_width="300dp"
+    android:layout_height="65dp"
+    android:text="Eintrag ändern "
+        android:textSize="35dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintHorizontal_bias="0.129"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.091" />
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
+        android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        tools:layout_editor_absoluteX="16dp">
+        android:layout_marginTop="55dp"
+        app:layout_constraintTop_toBottomOf="@+id/Name"
+        tools:layout_editor_absoluteX="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.129"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.091">
+
 
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bezeichnung:"
+            android:textSize="20dp"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <EditText
             android:id="@+id/Bezeichnung"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
+            android:layout_marginStart="20dp"
             android:ems="10"
             android:text="Titel"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,18 +54,23 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-        tools:layout_editor_absoluteX="16dp">
+        android:layout_marginTop="15dp"
+        app:layout_constraintHorizontal_bias="0.129"
+        app:layout_constraintVertical_bias="0.091"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout1"
+        tools:layout_editor_absoluteX="16dp"
+        tools:ignore="MissingConstraints">
+
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Wert:"
+            android:textSize="20dp"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <EditText
@@ -58,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="92dp"
-            android:ems="10"
+            android:ems="3"
             android:text="00,00"
             android:inputType="numberDecimal"
             app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -69,24 +89,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="€"
+            android:textSize="20dp"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/linearLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
         tools:layout_editor_absoluteX="16dp">
-
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Datum:"
+            android:textSize="20dp"
             app:layout_constraintTop_toBottomOf="@+id/textView3"
             tools:layout_editor_absoluteX="55dp" />
 
@@ -95,47 +118,57 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="72dp"
-            android:ems="10"
+            android:ems="5"
             android:text="01.01.2000"
             android:inputType="date"/>
+
+        <ImageView
+            android:id="@+id/calenderView"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="1dp"
+            app:srcCompat="@android:drawable/ic_menu_day" />
+
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout6"
+        android:id="@+id/linearLayout4"
         android:layout_width="325dp"
         android:layout_height="53dp"
+        android:layout_marginTop="15dp"
 
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        tools:layout_editor_absoluteX="17dp">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        tools:layout_editor_absoluteX="16dp">
 
         <TextView
             android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="20dp"
             android:text="Wiederholung :" />
 
 
         <Spinner
             android:id="@+id/spinnerCyclus"
             android:layout_width="match_parent"
+            android:textSize="20dp"
             android:layout_height="match_parent" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout7"
+        android:id="@+id/linearLayout5"
         android:layout_width="325dp"
         android:layout_height="53dp"
-        android:layout_marginTop="48dp"
-
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
-        tools:layout_editor_absoluteX="17dp">
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+        tools:layout_editor_absoluteX="16dp">
 
         <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
+            android:textSize="20dp"
             android:text="Kategorie :" />
 
 
@@ -144,14 +177,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="325dp"
         android:layout_height="53dp"
-        android:layout_marginTop="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout7"
-        tools:layout_editor_absoluteX="14dp">
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+        tools:layout_editor_absoluteX="16dp">
 
         <Button
             android:id="@+id/button2"
@@ -165,6 +199,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClickdeli"
+            android:layout_marginStart="50dp"
             android:text="Löschen" />
     </LinearLayout>
 

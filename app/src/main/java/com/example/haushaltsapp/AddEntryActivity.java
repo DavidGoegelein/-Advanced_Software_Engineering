@@ -2,6 +2,8 @@ package com.example.haushaltsapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,8 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.haushaltsapp.database.Category;
 import com.example.haushaltsapp.database.Intake;
@@ -29,11 +34,11 @@ public class AddEntryActivity extends AppCompatActivity {
     //REQUESTCODES
     private final int REQUESTCODE_ADD = 12; //AddEntryActivity
     private final int REQUESTCODE_SHOW = 13; //ShowEntryActivity
-    private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
     private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
 
     private Spinner spinnerCyclus, spinnerCategory; //Zyklus, Kategorie
     private EditText editTextDate; //Datum
+    private ImageView calenderView; //Kalender
 
     //Werte der Einnahme oder Ausgabe
     private String name;
@@ -44,16 +49,21 @@ public class AddEntryActivity extends AppCompatActivity {
     private int year;
     private String cyclus;
     private String category;
-    private String choice = "";
-    private String selection;
- //   private boolean ok = true;
+
+    //Aktuelles Datum. Notwendig um Budget-Eintrag anzupassen
+    private int monthCurrent;
+    private int yearCurrent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_entry);
 
-        selection = "return"; //default
+        mySQLite = new MySQLite(this);
+
+        getDate(); //setze monthCurrent und yearCurrent mit dem aktuellen Datum
+
 
         //Spinner um den Zyklus anzugeben
         spinnerCyclus = (Spinner) findViewById(R.id.spinnerCyclus);
@@ -63,7 +73,7 @@ public class AddEntryActivity extends AppCompatActivity {
 
         //Spinner Kategorie
         Intent intent = getIntent();
-        ArrayList<Category> list = (ArrayList<Category>) intent.getSerializableExtra("list");
+        ArrayList<Category> list = mySQLite.getAllCategory();
         spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
         ArrayAdapter<Category> adapter3 = new ArrayAdapter<Category>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, list);
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -74,89 +84,186 @@ public class AddEntryActivity extends AppCompatActivity {
         java.util.Calendar kalender = Calendar.getInstance();
         SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
         editTextDate.setText(datumsformat.format(kalender.getTime()));
+
+        //Aktuelles Datum von Kalendar holen, um im CalenderView einzubinden
+        year = kalender.get(Calendar.YEAR);
+        month = kalender.get(Calendar.MONTH);
+        day = kalender.get(Calendar.DAY_OF_MONTH);
+
+
+        //Kalender
+        calenderView = findViewById(R.id.calenderView);
+        //Setzen von Listener auf dem Kalender Symbol
+        calenderView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View dateView) {
+                DatePickerDialog dateDialog = new DatePickerDialog(AddEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        day = selectedDay;
+                        month = selectedMonth + 1;
+                        year = selectedYear;
+
+                        String dayString = String.valueOf(day);
+                        String monthString = String.valueOf(month);
+                        if(day < 10){
+                            dayString = "0"+dayString;
+                        }
+                        if(month < 10){
+                            monthString = "0"+monthString;
+                        }
+                        editTextDate.setText(dayString+"."+monthString+"."+year);
+                    }
+                }, year, month, day);
+                dateDialog.show();
+            }
+        });
     }
+
 
 
     /*
     Eingabe soll eine Einnahme sein
      */
     public void onClickIntake(View view){
-        choice = "Intake";
-        selection = "add";
-        finish();
+        boolean valide = getValues();
+        if(valide){ //Titel und Wert wurde gesetzt
+            Intake intake = new Intake(name, value, day, month, year, cyclus);
+            mySQLite.addIntake(intake);
+            if((month < monthCurrent) || (year < yearCurrent)) {//Wenn der Eintrag in der Vergangenheit liegt muss das Budget angepasst werden
+                setBudgetEntry(month, year);
+            }
+            super.finish();
+        }
     }
 
     /*
     Ausgabe soll eine Ausgabe sein
     */
     public void onClickOutgo(View view){
-        choice = "Outgo";
-        selection = "add";
-        finish();
-    }
-
-    @Override
-    public void finish(){
-        getValues(); //Eingaben einlesen
-        //  Intent i = getTheIntent(); //Eingaben "intent" geben
-    //    if(ok) {
-            Intent i = new Intent();
-
-            i.putExtra("selection", selection);
-
-            if (choice.equals("Intake")) {
-                Intake intake = new Intake(name, value, day, month, year, cyclus);
-                i.putExtra("object", intake);
-            } else {
-                Outgo outgo = new Outgo(name, value, day, month, year, cyclus, category);
-                i.putExtra("object", outgo);
+        boolean valide = getValues();
+        if(valide){ ////Titel und Wert wurde gesetzt
+            Outgo outgo = new Outgo(name, value, day, month, year, cyclus, category);
+            mySQLite.addOutgo(outgo);
+            if((month < monthCurrent) || (year < yearCurrent)) {//Wenn der Eintrag in der Vergangenheit liegt muss das Budget angepasst werden
+                setBudgetEntry(month, year);
             }
-            i.putExtra("entry", choice);
-
-            setResult(RESULT_OK, i);
             super.finish();
-  //      }
+        }
     }
+
 
     /*
     Funktion um die eingegebenen Werte zu ermitteln
+    Warnt, falls eine Eingabe nicht sinnvoll ist
      */
-    private void getValues(){
-        //Name
-        EditText editTextName = (EditText) findViewById(R.id.Bezeichnung);
-        name = editTextName.getText().toString();
- /*       if(name.equals("Titel")){
-            ok = false;
-            Toast.makeText(AddEntryActivity.this, "Bitte geben Sie einen Titel ein",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-*/
+    private boolean getValues(){
+        boolean retValue = true;
 
-        //Wert anzeigen lassen:
-        EditText editTextValue = (EditText) findViewById(R.id.editTextNumberDecimal);
-        String valueString = editTextValue.getText().toString().replace(',', '.');
-        value = Double.parseDouble(valueString);
- /*       if(value == 0.0){
-            ok = false;
-            Toast.makeText(AddEntryActivity.this, "Bitte geben Sie einen Wert ein",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-  */
         //Datum:
         dates = editTextDate.getText().toString();
         day = Integer.parseInt(dates.substring(0,2));
         month = Integer.parseInt(dates.substring(3,5));
         year = Integer.parseInt(dates.substring(6,10));
 
+        if((month > monthCurrent && year >= yearCurrent) || (year > yearCurrent)){ //Eintrag liegt in der Zukunft
+            Toast.makeText(AddEntryActivity.this, "Ihr gewähltes Datum liegt in der Zukunft",
+                    Toast.LENGTH_SHORT).show();
+            retValue = false;
+        }
+
+        //Wert anzeigen lassen:
+        EditText editTextValue = (EditText) findViewById(R.id.editTextNumberDecimal);
+        String valueString = editTextValue.getText().toString().replace(',', '.');
+        value = Double.parseDouble(valueString);
+        if(value == 0.0){
+            Toast.makeText(AddEntryActivity.this, "Bitte geben Sie einen Wert ein",
+                    Toast.LENGTH_SHORT).show();
+            retValue = false;
+        }
+
+        //Name
+        EditText editTextName = (EditText) findViewById(R.id.Bezeichnung);
+        name = editTextName.getText().toString();
+        if(name.equals("Titel")){
+            Toast.makeText(AddEntryActivity.this, "Bitte geben Sie einen Titel ein",
+                    Toast.LENGTH_SHORT).show();
+            retValue = false;
+        }
+
+
         //Zyklus
         cyclus = spinnerCyclus.getSelectedItem().toString();
 
         //Kategorie
         category = spinnerCategory.getSelectedItem().toString();
+
+        return retValue;
     }
 
+
+    // Setzt die Variablen monthCurrent und yearCurrent mit dem aktuellen datum
+    private void getDate(){
+        java.util.Calendar calender = java.util.Calendar.getInstance();
+        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
+        String dates = datumsformat.format(calender.getTime());
+        monthCurrent= Integer.parseInt(dates.substring(3,5));
+        yearCurrent = Integer.parseInt(dates.substring(6,10));
+    }
+
+    /*
+    Funktion geht von moonthEntry +1 bis zum akuellen Monat/Jahr iteraqtiv durch
+    löscht den Eintrag mit dem Budget und berechnet den neuen Wert
+    ist der Wert positiv wird dieser in Einnahmen, ansonsten in Ausgaben, hinterlegt
+     */
+    private void setBudgetEntry(int monthEntry,int yearEntry){
+        if((monthEntry < monthCurrent) || (yearEntry < yearCurrent)){
+
+            do{
+                // Erst hochzählen da man den nächsten Monat braucht
+                if(monthEntry == 12){
+                    monthEntry = 1;
+                    yearEntry++;
+                }else{
+                    monthEntry++;
+                }
+                //Eintrag muss aus der Datenbank enfernt werden
+                //Wie der Eintrag lautet
+                String titel = "Restbudget vom ";
+                if(monthEntry > 1){
+                    titel = titel+(monthEntry-1)+"."+yearEntry;
+                }else{
+                    titel = titel+12+"."+(yearEntry-1);
+                }
+
+                //id des Eintrags ermitteln
+                int idIntake = mySQLite.getIntakeIdbyName(titel);
+                int idOutgo = mySQLite.getOutgoIdbyName(titel);
+                if(idIntake > -1){
+                    mySQLite.deleteIntakeById(idIntake); //Eintrag löschen
+                }else if(idOutgo > -1){
+                    mySQLite.deleteOutgoById(idOutgo); //Eintrag löschen
+                }
+
+                //Neuer Eintrag erstellen
+                double value = 0.0;
+                if (monthEntry > 1) {
+                    value = mySQLite.getValueIntakesMonth(31, monthEntry - 1, yearEntry) - mySQLite.getValueOutgosMonth(31, monthEntry - 1, yearEntry);
+                } else {
+                    value = mySQLite.getValueIntakesMonth(31, 1, yearEntry - 1) - mySQLite.getValueOutgosMonth(31, 1, yearEntry - 1);
+                }
+                if(value >= 0) { //Einnahme
+                    Intake intake = new Intake(titel, value, 1, monthEntry, yearEntry, "einmalig");
+                    mySQLite.addIntake(intake);
+                }else{ //Ausgabe
+                    value = value * (-1);
+                    Outgo outgo = new Outgo(titel, value, 1, monthEntry, yearEntry, "einmalig","Sonstiges");
+                    mySQLite.addOutgo(outgo);
+                }
+            }while ((monthEntry < monthCurrent) && (yearEntry <= yearCurrent));
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -166,9 +273,13 @@ public class AddEntryActivity extends AppCompatActivity {
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemAddIntakesOutgoes);
         item.setEnabled(false);
+
+        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
+        item2.setEnabled(false);
+        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
+        item3.setEnabled(false);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -270,5 +381,6 @@ public class AddEntryActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
 }

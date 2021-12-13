@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ public class AddCategoryActivity extends AppCompatActivity {
     private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
     private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
 
+    ////////////////////////////////
+    private final int maxLimit = 9;
+    ////////////////////////////////
     private int day;
     private int month;
     private int year;
@@ -52,14 +56,17 @@ public class AddCategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_category);
 
 
+        mySQLite = new MySQLite(this);
+
         //Kasten der später die Farbe anzeigt
         mColorPreview = findViewById(R.id.preview_selected_color);
         mDefaultColor = 0;
 
+        //Später löschen?
         TextView viewText = findViewById(R.id.textView3);
         String text = "";
         Intent intent = getIntent();
-        ArrayList<Category> list = (ArrayList<Category>) intent.getSerializableExtra("list");
+        ArrayList<Category> list = mySQLite.getAllCategory();
         for(int i = 0; i < list.size(); i++){
             text = text + list.get(i).toString()+"\n";
         }
@@ -68,6 +75,7 @@ public class AddCategoryActivity extends AppCompatActivity {
 
 
 
+    //um die Farhe auszuwählen
     public void pickColor(View view){
         new ColorPickerPopup.Builder(AddCategoryActivity.this).initialColor(
                 Color.RED).enableBrightness(true)
@@ -89,30 +97,54 @@ public class AddCategoryActivity extends AppCompatActivity {
     }
 
     public void onClickOk(View view){
-        getValues();
-        Category category = new Category(name, mDefaultColor, border);
+        ArrayList<Category> categories = mySQLite.getAllCategory();
 
-        Intent i = new Intent();
-        i.putExtra("category", category);
-        i.putExtra("selection","ok");
-        setResult(RESULT_OK, i);
-        super.finish();
+        if(categories.size() < maxLimit) {
+            boolean valide = getValues();
+            if (valide) {
+                Category category = new Category(name, mDefaultColor, border);
+                mySQLite.addCategory(category);
+                super.finish();
+            }
+        }else{
+            Toast.makeText(AddCategoryActivity.this, "Es können keine weiteren Kategorien angelegt werden.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onClickBreak(View view){
-        Intent i = new Intent();
-        i.putExtra("selection","break");
-        setResult(RESULT_OK, i);
         super.finish();
     }
 
-    private void getValues() {
+    //um die eingetragene Werte zu ermitteln
+    private boolean getValues() {
+        boolean retValue = true;
+
+        //Bezeichnung
         EditText editTextName = (EditText) findViewById(R.id.Bezeichnung);
         name = editTextName.getText().toString();
+        if(name.equals("Titel")){ //wurde ein Titel gesetzt?
+            Toast.makeText(AddCategoryActivity.this, "Bitte geben Sie einen Titel ein",
+                    Toast.LENGTH_SHORT).show();
+            retValue = false;
+        }else { //gibt es diesen Titel bereits?
+            ArrayList<Category> categories = mySQLite.getAllCategory();
+            for( int i = 0; i < categories.size(); i++){
+                if(categories.get(i).getName_PK().equals(name)){
+                    retValue = false;
+                    Toast.makeText(AddCategoryActivity.this, "Diese Kategorie exestiert bereits",
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                }
+            }
+        }
 
+        //Limit
         EditText editTextValue = (EditText) findViewById(R.id.editTextLimit);
         String valueString = editTextValue.getText().toString();
         border = Double.parseDouble(valueString);
+
+        return retValue;
     }
 
 
@@ -124,6 +156,12 @@ public class AddCategoryActivity extends AppCompatActivity {
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemAddCategory);
         item.setEnabled(false);
+
+        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
+        item2.setEnabled(false);
+
+        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
+        item3.setEnabled(false);
         return true;
     }
 

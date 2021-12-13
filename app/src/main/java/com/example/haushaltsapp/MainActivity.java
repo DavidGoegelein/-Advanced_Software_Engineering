@@ -47,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private MySQLite mySQLite = new MySQLite(this, null, null, 0);
 
     //REQUESTCODES
-    private final int REQUESTCODE_ADD = 12; //AddEntryActivity
     private final int REQUESTCODE_SHOW = 13; //ShowEntryActivity
-    private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
     private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
 
     //aktuelles Datum
@@ -73,15 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Restbudget in den neuen Monat übernehmen
         setLastBudget();
-
-        //Setzen der Texte im textview und pie Chart und Barchart
-        tvIntake = findViewById(R.id.tvEinnahmen); //warum hier?
-        tvOutgo = findViewById(R.id.tvAusgaben);
-        tvResidualbudget = findViewById(R.id.tvRestbudget);
-
-        pieChart = findViewById(R.id.piechart);
-       mBarChart = findViewById(R.id.barchart);
-        LineChart = findViewById(R.id.linechart);
 
         //Daten anzeigen
         setData();
@@ -115,8 +104,6 @@ public class MainActivity extends AppCompatActivity {
             mySQLite.addCategory(category);
         }
     }
-
-
 
     //Übertrage das Budget des letzten Monats
     private void setLastBudget(){
@@ -175,25 +162,29 @@ public class MainActivity extends AppCompatActivity {
     //Werte aus der Datenbank
     private void setData()
     {
-        //Daten aus Datenbank:
-        //später noch Fester zur Datumsauswahl einfügen
+        //Setzen der textview
+        tvIntake = findViewById(R.id.tvEinnahmen);
+        tvOutgo = findViewById(R.id.tvAusgaben);
+        tvResidualbudget = findViewById(R.id.tvRestbudget);
+
+        pieChart = findViewById(R.id.piechart);
+        mBarChart = findViewById(R.id.barchart);
+        //Daten von Monat aus Datenbank:
         float outgo = mySQLite.getValueOutgosMonth(day,month,year);
         float intake = mySQLite.getValueIntakesMonth(day,month,year);
         float residualBudget = intake-outgo;
 
         //Setzen von Einnahmen und Ausgaben als Stirng in Textview
-        tvIntake.setText(Float.toString(intake));
-        tvOutgo.setText(Float.toString(outgo));
-        tvResidualbudget.setText(Float.toString(residualBudget));
+        tvIntake.setText(Float.toString(intake)+" €");
+        tvOutgo.setText(Float.toString(outgo)+" €");
+        tvResidualbudget.setText(Float.toString(residualBudget)+" €");
 
         //Diagramme zurücksetzten
         pieChart.clearChart();
         mBarChart.clearChart();
-        //LineChart.clearChart();
         //Diagram Methoden aufrufen
         PieChart(intake,outgo,residualBudget);
         BarGraph(intake,outgo,residualBudget);
-        //LineGraphMonth();
 
     }
 
@@ -320,6 +311,10 @@ public class MainActivity extends AppCompatActivity {
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemMainPage);
         item.setEnabled(false);
+        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
+        item2.setEnabled(false);
+        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
+        item3.setEnabled(false);
         return true;
     }
 
@@ -334,12 +329,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemAddIntakesOutgoes:
-                mySQLite = new MySQLite(this);
-                ArrayList<Category> categories = mySQLite.getAllCategory();
                 Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
-                switchToAddEntry.putExtra("list",categories);
-                mySQLite.close();
-                startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
+                startActivity(switchToAddEntry);
                 return true;
 
             case R.id.subitemIntakes:
@@ -432,21 +423,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Von AddEntryActivity
-        if (resultCode == RESULT_OK && requestCode == REQUESTCODE_ADD) {
-            String selection = data.getExtras().getString("selection");
-            if(selection.equals("add")) {
-                String entry = data.getExtras().getString("entry");
-                if (entry.equals("Intake")) { //Eingabe
-                    Intake intake = (Intake) data.getSerializableExtra("object");
-                    mySQLite.addIntake(intake);
-                } else { //Ausgabe
-                    Outgo outgo = (Outgo) data.getSerializableExtra("object");
-                    mySQLite.addOutgo(outgo);
-                }
-            }
-        }
-
         // Von ShowEntryActivity
         if (resultCode == RESULT_OK && requestCode == REQUESTCODE_SHOW) {
 
@@ -455,53 +431,12 @@ public class MainActivity extends AppCompatActivity {
 
             Intent i = new Intent(this, EditEntryActivity.class);
             if(id > -1){
-                if (entry.equals("Intake")) { //Einnahme
-                    Intake intake = mySQLite.getIntakeById(id);
-                    i.putExtra("object", (Serializable) intake);
-                }else{
-                    Outgo outgo = mySQLite.getOutgoById(id);
-                    ArrayList<Category> categories = mySQLite.getAllCategory();
-                    i.putExtra("object", (Serializable) outgo);
-                    i.putExtra("list",categories);
-                }
                 i.putExtra("id", id);
                 i.putExtra("entry", entry);
-                startActivityForResult(i, REQUESTCODE_EDIT);
-            }
-        }
-
-        //Eintrag löschen oder ändern von EditEntryActivity
-        if(resultCode == RESULT_OK && requestCode == REQUESTCODE_EDIT){
-            String selection = data.getExtras().getString("selection");
-            String entry = data.getExtras().getString("entry");
-            int id = data.getExtras().getInt("id");
-
-            if(selection.equals("clear")){ //löschen
-                if(entry.equals("Intake")){ //Intake
-                    mySQLite.deleteIntakeById(id);
-                }else{ //Outgo
-                    mySQLite.deleteOutgoById(id);
-                }
-            }else{ //ändern
-                if(entry.equals("Intake")){ //Intake
-                    Intake intake = (Intake) data.getSerializableExtra("object");
-                    mySQLite.updateIntake(intake, id);
-                }else{ //Outgo
-                    Outgo outgo = (Outgo) data.getSerializableExtra("object");
-                    mySQLite.updateOutgo(outgo, id);
-                }
-            }
-        }
-        //Kategorie hinzufügen
-        if(resultCode == RESULT_OK && requestCode == REQUESTCODE_ADD_CATEGORY){
-            String selection = data.getExtras().getString("selection");
-            if(selection.equals("ok")){
-                Category category = (Category) data.getSerializableExtra("category");
-               // mySQLite.addCategory(category);
-                Toast.makeText(MainActivity.this, category.toString(),
-                        Toast.LENGTH_SHORT).show();
+                startActivity(i);
             }
         }
         setData();
     }
+
 }

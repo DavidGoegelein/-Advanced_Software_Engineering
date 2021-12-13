@@ -120,6 +120,10 @@ public class ShowEntriesActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.navigation_menu, menu);
+        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
+        item2.setEnabled(false);
+        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
+        item3.setEnabled(false);
         return true;
     }
 

@@ -200,6 +200,10 @@ public class ChartViewActivity extends  AppCompatActivity {
         inflater.inflate(R.menu.navigation_menu, menu);
         MenuItem item = menu.findItem(R.id.itemTableView);
         item.setEnabled(false);
+        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
+        item2.setEnabled(false);
+        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
+        item3.setEnabled(false);
         return true;
     }
 

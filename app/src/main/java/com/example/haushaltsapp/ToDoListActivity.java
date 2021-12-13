@@ -98,6 +98,10 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemToDoListe);
         item.setEnabled(false);
+        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
+        item2.setEnabled(false);
+        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
+        item3.setEnabled(false);
         return true;
     }
 
@@ -237,7 +241,6 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         type = String.valueOf(spinner.getSelectedItem());
         AddNewTask.setNewType(type);
-        Toast.makeText(this, "This"+type, Toast.LENGTH_SHORT).show();
         taskList = mySQLite.getTaskByType(type);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
