@@ -61,13 +61,16 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do_list);
+        mySQLite = new MySQLite(this);
+
+        Intent intent = getIntent();
+        ArrayList<Category> list = mySQLite.getAllCategory();
         spinner = findViewById(R.id.ToDoListSpinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_ToDoList, android.R.layout.simple_spinner_item);
+        ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        mySQLite = new MySQLite(this);
         mySQLite.openDatabase();
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -98,10 +101,7 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemToDoListe);
         item.setEnabled(false);
-        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
-        item2.setEnabled(false);
-        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
-        item3.setEnabled(false);
+
         return true;
     }
 
@@ -216,25 +216,27 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         tasksAdapter.notifyDataSetChanged();
     }
 
-    public void onTaskClick(int position){
+    public void onTaskClick(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(tasksAdapter.getContext());
-        builder.setTitle("Delete Task");
-        builder.setMessage("Are you sure you want to delete this Task?");
-        builder.setPositiveButton("Confirm",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        tasksAdapter.deleteItem(position);
-                    }
-                });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                tasksAdapter.notifyItemChanged(position);
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        //if (tasksAdapter.checkStatus(position) != 0) {
+        // builder.setTitle("Haben Sie diese Aufgabe Abgeschlossen?");
+            builder.setMessage("Haben Sie diese Aufgabe erledigt?");
+            builder.setPositiveButton("Ja",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(ToDoListActivity.this, "Glückwunsch! Mach weiter so!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            builder.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    tasksAdapter.notifyItemChanged(position);
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+       // }
     }
 
     @Override

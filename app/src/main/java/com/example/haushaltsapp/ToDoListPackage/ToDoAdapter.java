@@ -56,6 +56,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 } else {
                     db.updateStatus(item.getId(), 0);
                 }
+                //                   if(item.getStatus()==0){
+                //                        db.updateStatus(item.getId(), 1);
+                //                    }else {
+                //                        db.updateStatus(item.getId(), 0);
+                //                    }
             }
         });
     }
@@ -98,6 +103,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         AddNewTask fragment = new AddNewTask();
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+    }
+
+    public int checkStatus(int position) {
+        TaskModel item = todoList.get(position);
+        int state = item.getStatus();
+        return state;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

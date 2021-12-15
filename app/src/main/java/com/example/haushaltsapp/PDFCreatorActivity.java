@@ -19,16 +19,21 @@ import com.example.haushaltsapp.database.Category;
 import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.database.Outgo;
+
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+
 
 public class PDFCreatorActivity extends AppCompatActivity {
 
@@ -61,6 +67,9 @@ public class PDFCreatorActivity extends AppCompatActivity {
     String category;
     Paragraph paragraphText;
 
+    private String entry;
+    int numberOfPages;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +85,12 @@ public class PDFCreatorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     printPDF();
+
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }
-       });
+        });
 
         viewPdfButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -90,85 +100,149 @@ public class PDFCreatorActivity extends AppCompatActivity {
     }
 
 
-        public void printPDF()throws FileNotFoundException {
+    public void printPDF()throws FileNotFoundException {
 
-            String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-            File file = new File(pdfPath, "Haushaltsapp.pdf");
-            OutputStream outputStream = new FileOutputStream(file);
-            PdfWriter pdfWriter = new PdfWriter(file);
+        String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        File file = new File(pdfPath, "Haushaltsapp.pdf");
+        OutputStream outputStream = new FileOutputStream(file);
+        PdfWriter pdfWriter = new PdfWriter(file);
 
-            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-            Document document = new Document(pdfDocument);
-            pdfDocument.setDefaultPageSize(PageSize.A4);
+        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+        Document document = new Document(pdfDocument,PageSize.A4,false );
 
-            //boltText.setBold()
-            //sizedText.setFontSize(20.0f)
-            //coloredText.setFontColor(ColorConstants.RED)
-            //alignedText.setTextAlignment(TextAlignment.CENTER)
-            //textWithSpace.setMargins(10f, 10f, 10f, 10f)
-            //Table table = new Table(UnitValue.createPercentArray(16)).useAllAvailableWidth();
 
-            paragraphText = new Paragraph("My Text");
-            document.add(paragraphText).setFontColor(ColorConstants.RED).setBold().setFontSize(20.0f).setTextAlignment(TextAlignment.CENTER);
+        //boltText.setBold()
+        //sizedText.setFontSize(20.0f)
+        //coloredText.setFontColor(ColorConstants.RED)
+        //alignedText.setTextAlignment(TextAlignment.CENTER)
+        //textWithSpace.setMargins(10f, 10f, 10f, 10f)
+        //Table table = new Table(UnitValue.createPercentArray(16)).useAllAvailableWidth();
 
-            Table table1 = new Table(new float[]{1, 1, 1, 1, 1, 1, 1, 1});
-            table1.setWidth(500).useAllAvailableWidth();
-            table1.addCell(new Cell().add(new Paragraph("ID").setWidth(30).setFontSize(14).setBorder(Border.NO_BORDER).setBackgroundColor(ColorConstants.CYAN)));
-            table1.addCell(new Cell().add(new Paragraph("Name").setWidth(160).setFontSize(14).setBorder(Border.NO_BORDER)));
-            table1.addCell(new Cell().add(new Paragraph("Value").setWidth(50).setFontSize(14).setBorder(Border.NO_BORDER)));
-            table1.addCell(new Cell().add(new Paragraph("Day").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
-            table1.addCell(new Cell().add(new Paragraph("Month").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
-            table1.addCell(new Cell().add(new Paragraph("Year").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
-            table1.addCell(new Cell().add(new Paragraph("Cycle").setWidth(70).setFontSize(14).setBorder(Border.NO_BORDER)));
-            table1.addCell(new Cell().add(new Paragraph("Category").setWidth(70).setFontSize(14).setBorder(Border.NO_BORDER)));
 
-            Table table2 = new Table(new float[]{1, 1, 1, 1, 1, 1, 1, 1});
-            table2.setWidth(500);
 
-            Cursor cursor = db.getWritableDatabase().rawQuery("SELECT * FROM intake", null);
+        Table tableOutgoes = new Table(UnitValue.createPercentArray(7)).useAllAvailableWidth();
+        tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Bezeichenung").setWidth(170).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Wert").setWidth(60).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Tag").setWidth(35).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Monat").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Jahr").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Zyklus").setWidth(65).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Kategorie").setWidth(90).setFontSize(14).setBorder(Border.NO_BORDER)));
 
-            if (cursor != null) {
-                while (cursor.moveToNext()){
+        //            Cell cell = new Cell(1, 7).add(new Paragraph("Table XYZ (Continued)"));
+        //            table2.addHeaderCell(cell);
+        //            cell = new Cell(1, 5).add(new Paragraph("Table XYZ (Continued)"));
+        //            table2.setSkipFirstHeader(true);
+        //            table2.setSkipLastFooter(true);
 
-                    ID = Integer.parseInt(cursor.getString(0));
-                    name = cursor.getString(1);
-                    value = Double.parseDouble(cursor.getString(2));
-                    day = Integer.parseInt(cursor.getString(3));
-                    month = Integer.parseInt(cursor.getString(4));
-                    year = Integer.parseInt(cursor.getString(5));
-                    cycle =  cursor.getString(6);
 
-                    table2.addCell(new Cell().add(new Paragraph(ID + "").setWidth(30).setFontSize(14).setBorder(Border.NO_BORDER)));
-                    table2.addCell(new Cell().add(new Paragraph(name + "").setWidth(160).setFontSize(14).setBorder(Border.NO_BORDER)));
-                    table2.addCell(new Cell().add(new Paragraph(value + "").setWidth(50).setFontSize(14).setBorder(Border.NO_BORDER)));
-                    table2.addCell(new Cell().add(new Paragraph(day + "").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
-                    table2.addCell(new Cell().add(new Paragraph(month + "").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
-                    table2.addCell(new Cell().add(new Paragraph(year + "").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
-                    table2.addCell(new Cell().add(new Paragraph(cycle + "").setWidth(70).setFontSize(14).setBorder(Border.NO_BORDER)));
-                    table2.addCell(new Cell().add(new Paragraph(category + "").setWidth(70).setFontSize(14).setBorder(Border.NO_BORDER)));
+        //Informationen auslesen
 
-                }
-            }
 
-            cursor.close();
-            db.close();
 
-            document.add(table1);
-            document.add(table2);
-            document.close();
+        Cursor curOutgo = db.getWritableDatabase().rawQuery("SELECT * FROM outgo ORDER BY year,month,day", null);
+        int countOutgo = curOutgo.getCount();
 
+        curOutgo.moveToFirst();
+        for (int j = 0; j < countOutgo; j++){
+
+            //ID = Integer.parseInt(cursor.getString(0));
+            name = curOutgo.getString(1);
+            value = Double.parseDouble(curOutgo.getString(2));
+            day = Integer.parseInt(curOutgo.getString(3));
+            month = Integer.parseInt(curOutgo.getString(4));
+            year = Integer.parseInt(curOutgo.getString(5));
+            cycle =  curOutgo.getString(6);
+            category =  curOutgo.getString(7);
+
+            //table2.addCell(new Cell().add(new Paragraph(ID + "").setWidth(30).setFontSize(14).setBorder(Border.NO_BORDER)));
+            tableOutgoes.addCell(new Cell().add(new Paragraph(name + "").setWidth(170).setFontSize(12)));
+            tableOutgoes.addCell(new Cell().add(new Paragraph(value + "").setWidth(60).setFontSize(12)));
+            tableOutgoes.addCell(new Cell().add(new Paragraph(day + "").setWidth(35).setFontSize(12)));
+            tableOutgoes.addCell(new Cell().add(new Paragraph(month + "").setWidth(40).setFontSize(12)));
+            tableOutgoes.addCell(new Cell().add(new Paragraph(year + "").setWidth(40).setFontSize(12)));
+            tableOutgoes.addCell(new Cell().add(new Paragraph(cycle + "").setWidth(65).setFontSize(12)));
+            tableOutgoes.addCell(new Cell().add(new Paragraph(category + "").setWidth(90).setFontSize(12)));
+            curOutgo.moveToNext();
         }
 
-            private void viewPdf(){
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/Haushaltsapp.pdf"), "application/pdf");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, "There is no app that can support this action",
-                            Toast.LENGTH_SHORT).show();
-            }
+        curOutgo.close();
+        db.close();
+
+
+
+        Table tableIntakes = new Table(UnitValue.createPercentArray(7)).useAllAvailableWidth();
+        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Bezeichenung").setWidth(170).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Wert").setWidth(60).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Tag").setWidth(35).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Monat").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Jahr").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Zyklus").setWidth(65).setFontSize(14).setBorder(Border.NO_BORDER)));
+        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Kategorie").setWidth(90).setFontSize(14).setBorder(Border.NO_BORDER)));
+
+
+
+        //Informationen auslesen
+
+
+
+        Cursor curIntake = db.getWritableDatabase().rawQuery("SELECT * FROM intake ORDER BY year,month,day", null);
+        int countIntake = curIntake.getCount();
+
+        curIntake.moveToFirst();
+        for (int j = 0; j < countIntake; j++){
+
+            //ID = Integer.parseInt(cursor.getString(0));
+            name = curIntake.getString(1);
+            value = Double.parseDouble(curIntake.getString(2));
+            day = Integer.parseInt(curIntake.getString(3));
+            month = Integer.parseInt(curIntake.getString(4));
+            year = Integer.parseInt(curIntake.getString(5));
+            cycle =  curIntake.getString(6);
+            category =  "";
+
+            //table2.addCell(new Cell().add(new Paragraph(ID + "").setWidth(30).setFontSize(14).setBorder(Border.NO_BORDER)));
+            tableIntakes.addCell(new Cell().add(new Paragraph(name + "").setWidth(170).setFontSize(12)));
+            tableIntakes.addCell(new Cell().add(new Paragraph(value + "").setWidth(60).setFontSize(12)));
+            tableIntakes.addCell(new Cell().add(new Paragraph(day + "").setWidth(35).setFontSize(12)));
+            tableIntakes.addCell(new Cell().add(new Paragraph(month + "").setWidth(40).setFontSize(12)));
+            tableIntakes.addCell(new Cell().add(new Paragraph(year + "").setWidth(40).setFontSize(12)));
+            tableIntakes.addCell(new Cell().add(new Paragraph(cycle + "").setWidth(65).setFontSize(12)));
+            tableIntakes.addCell(new Cell().add(new Paragraph(category + "").setWidth(90).setFontSize(12)));
+            curIntake.moveToNext();
+        }
+
+        curIntake.close();
+        db.close();
+
+        document.add(tableOutgoes);
+        document.add(new AreaBreak());
+        document.add(tableIntakes);
+        //Table table = createTable(true);
+        //document.add(table);
+
+
+        numberOfPages = pdfDocument.getNumberOfPages();
+        for (int i = 1; i <= numberOfPages; i++) {
+            // Write aligned text to the specified by parameters point
+            document.showTextAligned(new Paragraph(String.format("Seite %s von %s", i, numberOfPages)),
+                    560, 15, i, TextAlignment.RIGHT, VerticalAlignment.BOTTOM, 0);
+        }
+
+        document.close();
+
+    }
+
+    private void viewPdf(){
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/Haushaltsapp.pdf"), "application/pdf");
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "There is no app that can support this action",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -191,10 +265,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemPdfCreator);
         item.setEnabled(false);
-        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
-        item2.setEnabled(false);
-        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
-        item3.setEnabled(false);
+
         return true;
     }
 
@@ -300,4 +371,143 @@ public class PDFCreatorActivity extends AppCompatActivity {
         }
     }
 
+
 }
+////table1.addCell(new Cell().add(new Paragraph("ID").setWidth(30).setFontSize(14).setBorder(Border.NO_BORDER).setBackgroundColor(ColorConstants.CYAN)));
+//Table tableOutgoes = new Table(UnitValue.createPercentArray(7)).useAllAvailableWidth();
+//        tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Bezeichenung").setWidth(170).setFontSize(14).setBorder(Border.NO_BORDER)));
+//                tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Wert").setWidth(60).setFontSize(14).setBorder(Border.NO_BORDER)));
+//                tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Tag").setWidth(35).setFontSize(14).setBorder(Border.NO_BORDER)));
+//                tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Monat").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
+//                tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Jahr").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
+//                tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Zyklus").setWidth(65).setFontSize(14).setBorder(Border.NO_BORDER)));
+//                tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Kategorie").setWidth(90).setFontSize(14).setBorder(Border.NO_BORDER)));
+//
+//                //            Cell cell = new Cell(1, 7).add(new Paragraph("Table XYZ (Continued)"));
+//                //            table2.addHeaderCell(cell);
+//                //            cell = new Cell(1, 5).add(new Paragraph("Table XYZ (Continued)"));
+//                //            table2.setSkipFirstHeader(true);
+//                //            table2.setSkipLastFooter(true);
+//
+//
+//                //Informationen auslesen
+//
+//
+//
+//                Cursor curOutgo = db.getWritableDatabase().rawQuery("SELECT * FROM outgo ORDER BY year,month,day", null);
+//                int count = curOutgo.getCount();
+//
+//                curOutgo.moveToFirst();
+//                for (int j = 0; j < count; j++){
+//
+//        //ID = Integer.parseInt(cursor.getString(0));
+//        name = curOutgo.getString(1);
+//        value = Double.parseDouble(curOutgo.getString(2));
+//        day = Integer.parseInt(curOutgo.getString(3));
+//        month = Integer.parseInt(curOutgo.getString(4));
+//        year = Integer.parseInt(curOutgo.getString(5));
+//        cycle =  curOutgo.getString(6);
+//        category =  curOutgo.getString(7);
+//
+//        //table2.addCell(new Cell().add(new Paragraph(ID + "").setWidth(30).setFontSize(14).setBorder(Border.NO_BORDER)));
+//        tableOutgoes.addCell(new Cell().add(new Paragraph(name + "").setWidth(170).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableOutgoes.addCell(new Cell().add(new Paragraph(value + "").setWidth(60).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableOutgoes.addCell(new Cell().add(new Paragraph(day + "").setWidth(35).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableOutgoes.addCell(new Cell().add(new Paragraph(month + "").setWidth(40).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableOutgoes.addCell(new Cell().add(new Paragraph(year + "").setWidth(40).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableOutgoes.addCell(new Cell().add(new Paragraph(cycle + "").setWidth(65).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableOutgoes.addCell(new Cell().add(new Paragraph(category + "").setWidth(90).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        curOutgo.moveToNext();
+//        }
+//
+//        curOutgo.close();
+//        db.close();
+//
+//
+//        Table tableIntakes = new Table(new float[]{1, 1, 1, 1, 1, 1, 1});
+//        tableIntakes.setWidth(500);
+//        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Bezeichnung").setWidth(170).setFontSize(14).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Wert").setWidth(60).setFontSize(14).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Tag").setWidth(35).setFontSize(14).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Monat").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Jahr").setWidth(40).setFontSize(14).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Zyklus").setWidth(65).setFontSize(14).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Kategorie").setWidth(90).setFontSize(14).setBorder(Border.NO_BORDER)));
+//
+//        Cursor curIntake = db.getWritableDatabase().rawQuery("SELECT * FROM intake ORDER BY year,month,day", null);
+//        if (curIntake != null) {
+//        while (curIntake.moveToNext()) {
+//
+//        name = curIntake.getString(1);
+//        value = Double.parseDouble(curIntake.getString(2));
+//        day = Integer.parseInt(curIntake.getString(3));
+//        month = Integer.parseInt(curIntake.getString(4));
+//        year = Integer.parseInt(curIntake.getString(5));
+//        cycle = curIntake.getString(6);
+//        category = " ";
+//
+//        tableIntakes.addCell(new Cell().add(new Paragraph(name + "").setWidth(170).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addCell(new Cell().add(new Paragraph(value + "").setWidth(60).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addCell(new Cell().add(new Paragraph(day + "").setWidth(35).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addCell(new Cell().add(new Paragraph(month + "").setWidth(40).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addCell(new Cell().add(new Paragraph(year + "").setWidth(40).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addCell(new Cell().add(new Paragraph(cycle + "").setWidth(65).setFontSize(12).setBorder(Border.NO_BORDER)));
+//        tableIntakes.addCell(new Cell().add(new Paragraph(category + "").setWidth(90).setFontSize(12).setBorder(Border.NO_BORDER)));
+//
+//        }
+//        }
+//
+//        curIntake.close();
+//        db.close();
+//
+//        document.add(tableOutgoes);
+//        document.add(new AreaBreak());
+//
+//        document.add(tableIntakes);
+//        document.add(new AreaBreak());
+
+
+
+
+//   if (cursor != null) {
+//             cursor.moveToFirst();
+//             int h = 0;
+//             while (cursor.moveToNext()) {
+//                 h++;
+//             }
+//
+//             if (h >= 25) {
+//                 int pages = h / 25;
+//                 if (h % 25 != 0) {
+//                     pages++;
+//                 }
+//
+//                 for (int j = 0; j < pages; j++) {
+//                     cursor.moveToPosition(j * 25);
+//                     int k = 0;
+//                     do {
+//                         cursor.moveToNext();
+//                         //ID = Integer.parseInt(cursor.getString(0));
+//                         name = cursor.getString(1);
+//                         value = Double.parseDouble(cursor.getString(2));
+//                         day = Integer.parseInt(cursor.getString(3));
+//                         month = Integer.parseInt(cursor.getString(4));
+//                         year = Integer.parseInt(cursor.getString(5));
+//                         cycle = cursor.getString(6);
+//                         category = cursor.getString(7);
+//
+//                         //table2.addCell(new Cell().add(new Paragraph(ID + "").setWidth(30).setFontSize(14).setBorder(Border.NO_BORDER)));
+//                         table2.addCell(new Cell().add(new Paragraph(name + "").setWidth(170).setFontSize(12).setBorder(Border.NO_BORDER)));
+//                         table2.addCell(new Cell().add(new Paragraph(value + "").setWidth(60).setFontSize(12).setBorder(Border.NO_BORDER)));
+//                         table2.addCell(new Cell().add(new Paragraph(day + "").setWidth(35).setFontSize(12).setBorder(Border.NO_BORDER)));
+//                         table2.addCell(new Cell().add(new Paragraph(month + "").setWidth(40).setFontSize(12).setBorder(Border.NO_BORDER)));
+//                         table2.addCell(new Cell().add(new Paragraph(year + "").setWidth(40).setFontSize(12).setBorder(Border.NO_BORDER)));
+//                         table2.addCell(new Cell().add(new Paragraph(cycle + "").setWidth(65).setFontSize(12).setBorder(Border.NO_BORDER)));
+//                         table2.addCell(new Cell().add(new Paragraph(category + "").setWidth(90).setFontSize(12).setBorder(Border.NO_BORDER)));
+//                         k++;
+//                     } while (k < 25);
+//                     document.add(new AreaBreak());
+//                 }
+//             }
+//        }
+

@@ -274,10 +274,6 @@ public class AddEntryActivity extends AppCompatActivity {
         MenuItem item = menu.findItem(R.id.itemAddIntakesOutgoes);
         item.setEnabled(false);
 
-        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
-        item2.setEnabled(false);
-        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
-        item3.setEnabled(false);
         return true;
     }
 
