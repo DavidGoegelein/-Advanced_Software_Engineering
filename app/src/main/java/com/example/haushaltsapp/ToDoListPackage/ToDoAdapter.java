@@ -48,21 +48,25 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         final TaskModel item = todoList.get(position);
         holder.task.setText(item.getTask());
         holder.task.setChecked(toBoolean(item.getStatus()));
+        int previousStatus = item.getStatus();
+        int adapterPosition = holder.getAdapterPosition();
         holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    db.updateStatus(item.getId(), 1);
+                    if (previousStatus!=0){
+                        db.updateStatus(item.getId(), 0);
+                    }else {
+                        db.updateStatus(item.getId(), 1);
+                        toDoInterface.onTaskClick(adapterPosition);
+                    }
                 } else {
-                    db.updateStatus(item.getId(), 0);
+                    db.updateStatus(item.getId(), previousStatus);
                 }
-                //                   if(item.getStatus()==0){
-                //                        db.updateStatus(item.getId(), 1);
-                //                    }else {
-                //                        db.updateStatus(item.getId(), 0);
-                //                    }
+
             }
         });
+        db.close();
     }
 
     //Anzeige aller Elemente bis zum Ende der toDoListe
@@ -105,25 +109,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
     }
 
-    public int checkStatus(int position) {
-        TaskModel item = todoList.get(position);
-        int state = item.getStatus();
-        return state;
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox task;
 
         ViewHolder(View view) {
             super(view);
             task = view.findViewById(R.id.todoCheckBox);
-            task.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = getAdapterPosition();
-                    toDoInterface.onTaskClick(pos);
-                }
-            });
         }
     }
 }

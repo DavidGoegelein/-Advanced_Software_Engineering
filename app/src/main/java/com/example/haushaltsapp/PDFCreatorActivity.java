@@ -1,5 +1,6 @@
 package com.example.haushaltsapp;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,6 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +45,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+;
 
 
 public class PDFCreatorActivity extends AppCompatActivity {
@@ -63,6 +69,13 @@ public class PDFCreatorActivity extends AppCompatActivity {
     int day;
     int month;
     int year;
+    int calendarDay;
+    int calendarMonth;
+    int calendarYear;
+    long compareTime;
+    long dataTime;
+    Calendar dataCalendar = Calendar.getInstance();
+
     String cycle;
     String category;
     Paragraph paragraphText;
@@ -70,16 +83,53 @@ public class PDFCreatorActivity extends AppCompatActivity {
     private String entry;
     int numberOfPages;
 
+    private TextView dateSelect;
+    private ImageView calenderView;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdfcreator);
         createPdfButton    = findViewById(R.id.createPdfButton);
         viewPdfButton    = findViewById(R.id.viewPdfButton);
+        dateSelect = findViewById(R.id.selectView);
+        calenderView = findViewById(R.id.calenderView);
+
         db = new MySQLite(this);
         db.openDatabase();
 
+        Calendar calendar = Calendar.getInstance();
+        calendarYear = calendar.get(Calendar.YEAR);
+        calendarMonth = calendar.get(Calendar.MONTH);
+        calendarDay = calendar.get(Calendar.DAY_OF_MONTH);
 
+        dateSelect.setText(calendarYear + "/" + (calendarMonth+1) + "/" + calendarDay);
+
+        calendar.set(calendarYear,(calendarMonth+1),calendarDay,0,0,0);
+        compareTime = calendar.getTimeInMillis();
+
+        calenderView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View dateView) {
+                DatePickerDialog dateDialog = new DatePickerDialog(PDFCreatorActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int setYear, int setMonth, int setDay) {
+                        calendarYear = setYear;
+                        calendarMonth = setMonth;
+                        calendarDay = setDay;
+                        calendar.set(calendarYear,calendarMonth+1,calendarDay);
+                        compareTime = calendar.getTimeInMillis();
+
+                        //Addition bei Monat von 1, Index beginnend bei 0
+                        dateSelect.setText(setYear + "/" + (setMonth+1) + "/" + setDay);
+                    }
+                }, calendarYear, calendarMonth, calendarDay);
+                dateDialog.show();
+            }
+        });
 
         createPdfButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -109,15 +159,6 @@ public class PDFCreatorActivity extends AppCompatActivity {
 
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         Document document = new Document(pdfDocument,PageSize.A4,false );
-
-
-        //boltText.setBold()
-        //sizedText.setFontSize(20.0f)
-        //coloredText.setFontColor(ColorConstants.RED)
-        //alignedText.setTextAlignment(TextAlignment.CENTER)
-        //textWithSpace.setMargins(10f, 10f, 10f, 10f)
-        //Table table = new Table(UnitValue.createPercentArray(16)).useAllAvailableWidth();
-
 
 
         Table tableOutgoes = new Table(UnitValue.createPercentArray(7)).useAllAvailableWidth();
@@ -180,12 +221,10 @@ public class PDFCreatorActivity extends AppCompatActivity {
         tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Zyklus").setWidth(65).setFontSize(14).setBorder(Border.NO_BORDER)));
         tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Kategorie").setWidth(90).setFontSize(14).setBorder(Border.NO_BORDER)));
 
-
-
         //Informationen auslesen
 
 
-
+       // WHERE +KEY_YEAR + selectedYear +KEY_MONTH + selectedMonth +KEY_DAY + selectedDay
         Cursor curIntake = db.getWritableDatabase().rawQuery("SELECT * FROM intake ORDER BY year,month,day", null);
         int countIntake = curIntake.getCount();
 
@@ -201,6 +240,13 @@ public class PDFCreatorActivity extends AppCompatActivity {
             cycle =  curIntake.getString(6);
             category =  "";
 
+            dataCalendar.set(year,month,day,0,0,0);
+            dataTime = dataCalendar.getTimeInMillis() + 999;
+            //Addition von 999 ms, um sicherzustellen, dass ein heute angelegtes Datum sicher aufgenommen
+
+
+            if(dataTime>=compareTime){
+
             //table2.addCell(new Cell().add(new Paragraph(ID + "").setWidth(30).setFontSize(14).setBorder(Border.NO_BORDER)));
             tableIntakes.addCell(new Cell().add(new Paragraph(name + "").setWidth(170).setFontSize(12)));
             tableIntakes.addCell(new Cell().add(new Paragraph(value + "").setWidth(60).setFontSize(12)));
@@ -209,6 +255,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
             tableIntakes.addCell(new Cell().add(new Paragraph(year + "").setWidth(40).setFontSize(12)));
             tableIntakes.addCell(new Cell().add(new Paragraph(cycle + "").setWidth(65).setFontSize(12)));
             tableIntakes.addCell(new Cell().add(new Paragraph(category + "").setWidth(90).setFontSize(12)));
+            }
             curIntake.moveToNext();
         }
 

@@ -79,15 +79,16 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeHandler(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
         fabAddTask = findViewById(R.id.fab);
-        //Holen der Einträge aus der Datenbank
+
         taskList = mySQLite.getTaskByType(type);
-        Collections.reverse(taskList);
+        //Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
+        tasksAdapter.notifyDataSetChanged();
 
         fabAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
             }
         });
 
@@ -207,7 +208,6 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         }
     }
 
-
     @Override
     public void handleDialogClose(DialogInterface dialog){
         taskList = mySQLite.getTaskByType(type);
@@ -218,25 +218,22 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
 
     public void onTaskClick(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(tasksAdapter.getContext());
-        //if (tasksAdapter.checkStatus(position) != 0) {
-        // builder.setTitle("Haben Sie diese Aufgabe Abgeschlossen?");
-            builder.setMessage("Haben Sie diese Aufgabe erledigt?");
-            builder.setPositiveButton("Ja",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(ToDoListActivity.this, "Glückwunsch! Mach weiter so!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            builder.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    tasksAdapter.notifyItemChanged(position);
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-       // }
+        builder.setMessage("Haben Sie diese Aufgabe erledigt?");
+        builder.setPositiveButton("Ja",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getBaseContext(), "Glückwunsch! Mach weiter so!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        builder.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                tasksAdapter.notifyItemChanged(position);
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -252,4 +249,6 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+
 }

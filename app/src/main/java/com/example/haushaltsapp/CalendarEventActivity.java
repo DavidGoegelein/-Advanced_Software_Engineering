@@ -146,8 +146,7 @@ public class CalendarEventActivity extends AppCompatActivity {
         if (insertEvent.resolveActivity(getPackageManager()) != null) {
             startActivity(insertEvent);
         } else {
-            Toast.makeText(CalendarEventActivity.this, "There is no app that can support this action",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(CalendarEventActivity.this, "There is no app that can support this action",Toast.LENGTH_SHORT).show();
         }
     }
 
