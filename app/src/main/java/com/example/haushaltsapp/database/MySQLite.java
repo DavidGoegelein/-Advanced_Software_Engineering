@@ -605,6 +605,19 @@ public class MySQLite extends SQLiteOpenHelper {
     }
 
 
+    public int updateCategory(Category category){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+        value.put(KEY_NAME, category.getName_PK());
+        value.put(KEY_COLOR, category.getColor());
+        value.put(KEY_BORDER, category.getBorder());
+        value.put(KEY_ID, category.getId());
+        int i = db.update(TABLE_CATEGORY, value, KEY_ID+" = ?", new String[] { String.valueOf(category.getId()) });
+        db.close();
+        return i;
+    }
+
 
 ////////////////////////////////////To Do Listen ////////////////////////////////////////////
 

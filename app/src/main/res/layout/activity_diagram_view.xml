@@ -17,8 +17,8 @@
             android:id="@+id/cardViewGraph"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
             android:elevation="10dp"
             app:cardCornerRadius="10dp">
@@ -62,16 +62,30 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:ems="10"
-                        android:text="01.01.2000"
-                        android:inputType="date"/>
+                        android:inputType="date"
+                        android:text="01.01.2000" />
+
+
+                    <ImageView
+                        android:id="@+id/calenderView"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:onClick="openCalender"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.818"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.101"
+                        app:srcCompat="@android:drawable/ic_menu_day" />
+
                     <Button
                         android:id="@+id/changeMonth"
-                        android:layout_width="120dp"
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:onClick="changeMonth"
                         android:text="Laden" />
-
                 </LinearLayout>
 
                 <HorizontalScrollView
@@ -81,8 +95,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        >
+                        android:orientation="horizontal">
 
                         <org.eazegraph.lib.charts.PieChart xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/piechart"
@@ -101,9 +114,9 @@
                             android:layout_marginStart="15dp"
                             android:layout_marginTop="15dp"
                             android:padding="6dp"
-                            app:egFixedBarWidth="true"
                             app:egBarWidth="20dp"
-                            app:egLegendHeight="40dp"/>
+                            app:egFixedBarWidth="true"
+                            app:egLegendHeight="40dp" />
 
                     </LinearLayout>
                 </HorizontalScrollView>
@@ -239,13 +252,14 @@
                             android:textSize="18sp" />
 
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/LinearLayoutetc1"
-                        android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:visibility="invisible">
 
                         <View
                             android:id="@+id/etc1color"
@@ -262,13 +276,14 @@
                             android:textSize="18sp" />
 
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/LinearLayoutetc2"
-                        android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:visibility="invisible">
 
                         <View
                             android:id="@+id/etc2color"
@@ -285,13 +300,14 @@
                             android:textSize="18sp" />
 
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/LinearLayoutetc3"
-                        android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:visibility="invisible">
 
                         <View
                             android:id="@+id/etc3color"
@@ -549,13 +565,13 @@
 
                     <RelativeLayout
                         android:id="@+id/RelativLayoutetc1"
-                        android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="25dp"
                         android:layout_marginTop="2dp"
                         android:layout_marginRight="25dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginBottom="2dp"
+                        android:visibility="invisible">
 
                         <TextView
                             android:id="@+id/etc1name"
@@ -581,23 +597,23 @@
                     <View
 
                         android:id="@+id/Lineetc1"
-                        android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/color_two"
+                        android:visibility="invisible" />
 
                     <RelativeLayout
 
                         android:id="@+id/RelativLayoutetc2"
-                        android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="25dp"
                         android:layout_marginTop="2dp"
                         android:layout_marginRight="25dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginBottom="2dp"
+                        android:visibility="invisible">
 
                         <TextView
                             android:id="@+id/etc2name"
@@ -622,22 +638,22 @@
 
                     <View
                         android:id="@+id/Lineetc2"
-                        android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/color_two"
+                        android:visibility="invisible" />
 
                     <RelativeLayout
                         android:id="@+id/RelativLayoutetc3"
-                        android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="25dp"
                         android:layout_marginTop="2dp"
                         android:layout_marginRight="25dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginBottom="2dp"
+                        android:visibility="invisible">
 
                         <TextView
                             android:id="@+id/etc3name"
@@ -662,23 +678,34 @@
 
                     <View
                         android:id="@+id/Lineetc3"
-                        android:visibility="invisible"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/color_two"
+                        android:visibility="invisible" />
 
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/changeView"
+                    android:id="@+id/changeViewAnnual"
                     android:layout_width="200dp"
                     android:layout_height="100dp"
-                    android:layout_marginBottom="100dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
                     android:onClick="changeToAnnual"
                     android:text="Jahresansicht"
+
+                    />
+
+                <Button
+                    android:id="@+id/changeViewMonthcomparison"
+                    android:layout_width="200dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="100dp"
+                    android:onClick="changeToMonthcomparison"
+                    android:text="Montatsvergleich"
 
                     />
 

@@ -3,7 +3,7 @@ package com.example.haushaltsapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -12,7 +12,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,16 +47,20 @@ public class DiagramViewActivity extends AppCompatActivity {
     private MySQLite db;
 
     private Button changeToAnnual;
+    private Button changeToMonthcomparison;
+    private ImageView calenderView;
+    private long startDateInMilliSec;
+    private long endDateInMilliSec;
 
     //noch erweitern um tv+, bei zufügen von weiteren Kategorien
 
-    private View wohnencolor,lebensmittelcolor,gesundheitcolor,verkehrsmittelcolor,freizeitcolor, sonstigescolor;
-    private LinearLayout letc1, letc2,letc3;
+    private View wohnencolor, lebensmittelcolor, gesundheitcolor, verkehrsmittelcolor, freizeitcolor, sonstigescolor;
+    private LinearLayout letc1, letc2, letc3;
     private View etc1color, etc2color, etc3color;
     private TextView etc1n, etc2n, etc3n;
 
     private RelativeLayout retc1, retc2, retc3;
-    private TextView tvWohnen, tvLebensmittel, tvGesundheit, tvVerkehrsmittel, tvFreizeit, tvSonstiges,tvetc1, tvetc2, tvetc3;
+    private TextView tvWohnen, tvLebensmittel, tvGesundheit, tvVerkehrsmittel, tvFreizeit, tvSonstiges, tvetc1, tvetc2, tvetc3;
     private TextView etc1name, etc2name, etc3name;
     private View lineetc1, lineetc2, lineetc3;
 
@@ -66,28 +72,43 @@ public class DiagramViewActivity extends AppCompatActivity {
     private int day;
     private int month;
     private int year;
+    private int monthk;
 
     private EditText editTextDate; //Datum
     private String dates;
 
-    private void getDate(){
+    private void getDate() {
         java.util.Calendar calender = java.util.Calendar.getInstance();
         SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
         String dates = datumsformat.format(calender.getTime());
-        day = Integer.parseInt(dates.substring(0,2));
-        month = Integer.parseInt(dates.substring(3,5));
-        year = Integer.parseInt(dates.substring(6,10));
+        day = Integer.parseInt(dates.substring(0, 2));
+        month = Integer.parseInt(dates.substring(3, 5));
+        year = Integer.parseInt(dates.substring(6, 10));
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagram_view);
-        changeToAnnual = findViewById(R.id.changeView);
+        changeToAnnual = findViewById(R.id.changeViewAnnual);
+        changeToMonthcomparison= findViewById(R.id.changeViewMonthcomparison);
 
         db = new MySQLite(this);
         db.openDatabase();
         //Erhalte das aktuelle Datum
         getDate();
+
+     /*   //Aktuelles Datum anzeigen
+        editTextDate = (EditText) findViewById(R.id.editTextDate);
+        java.util.Calendar kalender = Calendar.getInstance();
+        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
+        editTextDate.setText(datumsformat.format(kalender.getTime()));
+
+        //Aktuelles Datum von Kalendar holen, um im CalenderView einzubinden
+        year = kalender.get(Calendar.YEAR);
+        month = kalender.get(Calendar.MONTH);
+        day = kalender.get(Calendar.DAY_OF_MONTH);
+*/
 
         //Aktuelles Datum anzeigen
         editTextDate = (EditText) findViewById(R.id.editTextDate);
@@ -97,6 +118,65 @@ public class DiagramViewActivity extends AppCompatActivity {
 
         setData();
     }
+ /*  private void setCalender()
+    {
+
+        //Kalender Datumsauswahl
+        calenderView = findViewById(R.id.calenderView);
+        editTextDate = findViewById(R.id.editTextDate);
+
+       Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        monthk = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+
+
+    java.util.Calendar calender = java.util.Calendar.getInstance();
+    SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
+    String dates = datumsformat.format(calender.getTime());
+    day =Integer.parseInt(dates.substring(0,2));
+    month =Integer.parseInt(dates.substring(3,5));
+    year =Integer.parseInt(dates.substring(6,10));
+        editTextDate.setText(year +"/"+(month)+"/"+day);
+    // editTextDate.setText(year + "/" + (month + 1) + "/" + day);
+
+    //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
+        calender.set(year,month,day,8,0,0);
+    //calender.set(year,monthk,day,8,0,0);
+    startDateInMilliSec =calender.getTimeInMillis();
+        calender.set(year,month,day,8,0,0);
+    //calender.set(year,monthk,day,8,0,0);
+    endDateInMilliSec =calender.getTimeInMillis();
+
+    //Setzen von Listener auf dem Kalender Symbol
+        calenderView.setOnClickListener(new View.OnClickListener()
+
+    {
+        @Override
+        public void onClick (View dateView){
+        DatePickerDialog dateDialog = new DatePickerDialog(DiagramViewActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                day = selectedDay;
+                month = selectedMonth;// + 1; //richtige monatszahl
+                year = selectedYear;
+
+                //Addition bei Monat von 1, Index beginnend bei 0
+                editTextDate.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);
+
+                //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
+                calender.set(year, month, day, 8, 0, 0);
+                startDateInMilliSec = calender.getTimeInMillis();
+                calender.set(year, month, day, 9, 0, 0);
+                endDateInMilliSec = calender.getTimeInMillis();
+            }
+        }, year, month, day);
+        dateDialog.show();
+    }
+    });
+}
+*/
 
     private void setData() {
 
@@ -105,6 +185,9 @@ public class DiagramViewActivity extends AppCompatActivity {
         day = Integer.parseInt(dates.substring(0,2));
         month = Integer.parseInt(dates.substring(3,5));
         year = Integer.parseInt(dates.substring(6,10));
+
+
+
 
         pieChart = findViewById(R.id.piechart);
         BarChart = findViewById(R.id.barchart);
@@ -190,8 +273,8 @@ public class DiagramViewActivity extends AppCompatActivity {
                     tvSonstiges.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
                     sonstigescolor.setBackgroundColor(CatColor);
 
-                //Wenn weiter Kategorien eingetragen sind, weden diese angezeigt
-                //wenn nicht sind sie standardmäßig ausgeblendet
+                    //Wenn weiter Kategorien eingetragen sind, weden diese angezeigt
+                    //wenn nicht sind sie standardmäßig ausgeblendet
                 case 6:
                     etc1color.setBackgroundColor(CatColor);
                     etc1n.setText(CatName);
@@ -297,22 +380,75 @@ public class DiagramViewActivity extends AppCompatActivity {
     {
         setData();
     }
+
+    public  void openCalender(View dateview) {
+        java.util.Calendar calender = java.util.Calendar.getInstance();
+        DatePickerDialog dateDialog = new DatePickerDialog(DiagramViewActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+
+                day = selectedDay;
+                month = selectedMonth + 1; //richtige monatszahl
+                year = selectedYear;
+
+                //Addition bei Monat von 1, Index beginnend bei 0
+                if (day<10)
+                {
+                    if(month<10)
+                    {
+                        editTextDate.setText("0"+ selectedDay+".0"+month+"."+selectedYear);
+                    }
+                    else {
+                        editTextDate.setText("0" + selectedDay + "." + month + "." + selectedYear);
+                    }
+                }
+                else {
+                    if(month<10)
+                    {
+                        editTextDate.setText(selectedDay+".0"+month+"."+selectedYear);
+                    }
+                    else {
+                        editTextDate.setText(selectedDay + "." + month + "." + selectedYear);
+                    }
+                }
+
+                //editTextDate.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);
+
+                //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
+                calender.set(year, month, day, 8, 0, 0);
+                startDateInMilliSec = calender.getTimeInMillis();
+                calender.set(year, month, day, 9, 0, 0);
+                endDateInMilliSec = calender.getTimeInMillis();
+            }
+        }, year, month, day);
+        dateDialog.show();
+    }
+
     //Link zu Jahresansicht
     //Platzierung noch ändern
     public void changeToAnnual(View view) {
 
         Intent intent = getIntent();
-        ArrayList<Outgo> Data = (ArrayList<Outgo>) intent.getSerializableExtra("dataOut");
+        /*ArrayList<Outgo> Data = (ArrayList<Outgo>) intent.getSerializableExtra("dataOut");
         ArrayList<Intake> DataIn = (ArrayList<Intake>) intent.getSerializableExtra("dataIn");
-
+*/
         Intent switchToAnnualView= new Intent(this, AnnualViewActivity.class);
-        ArrayList<Outgo> AlloutgoD =Data;
+       /*ArrayList<Outgo> AlloutgoD =Data;
         switchToAnnualView.putExtra("dataOut",AlloutgoD);
         ArrayList<Intake> AllIntakes =DataIn;
-        switchToAnnualView.putExtra("dataIn",AllIntakes);
+        switchToAnnualView.putExtra("dataIn",AllIntakes);*/
         startActivity(switchToAnnualView);
         //noch Datenbank mitgeben
-        }
+    }
+
+    public void changeToMonthcomparison(View view) {
+
+        Intent intent = getIntent();
+        Intent switchMonthcomparisonView= new Intent(this, MonthcomparisonViewActivity.class);
+        startActivity(switchMonthcomparisonView);
+        //noch Datenbank mitgeben
+    }
 
 
     @Override

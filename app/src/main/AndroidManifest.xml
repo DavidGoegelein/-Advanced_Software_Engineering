@@ -23,6 +23,9 @@
             android:name=".AnnualViewActivity"
             android:exported="true" />
         <activity
+            android:name=".MonthcomparisonViewActivity"
+            android:exported="true" />
+        <activity
             android:name=".ToDoListActivity"
             android:exported="true" />
         <activity

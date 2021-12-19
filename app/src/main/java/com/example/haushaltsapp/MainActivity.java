@@ -183,31 +183,34 @@ public class MainActivity extends AppCompatActivity {
         pieChart.clearChart();
         mBarChart.clearChart();
         //Diagram Methoden aufrufen
-        PieChart(intake,outgo,residualBudget);
-        BarGraph(intake,outgo,residualBudget);
+        PieChart(outgo,residualBudget);
+        BarGraph(intake,outgo);
 
     }
 
 
 
-    public void PieChart (float Einnahmen,float Ausgaben, float Restbudget)
+    public void PieChart (float Ausgaben, float Restbudget)
     {
-        //Daten und Farben zuordnen
-        //es geht noch nicht die Farbe aus colors.xml zu übernehmen
-       /* pieChart.addPieSlice(new PieModel(
-                "Einnahmen",
-                Einnahmen,
-                Color.parseColor("#66BB6A")));
-
-        */
         pieChart.addPieSlice(new PieModel(
                 "Ausgaben",
                 Ausgaben,
                 Color.parseColor("#EF5350")));
-        pieChart.addPieSlice(new PieModel(
-                "Restbudget",
-                Restbudget,
-                Color.parseColor("#FFA726")));
+
+        if (Restbudget >0)
+        {
+            pieChart.addPieSlice(new PieModel(
+                    "Restbudget",
+                    Restbudget,
+                    Color.parseColor("#FFA726")));
+
+        }
+        else {
+            pieChart.addPieSlice(new PieModel(
+                    "Restbudget",
+                    0,
+                    Color.parseColor("#FFA726")));
+        }
 
         //Darstellungsoptionen
         pieChart.setInnerPaddingOutline(5);
@@ -215,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         pieChart.setBackgroundColor(0);
     }
 
-    public void BarGraph(float Einnahmen,float Ausgaben, float Restbudget)
+    public void BarGraph(float Einnahmen,float Ausgaben)
     {
         //Daten und Farben zuordnen
         mBarChart.addBar(new BarModel(
@@ -224,9 +227,9 @@ public class MainActivity extends AppCompatActivity {
         mBarChart.addBar(new BarModel(
                 Ausgaben,
                 Color.parseColor("#EF5350")));
-        mBarChart.addBar(new BarModel(
+        /*mBarChart.addBar(new BarModel(
                 Restbudget,
-                Color.parseColor("#FFA726")));
+                Color.parseColor("#FFA726")));*/
         //Darstellungsoptionen
         mBarChart.startAnimation();
         mBarChart.setShowValues(true);  //werte Aus Balken

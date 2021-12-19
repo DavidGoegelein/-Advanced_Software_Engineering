@@ -102,11 +102,11 @@ public class AddEntryActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
                         day = selectedDay;
-                        month = selectedMonth + 1;
+                        month = selectedMonth;
                         year = selectedYear;
 
                         String dayString = String.valueOf(day);
-                        String monthString = String.valueOf(month);
+                        String monthString = String.valueOf(month+1);
                         if(day < 10){
                             dayString = "0"+dayString;
                         }

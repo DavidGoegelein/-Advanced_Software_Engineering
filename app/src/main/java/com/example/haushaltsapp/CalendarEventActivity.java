@@ -82,9 +82,9 @@ public class CalendarEventActivity extends AppCompatActivity {
         dateSelect.setText(year + "/" + (month + 1) + "/" + day);
 
         //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
-        calendar.set(year,month,day,8,0,0);
+        calendar.set(year,month+1,day,8,0,0);
         startDateInMilliSec = calendar.getTimeInMillis();
-        calendar.set(year,month,day,9,0,0);
+        calendar.set(year,month+1,day,9,0,0);
         endDateInMilliSec =calendar.getTimeInMillis();
 
         //Setzen von Listener auf dem Kalender Symbol
@@ -96,7 +96,7 @@ public class CalendarEventActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
                         day = selectedDay;
-                        month = selectedMonth + 1;
+                        month = selectedMonth;
                         year = selectedYear;
 
                         //Addition bei Monat von 1, Index beginnend bei 0
@@ -146,7 +146,8 @@ public class CalendarEventActivity extends AppCompatActivity {
         if (insertEvent.resolveActivity(getPackageManager()) != null) {
             startActivity(insertEvent);
         } else {
-            Toast.makeText(CalendarEventActivity.this, "There is no app that can support this action",Toast.LENGTH_SHORT).show();
+            Toast.makeText(CalendarEventActivity.this, "There is no app that can support this action",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -17,6 +17,10 @@
         <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/menu/annualview_menu.xml" value="0.2171875" />
         <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/menu/calendar_menu.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/menu/navigation_menu.xml" value="0.35260416666666666" />
+        <entry key="..\:/Users/misse/Desktop/checkout/18.12_Yvette+Leonie/app/src/main/res/layout/activity_annual_view.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/misse/Desktop/checkout/18.12_Yvette+Leonie/app/src/main/res/layout/activity_diagram_view.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/misse/Desktop/checkout/18.12_Yvette+Leonie/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/misse/Desktop/checkout/18.12_Yvette+Leonie/app/src/main/res/layout/activity_monthcomparison_view.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/misse/Desktop/checkout/9.12_David+L/app/src/main/res/layout/activity_add_entry.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/misse/Desktop/checkout/9.12_David+L/app/src/main/res/layout/activity_diagram_view.xml" value="0.2579979360165119" />
         <entry key="..\:/Users/misse/Desktop/checkout/9.12_David+L/app/src/main/res/layout/activity_to_do_list.xml" value="0.23052536231884058" />
@@ -40,6 +44,8 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.12681159420289856" />
         <entry key="app/src/main/res/layout/activity_show_entries.xml" value="0.12681159420289856" />
         <entry key="app/src/main/res/layout/activity_to_do_list.xml" value="0.12681159420289856" />
+        <entry key="app/src/main/res/layout/category_limit.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/new_task.xml" value="0.12681159420289856" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.1953125" />
       </map>
     </option>

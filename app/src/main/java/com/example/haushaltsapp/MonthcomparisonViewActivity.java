@@ -3,12 +3,16 @@ package com.example.haushaltsapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.haushaltsapp.database.Category;
@@ -17,18 +21,14 @@ import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.database.Outgo;
 
 import org.eazegraph.lib.charts.BarChart;
-import org.eazegraph.lib.charts.StackedBarChart;
-import org.eazegraph.lib.charts.ValueLineChart;
 import org.eazegraph.lib.models.BarModel;
-import org.eazegraph.lib.models.StackedBarModel;
-import org.eazegraph.lib.models.ValueLinePoint;
-import org.eazegraph.lib.models.ValueLineSeries;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
-public class AnnualViewActivity extends AppCompatActivity {
+public class MonthcomparisonViewActivity extends AppCompatActivity {
 
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
@@ -40,19 +40,21 @@ public class AnnualViewActivity extends AppCompatActivity {
     private MySQLite db;
 
     //private ValueLineChart LineChartyear;
-    private BarChart BarChartInOut;
-    //private BarChart BarChartyear;
+    private BarChart BarChartInOutcomparison;
 
-    private TextView tvM1, tvM2, tvM3, tvM4,tvM5,tvM6,tvM7,tvM8,tvM9,tvM10,tvM11,tvM12,tvM13;
-    private TextView tvM1out, tvM2out, tvM3out, tvM4out,tvM5out,tvM6out,tvM7out,tvM8out,tvM9out,tvM10out,tvM11out,tvM12out,tvM13out;
-    private TextView tvM1i, tvM2i, tvM3i, tvM4i,tvM5i,tvM6i,tvM7i,tvM8i,tvM9i,tvM10i,tvM11i,tvM12i,tvM13i;
-    private  TextView tvM1in, tvM2in,tvM3in,tvM4in,tvM5in,tvM6in,tvM7in,tvM8in,tvM9in,tvM10in,tvM11in,tvM12in,tvM13in;
-
+    private TextView tvM1o, tvM2o, tvM1i, tvM2i;
+    private TextView tvM1out, tvM2out,tvM1in, tvM2in;
 
     //aktuelles Datum
-    private int day;
-    private int month;
-    private int year;
+    private int day, day1, day2;
+    private int month, month1, month2;
+    private int year, year1, year2;
+    private String datesM1, datesM2;
+
+    private EditText editTextDateM1; //Datum M1
+    private EditText editTextDateM2; //Datum M2
+    private long startDateInMilliSec;
+    private long endDateInMilliSec;
 
     // Setzt die Variablen day, month, year
     private void getDate(){
@@ -66,87 +68,148 @@ public class AnnualViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_annual_view);
+        setContentView(R.layout.activity_monthcomparison_view);
 
         getDate();
-        //LineChartyear = findViewById(R.id.linechart);
 
         db = new MySQLite(this);
         db.openDatabase();
+
+        //Aktuelles Datum anzeigen
+        editTextDateM1 = (EditText) findViewById(R.id.editTextDateM1);
+        editTextDateM2 = (EditText) findViewById(R.id.editTextDateM2);
+        java.util.Calendar calender = Calendar.getInstance();
+        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
+
+        editTextDateM1.setText(datumsformat.format(calender.getTime()));
+        editTextDateM2.setText(datumsformat.format(calender.getTime()));
 
         setData();
     }
 
     private void setData()
     {
-        //BarChartyear = findViewById(R.id.barchart);
-        BarChartInOut= findViewById(R.id.barchartinout);
-        //StackedBarchartKat = findViewById(R.id.stackedbarchart);
+        datesM1 = editTextDateM1.getText().toString();
+        day1 = Integer.parseInt(datesM1.substring(0,2));
+        month1 = Integer.parseInt(datesM1.substring(3,5));
+        year1 = Integer.parseInt(datesM1.substring(6,10));
 
-        tvM1 = findViewById(R.id.tvMonth1);
-        tvM2 = findViewById(R.id.tvMonth2);
-        tvM3 = findViewById(R.id.tvMonth3);
-        tvM4 = findViewById(R.id.tvMonth4);
-        tvM5 = findViewById(R.id.tvMonth5);
-        tvM6 = findViewById(R.id.tvMonth6);
-        tvM7 = findViewById(R.id.tvMonth7);
-        tvM8 = findViewById(R.id.tvMonth8);
-        tvM9 = findViewById(R.id.tvMonth9);
-        tvM10 = findViewById(R.id.tvMonth10);
-        tvM11 = findViewById(R.id.tvMonth11);
-        tvM12 = findViewById(R.id.tvMonth12);
-        tvM13 = findViewById(R.id.tvMonth13);
+        datesM2 = editTextDateM2.getText().toString();
+        day2 = Integer.parseInt(datesM2.substring(0,2));
+        month2 = Integer.parseInt(datesM2.substring(3,5));
+        year2 = Integer.parseInt(datesM2.substring(6,10));
+
+        BarChartInOutcomparison= findViewById(R.id.barchartinout);
+
+        tvM1o = findViewById(R.id.tvMonth1);
+        tvM2o = findViewById(R.id.tvMonth2);
 
         tvM1i = findViewById(R.id.tvMonth1in);
         tvM2i = findViewById(R.id.tvMonth2in);
-        tvM3i = findViewById(R.id.tvMonth3in);
-        tvM4i = findViewById(R.id.tvMonth4in);
-        tvM5i = findViewById(R.id.tvMonth5in);
-        tvM6i = findViewById(R.id.tvMonth6in);
-        tvM7i = findViewById(R.id.tvMonth7in);
-        tvM8i = findViewById(R.id.tvMonth8in);
-        tvM9i = findViewById(R.id.tvMonth9in);
-        tvM10i = findViewById(R.id.tvMonth10in);
-        tvM11i = findViewById(R.id.tvMonth11in);
-        tvM12i = findViewById(R.id.tvMonth12in);
-        tvM13i = findViewById(R.id.tvMonth13in);
 
         tvM1out = findViewById(R.id.tvout_Month1);
         tvM2out = findViewById(R.id.tvout_Month2);
-        tvM3out = findViewById(R.id.tvout_Month3);
-        tvM4out = findViewById(R.id.tvout_Month4);
-        tvM5out = findViewById(R.id.tvout_Month5);
-        tvM6out = findViewById(R.id.tvout_Month6);
-        tvM7out = findViewById(R.id.tvout_Month7);
-        tvM8out = findViewById(R.id.tvout_Month8);
-        tvM9out = findViewById(R.id.tvout_Month9);
-        tvM10out = findViewById(R.id.tvout_Month10);
-        tvM11out = findViewById(R.id.tvout_Month11);
-        tvM12out = findViewById(R.id.tvout_Month12);
-        tvM13out = findViewById(R.id.tvout_Month13);
 
         tvM1in =findViewById(R.id.tvin_Month1);
         tvM2in =findViewById(R.id.tvin_Month2);
-        tvM3in =findViewById(R.id.tvin_Month3);
-        tvM4in =findViewById(R.id.tvin_Month4);
-        tvM5in =findViewById(R.id.tvin_Month5);
-        tvM6in =findViewById(R.id.tvin_Month6);
-        tvM7in =findViewById(R.id.tvin_Month7);
-        tvM8in =findViewById(R.id.tvin_Month8);
-        tvM9in =findViewById(R.id.tvin_Month9);
-        tvM10in =findViewById(R.id.tvin_Month10);
-        tvM11in =findViewById(R.id.tvin_Month11);
-        tvM12in =findViewById(R.id.tvin_Month12);
-        tvM13in =findViewById(R.id.tvin_Month13);
 
+        BarChartInOutcomparison.clearChart();
 
-        //LineChartyear.clearChart();
-        BarChartInOut.clearChart();
-        //BarChartyear.clearChart();
-        //LineGraphMonth();
-        //BarGraphMonth();
-        BarGraphMonthInOut();
+        //In Balkendiagramm nur zwei bestimmte Werte übergaben
+        //Date1 und Date1 müssen übergaben werden in Methode zur Bargraph
+        //BarGraphMonthInOut();
+        BarGraphComparision(month1,year1,month2,year2);
 
+        setTextInOut(month1,year1,month2,year2);
+
+    }
+
+    public  void openCalenderM1(View dateview) {
+        java.util.Calendar calender = java.util.Calendar.getInstance();
+        DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+
+                day = selectedDay;
+                month = selectedMonth + 1; //richtige monatszahl
+                year = selectedYear;
+
+                //Addition bei Monat von 1, Index beginnend bei 0
+                if (day<10)
+                {
+                    if(month<10)
+                    {
+                        editTextDateM1.setText("0"+ selectedDay+".0"+month+"."+selectedYear);
+                    }
+                    else {
+                        editTextDateM1.setText("0" + selectedDay + "." + month + "." + selectedYear);
+                    }
+                }
+                else {
+                    if(month<10)
+                    {
+                        editTextDateM1.setText(selectedDay+".0"+month+"."+selectedYear);
+                    }
+                    else {
+                        editTextDateM1.setText(selectedDay + "." + month + "." + selectedYear);
+                    }
+                }
+
+                //editTextDate.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);
+
+                //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
+                calender.set(year, month, day, 8, 0, 0);
+                startDateInMilliSec = calender.getTimeInMillis();
+                calender.set(year, month, day, 9, 0, 0);
+                endDateInMilliSec = calender.getTimeInMillis();
+            }
+        }, year, month, day);
+        dateDialog.show();
+    }
+
+    public  void openCalenderM2(View dateview) {
+        java.util.Calendar calender = java.util.Calendar.getInstance();
+        DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+
+                day = selectedDay;
+                month = selectedMonth + 1; //richtige monatszahl
+                year = selectedYear;
+
+                //Addition bei Monat von 1, Index beginnend bei 0
+                if (day<10)
+                {
+                    if(month<10)
+                    {
+                        editTextDateM2.setText("0"+ selectedDay+".0"+month+"."+selectedYear);
+                    }
+                    else {
+                        editTextDateM2.setText("0" + selectedDay + "." + month + "." + selectedYear);
+                    }
+                }
+                else {
+                    if(month<10)
+                    {
+                        editTextDateM2.setText(selectedDay+".0"+month+"."+selectedYear);
+                    }
+                    else {
+                        editTextDateM2.setText(selectedDay + "." + month + "." + selectedYear);
+                    }
+                }
+
+                //editTextDate.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);
+
+                //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
+                calender.set(year, month, day, 8, 0, 0);
+                startDateInMilliSec = calender.getTimeInMillis();
+                calender.set(year, month, day, 9, 0, 0);
+                endDateInMilliSec = calender.getTimeInMillis();
+            }
+        }, year, month, day);
+        dateDialog.show();
     }
 
     /*public void LineGraphMonth() {
@@ -525,6 +588,178 @@ public class AnnualViewActivity extends AppCompatActivity {
 
     }*/
 
+    public void BarGraphComparision(int month1, int year1, int month2, int year2)
+    {
+        String monthtext1 = monthtoSting(month1);
+        String monthtext2 =monthtoSting(month2);
+        /*switch (month1) {
+            case 1:
+                monthtext1 = "Jan";
+                break;
+            case 2:
+                monthtext1 = "Feb";
+                break;
+            case 3:
+                monthtext1 = "Mar";
+                break;
+            case 4:
+                monthtext1 = "Apr";
+                break;
+            case 5:
+                monthtext1 = "Mai";
+                break;
+            case 6:
+                monthtext1 = "Jun";
+                break;
+            case 7:
+                monthtext1 = "Jul";
+                break;
+            case 8:
+                monthtext1 = "Aug";
+                break;
+            case 9:
+                monthtext1 = "Sep";
+                break;
+            case 10:
+                monthtext1 = "Okt";
+                break;
+            case 11:
+                monthtext1 = "Nov";
+                break;
+            case 12:
+                monthtext1 = "Dez";
+                break;
+        }
+
+        switch (month2) {
+            case 1:
+                monthtext2 = "Jan";
+                break;
+            case 2:
+                monthtext2 = "Feb";
+                break;
+            case 3:
+                monthtext2 = "Mar";
+                break;
+            case 4:
+                monthtext2 = "Apr";
+                break;
+            case 5:
+                monthtext2 = "Mai";
+                break;
+            case 6:
+                monthtext2 = "Jun";
+                break;
+            case 7:
+                monthtext2 = "Jul";
+                break;
+            case 8:
+                monthtext2 = "Aug";
+                break;
+            case 9:
+                monthtext2 = "Sep";
+                break;
+            case 10:
+                monthtext2 = "Okt";
+                break;
+            case 11:
+                monthtext2 = "Nov";
+                break;
+            case 12:
+                monthtext2 = "Dez";
+                break;
+        }*/
+
+        //Datnbankzugriff: Einnahmen
+        float IntakeMonate1 = db.getValueIntakesMonth(31,month1,year1);
+        BarChartInOutcomparison.addBar(new BarModel(
+                "           "+monthtext1 + " "+ year1,
+                IntakeMonate1,
+                Color.parseColor("#66BB6A")));
+        //Datnbankzugriff: AUsgaben
+        float OutgoMonate1 = db.getValueOutgosMonth(31,month1,year1);
+        BarChartInOutcomparison.addBar(new BarModel(
+                "",//"Aus. "+monthtext1,
+                OutgoMonate1,
+                Color.parseColor("#EF5350")));
+
+        //Monat 2
+        float IntakeMonate2 = db.getValueIntakesMonth(31,month2,year2);
+        BarChartInOutcomparison.addBar(new BarModel(
+                "           "+monthtext2 + " "+ year2,
+                IntakeMonate2,
+                Color.parseColor("#66BB6A")));
+        //Datnbankzugriff: AUsgaben
+        float OutgoMonate2 = db.getValueOutgosMonth(31,month2,year2);
+        BarChartInOutcomparison.addBar(new BarModel(
+                "",//"Aus. "+monthtext2,
+                OutgoMonate2,
+                Color.parseColor("#EF5350")));
+
+    }
+
+    public String monthtoSting(int month)
+    {
+        String monthtext="";
+
+        switch (month) {
+            case 1:
+                monthtext = "Jan";
+                break;
+            case 2:
+                monthtext = "Feb";
+                break;
+            case 3:
+                monthtext= "Mar";
+                break;
+            case 4:
+                monthtext = "Apr";
+                break;
+            case 5:
+                monthtext = "Mai";
+                break;
+            case 6:
+                monthtext = "Jun";
+                break;
+            case 7:
+                monthtext = "Jul";
+                break;
+            case 8:
+                monthtext = "Aug";
+                break;
+            case 9:
+                monthtext = "Sep";
+                break;
+            case 10:
+                monthtext = "Okt";
+                break;
+            case 11:
+                monthtext = "Nov";
+                break;
+            case 12:
+                monthtext = "Dez";
+                break;
+        }
+        return  monthtext;
+    }
+
+    public void setTextInOut(int month1, int year1, int month2, int year2)
+    {
+        String monthtext1= monthtoSting(month1);
+        String monthtext2 = monthtoSting(month2);
+        tvM1out.setText(Float.toString(db.getValueOutgosMonth(31,month1,year1))+" €");
+        tvM1o.setText(monthtext1+"."+year1);
+
+        tvM1in.setText(Float.toString(db.getValueIntakesMonth(31,month1,year1))+" €");
+        tvM1i.setText(monthtext1+"."+year1);
+
+        tvM2out.setText(Float.toString(db.getValueOutgosMonth(31,month2,year2))+" €");
+        tvM2o.setText(monthtext2+"."+year2);
+
+        tvM2in.setText(Float.toString(db.getValueIntakesMonth(31,month2,year2))+" €");
+        tvM2i.setText(monthtext2+"."+year2);
+    }
+
     public void BarGraphMonthInOut() {
 
         int m=1; //für Textausgabe
@@ -579,20 +814,20 @@ public class AnnualViewActivity extends AppCompatActivity {
             }
             //Datnbankzugriff: Einnahmen
             float IntakeMonateX = db.getValueIntakesMonth(31,monthrechne,vorYear);
-            BarChartInOut.addBar(new BarModel(
+            BarChartInOutcomparison.addBar(new BarModel(
                     "     "+monatJahresansicht,
                     IntakeMonateX,
                     Color.parseColor("#66BB6A")));
             //Datnbankzugriff: AUsgaben
             float AusgabeMonateX = db.getValueOutgosMonth(31,monthrechne,vorYear);
-            BarChartInOut.addBar(new BarModel(
+            BarChartInOutcomparison.addBar(new BarModel(
                     "",//monatJahresansicht,
                     AusgabeMonateX,
                     Color.parseColor("#EF5350")));
 
 
             //ANzeige von Wert in Text unter Diagramm
-            switch (m) {
+         /*   switch (m) {
                 case 1:
                     tvM1out.setText(Float.toString(AusgabeMonateX)+" €");
                     tvM1.setText(monatJahresansicht+"."+vorYear);
@@ -673,7 +908,7 @@ public class AnnualViewActivity extends AppCompatActivity {
                     tvM13i.setText(monatJahresansicht+"."+vorYear);
                     break;
             }
-
+*/
             m++;
             monthrechne++;
         }
@@ -723,13 +958,13 @@ public class AnnualViewActivity extends AppCompatActivity {
             }
             //Datnbankzugriff: Einnahmen
             float IntakeMonateX = db.getValueIntakesMonth(31,mo,year);
-            BarChartInOut.addBar(new BarModel(
+            BarChartInOutcomparison.addBar(new BarModel(
                     "     "+ monatJahresansicht,
                     IntakeMonateX,
                     Color.parseColor("#66BB6A")));
             //Datnbankzugriff Ausgaben:
             float AusgabeMonateX = db.getValueOutgosMonth(31,mo,year);
-            BarChartInOut.addBar(new BarModel(
+            BarChartInOutcomparison.addBar(new BarModel(
                     "",//monatJahresansicht,
                     AusgabeMonateX,
                     Color.parseColor("#EF5350")));
@@ -737,7 +972,7 @@ public class AnnualViewActivity extends AppCompatActivity {
 
 
             //ANzeige von Wert in Text unter Diagramm
-            switch (m) {
+         /*   switch (m) {
                 case 1:
                     tvM1out.setText(Float.toString(AusgabeMonateX)+" €");
                     tvM1.setText(monatJahresansicht+"."+year);
@@ -817,14 +1052,14 @@ public class AnnualViewActivity extends AppCompatActivity {
                     tvM13in.setText(Float.toString(IntakeMonateX)+" €");
                     tvM13i.setText(monatJahresansicht+"."+year);
                     break;
-            }
+            }*/
             m++;
             mo++;
         }
         //Darstellungsoptionen
-        BarChartInOut.startAnimation();
-        BarChartInOut.setShowValues(true);
-        BarChartInOut.setActivated(false);
+        BarChartInOutcomparison.startAnimation();
+        BarChartInOutcomparison.setShowValues(true);
+        BarChartInOutcomparison.setActivated(false);
 
     }
 
@@ -1029,7 +1264,15 @@ public class AnnualViewActivity extends AppCompatActivity {
 
     }*/
 
+    public void changeMonth1(View view)
+    {
+        setData();
+    }
 
+    public void changeMonth2(View view)
+    {
+        setData();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
