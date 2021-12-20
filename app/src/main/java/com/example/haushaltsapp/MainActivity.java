@@ -2,7 +2,12 @@ package com.example.haushaltsapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -60,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mySQLite.deleteCategoryById(7);
 
         //Erhalte das aktuelle Datum
@@ -74,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
 
         //Daten anzeigen
         setData();
+
+        checkCatLimitReached();
+        checkPercentageLimitReached();
     }
 
     // Setzt die Variablen day, month, year
@@ -439,4 +446,81 @@ public class MainActivity extends AppCompatActivity {
         setData();
     }
 
+    private void checkCatLimitReached(){
+        ArrayList<Category> categorieList = mySQLite.getAllCategory();
+        String categoryName = "";
+        Double categoryLimit= 0.0;
+        Boolean categoryLimitReached;
+        Boolean isCatButtonChecked = BudgetLimitActivity.getCatButtonStatus();
+        if(isCatButtonChecked){
+            for(int i = 0; i < categorieList.size(); i++){
+                Category category = categorieList.get(i);
+                categoryName = category.getName_PK();
+                categoryLimit = category.getBorder();
+                categoryLimitReached=mySQLite.isCatBudgetLimitReached(month,categoryName,categoryLimit);
+                if(categoryLimitReached && categoryLimit>0.0 ){
+                    addCategoryNotification(categoryName);
+                }
+            }
+        }
+    }
+
+    private void checkPercentageLimitReached(){
+        Integer percentOfBudget=0;
+        Boolean isPerecentLimitReached;
+        Boolean isPercentageButtonChecked = BudgetLimitActivity.getTotalButtonStatus();
+        if(isPercentageButtonChecked){
+            percentOfBudget = BudgetLimitActivity.getPercentageLimit();
+            isPerecentLimitReached=mySQLite.isPercentBudgetLimitReached(month, percentOfBudget);
+                if(isPerecentLimitReached && percentOfBudget>=0 ){
+                    addPercentageNotification();
+                }
+        }
+    }
+
+    private void addCategoryNotification(String category) {
+        // Anlegen des Channels der Notifikation
+        String NOTIFICATION_CHANNEL_ID = "channel_id";
+        String CHANNEL_NAME = "Notification Channel";
+        // notificationId is a unique int for each notification that you must
+        int NOTIFICATION_ID = 0;
+
+        NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, CHANNEL_NAME,NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Überschreitung des definierten Budget Limits:")
+                .setContentText("Betroffene Kategorie: "+category)
+                .setAutoCancel(true);
+        //notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+
+        //Intent welcher aufgerufen wird, wenn er in der Statuszeile angeklickt wird
+        Intent notificationIntent = new Intent(this,MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+        NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(notificationChannel);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    private void addPercentageNotification() {
+        // Anlegen des Channels der Notifikation
+        String NOTIFICATION_CHANNEL_ID = "channel_id";
+        String CHANNEL_NAME = "Notification Channel";
+        int NOTIFICATION_ID = 10;
+
+        NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, CHANNEL_NAME,NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Überschreitung des definierten Budget Limits:")
+                .setContentText("Sie haben das von Ihnen gesetzte Budget überschritten!")
+                .setAutoCancel(true);
+        //notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        //Intent welcher aufgerufen wird, wenn er in der Statuszeile angeklickt wird
+        Intent notificationIntent = new Intent(this,MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+        NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(notificationChannel);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
 }

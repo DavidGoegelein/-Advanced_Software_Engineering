@@ -106,6 +106,17 @@ public class BudgetLimitActivity extends AppCompatActivity {
         }
     }
 
+    public static boolean getCatButtonStatus(){
+        return limitCategory;
+    }
+
+    public static boolean getTotalButtonStatus(){
+        return limitGesamt;
+    }
+
+    public static Integer getPercentageLimit(){
+        return gesamtLimit;
+    }
     // Setzt die Variablen day, month, year
     private void getDate() {
         java.util.Calendar calender = java.util.Calendar.getInstance();
@@ -243,8 +254,6 @@ public class BudgetLimitActivity extends AppCompatActivity {
             category.setBorder(Double.valueOf(valueLimit.getText().toString()));
             mySQLite.updateCategory(category);
         }
-
-
     }
 
 

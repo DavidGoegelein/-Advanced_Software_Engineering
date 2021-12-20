@@ -131,6 +131,7 @@ public class MySQLite extends SQLiteOpenHelper {
         return intakes;
     }
 
+
     /*
     Die Funktion liefert die Einnahme zurück welche die übergebene id besitzt
     Sollte diese Id nicht existieren so wird eine "leere" Ausgabe (ohne name, value ect) zurück gegeben
@@ -155,7 +156,6 @@ public class MySQLite extends SQLiteOpenHelper {
 
         return intake;
     }
-
 
     public int getIntakeIdbyName(String name){
         int result = -1;
@@ -272,6 +272,7 @@ public class MySQLite extends SQLiteOpenHelper {
         db.close();
         return intakes;
     }
+
 
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -502,10 +503,6 @@ public class MySQLite extends SQLiteOpenHelper {
     }
 
 
-
-
-
-
     //////////////////////////////////////////////////////////////////////////////////////////
 
       /*
@@ -698,6 +695,61 @@ public class MySQLite extends SQLiteOpenHelper {
                 cursor.close();
                 db.close();
             return taskList;
+    }
+
+
+    public boolean isCatBudgetLimitReached(int month, String category, double categoryLimit) {
+        Double monthCatValue = 0.0;
+        boolean isLimitReached = false;
+
+        Cursor curCatOutgo = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_OUTGO + " WHERE " + KEY_MONTH + " = \"" + month +"\" AND "+KEY_CATEGORY+"= \""+ category+"\"", null);
+        if ((curCatOutgo.moveToFirst()) || curCatOutgo.getCount() !=0){
+            do {
+                monthCatValue = monthCatValue + curCatOutgo.getDouble(curCatOutgo.getColumnIndexOrThrow(KEY_VALUE));
+            } while (curCatOutgo.moveToNext());
+        }
+        curCatOutgo.close();
+
+        if (monthCatValue >= categoryLimit) {
+            isLimitReached = true;
+        } else {
+            isLimitReached = false;
+        }
+        return isLimitReached;
+    }
+
+    public boolean isPercentBudgetLimitReached(int month, Integer percentOfBudget){
+        Double monthOutgoValue = 0.0 ;
+        Double monthIntakeValue = 0.0;
+        boolean isLimitReached = false;
+
+        //Berechnung der Einnahmen des Monats
+        Cursor curMonthIntakes = getWritableDatabase().rawQuery("SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_MONTH+" = \""+month+"\"", null);
+        if ((curMonthIntakes.moveToFirst()) || curMonthIntakes.getCount() !=0){
+            do{
+                monthIntakeValue= monthIntakeValue+ curMonthIntakes.getDouble(curMonthIntakes.getColumnIndexOrThrow(KEY_VALUE));
+
+            }while(curMonthIntakes.moveToNext());
+        }
+        curMonthIntakes.close();
+
+        //Berechnung der Ausgaben des Monats
+        Cursor curMonthOutgoes = getWritableDatabase().rawQuery("SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_MONTH+" = \""+month+"\"", null);
+        if ((curMonthOutgoes.moveToFirst()) || curMonthOutgoes.getCount() !=0){
+            do{
+                monthOutgoValue= monthOutgoValue+ curMonthOutgoes.getDouble(curMonthOutgoes.getColumnIndexOrThrow(KEY_VALUE));
+
+            }while(curMonthOutgoes.moveToNext());
+        }
+        curMonthOutgoes.close();
+
+        //Vergleich der Einnahmen und Ausgaben
+        if(monthOutgoValue>=((percentOfBudget*monthIntakeValue)/100)){
+            isLimitReached=true;
+        }else {
+            isLimitReached=false;
+        }
+        return isLimitReached;
     }
 }
 
