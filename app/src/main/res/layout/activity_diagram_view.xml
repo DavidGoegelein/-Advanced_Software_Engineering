@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white"
+    android:background="@color/Hintergrunddunkel"
     tools:context=".DiagramViewActivity">
 
     <ScrollView
@@ -17,26 +17,31 @@
             android:id="@+id/cardViewGraph"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginRight="7dp"
             android:elevation="10dp"
-            app:cardCornerRadius="10dp">
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/Hintergrund">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:layout_marginTop="10dp"
                 android:weightSum="4">
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
-                    android:paddingStart="20dp"
                     android:text="Monatsübersicht Kategorien"
-                    android:textSize="25sp" />
+                    android:textSize="35sp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/Textcolorbright1"/>
+
 
                 <LinearLayout
                     android:id="@+id/linearLayout2"
@@ -51,25 +56,32 @@
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
                         android:text="Monat:"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
                         app:layout_constraintTop_toBottomOf="@+id/textView3"
-                        tools:layout_editor_absoluteX="55dp" />
+                        tools:layout_editor_absoluteX="55dp"
+                        android:textColor="@color/Textcolorbright0"/>
 
-                    <EditText
+                    <TextView
                         android:id="@+id/editTextDate"
-                        android:layout_width="100dp"
+                        android:layout_width="110dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:ems="10"
+                        android:textSize="18dp"
                         android:inputType="date"
-                        android:text="01.01.2000" />
+                        android:text="01.01.2000"
+                        android:textStyle="bold"
+                        android:textColor="@color/Textcolorbright0"/>
 
 
                     <ImageView
                         android:id="@+id/calenderView"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:layout_marginStart="5dp"
                         android:onClick="openCalender"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -81,11 +93,13 @@
 
                     <Button
                         android:id="@+id/changeMonth"
-                        android:layout_width="90dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="60dp"
+                        android:layout_marginStart="10dp"
+                        android:backgroundTint="@color/Button"
                         android:onClick="changeMonth"
-                        android:text="Laden" />
+                        android:text="Laden"
+                        android:textColor="@color/Textcolorbright1" />
                 </LinearLayout>
 
                 <HorizontalScrollView
@@ -99,7 +113,7 @@
 
                         <org.eazegraph.lib.charts.PieChart xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/piechart"
-                            android:layout_width="300dp"
+                            android:layout_width="350dp"
                             android:layout_height="300dp"
                             android:layout_marginStart="15dp"
                             android:layout_marginTop="15dp"
@@ -109,12 +123,12 @@
 
                         <org.eazegraph.lib.charts.BarChart
                             android:id="@+id/barchart"
-                            android:layout_width="500dp"
+                            android:layout_width="350dp"
                             android:layout_height="300dp"
-                            android:layout_marginStart="15dp"
+                            android:layout_marginStart="25dp"
                             android:layout_marginTop="15dp"
                             android:padding="6dp"
-                            app:egBarWidth="20dp"
+                            app:egBarWidth="40dp"
                             app:egFixedBarWidth="true"
                             app:egLegendHeight="40dp" />
 
@@ -129,6 +143,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/LinearLayoutVerkehrsmittel"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical">
@@ -140,19 +155,23 @@
                             android:background="@color/Sonstiges" />
 
                         <TextView
+                            android:id="@+id/textVerkehrsmittel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
-                            android:text="@string/Kat_Verkehrsmittel"
-                            android:textSize="18sp" />
+                            android:text="Kat_Verkehrsmittel"
+                            android:textSize="18sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/LinearLayoutWohnen"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:visibility="invisible">
 
                         <View
                             android:id="@+id/ColorWohnen"
@@ -161,19 +180,23 @@
                             android:background="@color/Sonstiges" />
 
                         <TextView
+                            android:id="@+id/textWohnen"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
-                            android:text="@string/Kat_Wohnen"
-                            android:textSize="18sp" />
+                            android:text="Kat_Wohnen"
+                            android:textSize="18sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/LinearLayoutLebensmittel"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:visibility="invisible">
 
                         <View
                             android:id="@+id/ColorLebensmittel"
@@ -182,19 +205,23 @@
                             android:background="@color/Sonstiges" />
 
                         <TextView
+                            android:id="@+id/textLebensmittel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
-                            android:text="@string/Kat_Lebensmittel"
-                            android:textSize="18sp" />
+                            android:text="Kat_Lebensmittel"
+                            android:textSize="18sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/LinearLayoutGesundheit"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:visibility="invisible">
 
                         <View
                             android:id="@+id/ColorGesundheit"
@@ -203,19 +230,23 @@
                             android:background="@color/Sonstiges" />
 
                         <TextView
+                            android:id="@+id/textGesundheit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
-                            android:text="@string/Kat_Gesundheit"
-                            android:textSize="18sp" />
+                            android:text="Kat_Gesundheit"
+                            android:textSize="18sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/LinearLayoutFreizeit"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:visibility="invisible">
 
                         <View
                             android:id="@+id/ColorFreizeit"
@@ -224,19 +255,23 @@
                             android:background="@color/Sonstiges" />
 
                         <TextView
+                            android:id="@+id/textFreizeit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
-                            android:text="@string/Kat_Freizeit"
-                            android:textSize="18sp" />
+                            android:text="Kat_Freizeit"
+                            android:textSize="18sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/LinearLayoutSonstiges"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:visibility="invisible">
 
                         <View
                             android:id="@+id/COlorSonstiges"
@@ -245,11 +280,13 @@
                             android:background="@color/Sonstiges" />
 
                         <TextView
+                            android:id="@+id/textSonstiges"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
-                            android:text="@string/Kat_Sonstiges"
-                            android:textSize="18sp" />
+                            android:text="Kat_Sonstiges"
+                            android:textSize="18sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                     </LinearLayout>
 
@@ -265,7 +302,8 @@
                             android:id="@+id/etc1color"
                             android:layout_width="25dp"
                             android:layout_height="match_parent"
-                            android:background="@color/Sonstiges" />
+                            android:background="@color/Sonstiges"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/etc1"
@@ -289,7 +327,8 @@
                             android:id="@+id/etc2color"
                             android:layout_width="25dp"
                             android:layout_height="match_parent"
-                            android:background="@color/Sonstiges" />
+                            android:background="@color/Sonstiges"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/etc2"
@@ -313,7 +352,8 @@
                             android:id="@+id/etc3color"
                             android:layout_width="25dp"
                             android:layout_height="match_parent"
-                            android:background="@color/Sonstiges" />
+                            android:background="@color/Sonstiges"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/etc3"
@@ -340,9 +380,11 @@
                         android:layout_marginTop="10dp"
                         android:text="Ausgaben pro Kategorie"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/Textcolorbright1"/>
 
                     <View
+                        android:id="@+id/line0"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
@@ -351,6 +393,7 @@
                         android:background="@color/color_two" />
 
                     <RelativeLayout
+                        android:id="@+id/RelativLayoutVerkehrsmittel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="25dp"
@@ -359,11 +402,13 @@
                         android:layout_marginBottom="2dp">
 
                         <TextView
+                            android:id="@+id/Verkehrmittelname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="@string/Kat_Verkehrsmittel"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/tvVerkehrsmittel"
@@ -373,32 +418,38 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/color_one"
+                            android:textColor="@color/Ausgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
 
                     <View
+                        android:id="@+id/line1"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/color_two"
+                        android:visibility="invisible"/>
 
                     <RelativeLayout
+                        android:id="@+id/RelativLayoutWohnen"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="25dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="25dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginBottom="2dp"
+                        android:visibility="invisible">
 
                         <TextView
+                            android:id="@+id/Wohnenname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="@string/Kat_Wohnen"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/tvWohnen"
@@ -408,33 +459,39 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/color_one"
+                            android:textColor="@color/Ausgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
 
                     <View
+                        android:id="@+id/line2"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/color_two"
+                        android:visibility="invisible"/>
 
                     <RelativeLayout
+                        android:id="@+id/RelativLayoutLebensmittel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="25dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="25dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginBottom="2dp"
+                        android:visibility="invisible">
 
                         <TextView
+                            android:id="@+id/Lebensmittelname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="@string/Kat_Lebensmittel"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/tvLebensmittel"
@@ -444,33 +501,39 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/color_one"
+                            android:textColor="@color/Ausgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
 
                     <View
+                        android:id="@+id/line3"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/color_two"
+                        android:visibility="invisible"/>
 
                     <RelativeLayout
+                        android:id="@+id/RelativLayoutGesundheit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="25dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="25dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginBottom="2dp"
+                        android:visibility="invisible">
 
                         <TextView
+                            android:id="@+id/Gesundheitname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="@string/Kat_Gesundheit"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/tvGesundheit"
@@ -480,33 +543,39 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/color_one"
+                            android:textColor="@color/Ausgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
 
                     <View
+                        android:id="@+id/line4"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/color_two"
+                        android:visibility="invisible"/>
 
                     <RelativeLayout
+                        android:id="@+id/RelativLayoutFreizeit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="25dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="25dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginBottom="2dp"
+                        android:visibility="invisible">
 
                         <TextView
+                            android:id="@+id/Freizeitname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="@string/Kat_Freizeit"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/tvFreizeit"
@@ -516,32 +585,38 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/color_one"
+                            android:textColor="@color/Ausgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
 
                     <View
+                        android:id="@+id/line5"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/color_two"
+                        android:visibility="invisible"/>
 
                     <RelativeLayout
+                        android:id="@+id/RelativLayoutSonstiges"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="25dp"
                         android:layout_marginTop="2dp"
                         android:layout_marginRight="25dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginBottom="2dp"
+                        android:visibility="invisible">
 
                         <TextView
+                            android:id="@+id/Sonstigesname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="@string/Kat_Sonstiges"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/tvSonstiges"
@@ -551,17 +626,19 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/color_one"
+                            android:textColor="@color/Ausgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
 
                     <View
+                        android:id="@+id/line6"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/color_two"
+                        android:visibility="invisible"/>
 
                     <RelativeLayout
                         android:id="@+id/RelativLayoutetc1"
@@ -579,7 +656,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="1"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/tvetc1"
@@ -589,14 +667,13 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/color_one"
+                            android:textColor="@color/Ausgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
 
                     <View
-
-                        android:id="@+id/Lineetc1"
+                        android:id="@+id/line7"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
@@ -621,7 +698,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="2"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/tvect2"
@@ -631,13 +709,13 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/color_one"
+                            android:textColor="@color/Ausgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
 
                     <View
-                        android:id="@+id/Lineetc2"
+                        android:id="@+id/line8"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
@@ -661,7 +739,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="3"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:textColor="@color/Textcolorbright0"/>
 
                         <TextView
                             android:id="@+id/tvetc3"
@@ -671,13 +750,13 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/color_one"
+                            android:textColor="@color/Ausgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
 
                     <View
-                        android:id="@+id/Lineetc3"
+                        android:id="@+id/line9"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
@@ -695,6 +774,9 @@
                     android:layout_marginBottom="10dp"
                     android:onClick="changeToAnnual"
                     android:text="Jahresansicht"
+                    android:backgroundTint="@color/Button"
+                    android:textStyle="bold"
+                    android:textColor="@color/Textcolorbright1"
 
                     />
 
@@ -706,6 +788,9 @@
                     android:layout_marginBottom="100dp"
                     android:onClick="changeToMonthcomparison"
                     android:text="Montatsvergleich"
+                    android:backgroundTint="@color/Button"
+                    android:textStyle="bold"
+                    android:textColor="@color/Textcolorbright1"
 
                     />
 

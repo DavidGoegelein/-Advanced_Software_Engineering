@@ -2,9 +2,15 @@ package com.example.haushaltsapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.haushaltsapp.database.Category;
@@ -26,6 +33,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class AddEntryActivity extends AppCompatActivity {
 
@@ -37,7 +45,7 @@ public class AddEntryActivity extends AppCompatActivity {
     private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
 
     private Spinner spinnerCyclus, spinnerCategory; //Zyklus, Kategorie
-    private EditText editTextDate; //Datum
+    private TextView editTextDate; //Datum
     private ImageView calenderView; //Kalender
 
     //Werte der Einnahme oder Ausgabe
@@ -80,7 +88,7 @@ public class AddEntryActivity extends AppCompatActivity {
         spinnerCategory.setAdapter(adapter3);
 
         //Aktuelles Datum anzeigen
-        editTextDate = (EditText) findViewById(R.id.editTextDate);
+        editTextDate = (TextView) findViewById(R.id.editTextDate);
         java.util.Calendar kalender = Calendar.getInstance();
         SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
         editTextDate.setText(datumsformat.format(kalender.getTime()));
@@ -90,6 +98,13 @@ public class AddEntryActivity extends AppCompatActivity {
         month = kalender.get(Calendar.MONTH);
         day = kalender.get(Calendar.DAY_OF_MONTH);
 
+        //Auf deutsche Kalenderanzeige umstellen
+        Locale locale = new Locale("de");
+        Locale.setDefault(locale);
+        Resources res = this.getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        config.locale = locale;
+        res.updateConfiguration(config, res.getDisplayMetrics());
 
         //Kalender
         calenderView = findViewById(R.id.calenderView);
@@ -97,7 +112,7 @@ public class AddEntryActivity extends AppCompatActivity {
         calenderView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View dateView) {
-                DatePickerDialog dateDialog = new DatePickerDialog(AddEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog dateDialog = new DatePickerDialog(AddEntryActivity.this,R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
 
                     @Override
                     public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
@@ -149,6 +164,11 @@ public class AddEntryActivity extends AppCompatActivity {
             if((month < monthCurrent) || (year < yearCurrent)) {//Wenn der Eintrag in der Vergangenheit liegt muss das Budget angepasst werden
                 setBudgetEntry(month, year);
             }
+
+    //Prüfen, ob ein gesetztes Limit für Kategorie oder Gesamt überschritten wird
+        checkCatLimitReached();
+        checkPercentageLimitReached();
+
             super.finish();
         }
     }
@@ -261,7 +281,7 @@ public class AddEntryActivity extends AppCompatActivity {
                     Outgo outgo = new Outgo(titel, value, 1, monthEntry, yearEntry, "einmalig","Sonstiges");
                     mySQLite.addOutgo(outgo);
                 }
-            }while ((monthEntry < monthCurrent) && (yearEntry <= yearCurrent));
+            }while (!((monthEntry != monthCurrent) && (yearEntry != yearCurrent)));
         }
     }
 
@@ -368,6 +388,12 @@ public class AddEntryActivity extends AppCompatActivity {
                 startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
                 return true;
 
+            case R.id.itemDeleteCategory:
+                mySQLite = new MySQLite(this);
+                Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
+                startActivity(switchToDeleteCategory);
+                return true;
+
             case R.id.itemPdfCreator:
                 Intent switchToPdfCreator = new Intent(this, PDFCreatorActivity.class);
                 startActivity(switchToPdfCreator);
@@ -378,5 +404,89 @@ public class AddEntryActivity extends AppCompatActivity {
         }
     }
 
+    private void checkCatLimitReached(){
+        ArrayList<Category> categorieList = mySQLite.getAllCategory();
+        String categoryName = "";
+        Double categoryLimit= 0.0;
+        Boolean categoryLimitReached;
+        // Boolean isCatButtonChecked = BudgetLimitActivity.getCatButtonStatus();
+        boolean isCatButtonChecked = mySQLite.getSateLimitState("Kategorielimit").equals("true"); //später aus der Datenbank - Yvette
+        if(isCatButtonChecked){
+            for(int i = 0; i < categorieList.size(); i++){
+                Category category = categorieList.get(i);
+                categoryName = category.getName_PK();
+                categoryLimit = category.getBorder();
+                categoryLimitReached=mySQLite.isCatBudgetLimitReached(month,categoryName,categoryLimit);
+                if(categoryLimitReached && categoryLimit>0.0 ){
+                    addCategoryNotification(categoryName);
+                }
+            }
+        }
 
+    }
+
+    private void checkPercentageLimitReached(){
+
+        Integer percentOfBudget=0; //double?
+        Boolean isPerecentLimitReached;
+        // Boolean isPercentageButtonChecked = BudgetLimitActivity.getTotalButtonStatus();
+        Boolean isPercentageButtonChecked = mySQLite.getSateLimitState("Gesamtlimit").equals("true"); ; //später aus der Dantebank. Yvette
+        if(isPercentageButtonChecked){
+            // percentOfBudget = BudgetLimitActivity.getPercentageLimit();
+            percentOfBudget =  (int) mySQLite.getSateLimitValue("Gesamtlimit"); //Später aus der Datenbank. Yvette
+            isPerecentLimitReached=mySQLite.isPercentBudgetLimitReached(month, percentOfBudget);
+            if(isPerecentLimitReached && percentOfBudget>=0 ){
+                addPercentageNotification();
+            }
+        }
+
+    }
+
+    private void addCategoryNotification(String category) {
+        // Anlegen des Channels der Notifikation
+        String NOTIFICATION_CHANNEL_ID = "channel_id";
+        String CHANNEL_NAME = "Notification Channel";
+        // notificationId is a unique int for each notification that you must
+        int NOTIFICATION_ID = 0;
+
+        NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Überschreitung des definierten Budget Limits:")
+                .setContentText("Betroffene Kategorie: "+category)
+                .setAutoCancel(true);
+        //notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+
+        //Intent welcher aufgerufen wird, wenn er in der Statuszeile angeklickt wird
+        Intent notificationIntent = new Intent(this,MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+        NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(notificationChannel);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    private void addPercentageNotification() {
+        // Anlegen des Channels der Notifikation
+        String NOTIFICATION_CHANNEL_ID = "channel_id";
+        String CHANNEL_NAME = "Notification Channel";
+        int NOTIFICATION_ID = 10;
+
+        NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, CHANNEL_NAME,NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Überschreitung des definierten Budget Limits:")
+                .setContentText("Sie haben das von Ihnen gesetzte Budget überschritten!")
+                .setAutoCancel(true);
+        //notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        //Intent welcher aufgerufen wird, wenn er in der Statuszeile angeklickt wird
+        Intent notificationIntent = new Intent(this,MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+        NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(notificationChannel);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
 }
+
+

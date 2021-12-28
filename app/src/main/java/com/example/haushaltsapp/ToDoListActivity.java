@@ -71,7 +71,7 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        mySQLite.openDatabase();
+        // db.openDatabase(); // nicht mehr notwendig // Auskommentiert von Yvette Groner
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         tasksAdapter = new ToDoAdapter(mySQLite,this,this);
@@ -196,6 +196,12 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
                 switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
                 startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                return true;
+
+            case R.id.itemDeleteCategory:
+                mySQLite = new MySQLite(this);
+                Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
+                startActivity(switchToDeleteCategory);
                 return true;
 
             case R.id.itemPdfCreator:

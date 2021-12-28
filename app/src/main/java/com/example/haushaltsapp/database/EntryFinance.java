@@ -28,6 +28,7 @@ public class EntryFinance implements Serializable {
     }
 
     //Damit man die Array-Listen später nach dem Datum sortieren kann
+    /*
     public int compareTo(EntryFinance entryFinance) {
         String firstString = year + "/" + month + "/" + day;
         String secondString = entryFinance.year + "/" + entryFinance.month + "/" + entryFinance.day;
@@ -40,6 +41,7 @@ public class EntryFinance implements Serializable {
         }
         return 0; // default
     }
+     */
 
     public int getId_PK() {
         return id_PK;

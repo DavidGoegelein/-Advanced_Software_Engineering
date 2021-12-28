@@ -3,6 +3,7 @@ package com.example.haushaltsapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.View;
@@ -22,6 +23,7 @@ import com.example.haushaltsapp.database.Outgo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /*
 Activity um eine Einnahme oder Ausgabe zu ändern oder zu löschen
@@ -34,7 +36,7 @@ public class EditEntryActivity extends AppCompatActivity {
     private Spinner spinnerCategory;
     private EditText editTextName;
     private EditText editTextValue;
-    private EditText editTextDate;
+    private TextView editTextDate;
     private ImageView calenderView; //Kalender
 
     private String entry;
@@ -47,6 +49,9 @@ public class EditEntryActivity extends AppCompatActivity {
     private int year;
     private String cyclus;
     private String category = " ";
+
+    //private Intake intake;
+    //private Outgo outgo;
 
     //Aktuelles Datum. Notwendig um Budget-Eintrag anzupassen
     private int monthCurrent;
@@ -83,7 +88,7 @@ public class EditEntryActivity extends AppCompatActivity {
             month = intake.getMonth();
             year = intake.getYear();
             cyclus = intake.getCycle();
-        }else{ //Ausgabe
+        }else{ //Outgo Ausgabe
             Outgo outgo = mySQLite.getOutgoById(id);
             name = outgo.getName();
             value = outgo.getValue();
@@ -95,12 +100,12 @@ public class EditEntryActivity extends AppCompatActivity {
         }
 
         setValue(); //Werte in der Oberfläche setzen
-
+        /* Auskommentiert von Leonie
         ////////////
         //Kalender
         calenderView = findViewById(R.id.calenderView);
         //Setzen von Listener auf dem Kalender Symbol
-        calenderView.setOnClickListener(new View.OnClickListener() {
+       calenderView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View dateView) {
                 DatePickerDialog dateDialog = new DatePickerDialog(EditEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
@@ -124,7 +129,55 @@ public class EditEntryActivity extends AppCompatActivity {
                 }, year, month, day);
                 dateDialog.show();
             }
-        });
+        });*/
+    }
+
+    //eingefügt von Leonie
+    public  void openCalender(View dateview) {
+        java.util.Calendar calender = java.util.Calendar.getInstance();
+        //aktuelle Datum in Kalender
+        /*year = calender.get(Calendar.YEAR);
+        month = calender.get(Calendar.MONTH);
+        day = calender.get(Calendar.DAY_OF_MONTH);
+         */
+
+        //Datum von Eintrag verwenden
+        dates = editTextDate.getText().toString();
+        day = Integer.parseInt(dates.substring(0,2));
+        month = Integer.parseInt(dates.substring(3,5));
+        month =month-1; //wird ein Monat später angezeigt, deshalb -1 rechnen
+        year = Integer.parseInt(dates.substring(6,10));
+        DatePickerDialog dateDialog = new DatePickerDialog(EditEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+
+                day = selectedDay;
+                month = selectedMonth+1;
+                year = selectedYear;
+
+                if (day<10)
+                {
+                    if(month<10)
+                    {
+                        editTextDate.setText("0"+ selectedDay+".0"+month+"."+selectedYear);
+                    }
+                    else {
+                        editTextDate.setText("0" + selectedDay + "." + month + "." + selectedYear);
+                    }
+                }
+                else {
+                    if(month<10)
+                    {
+                        editTextDate.setText(selectedDay+".0"+month+"."+selectedYear);
+                    }
+                    else {
+                        editTextDate.setText(selectedDay + "." + month + "." + selectedYear);
+                    }
+                }
+            }
+        }, year, month, day);
+        dateDialog.show();
     }
 
     // Setzt die Variablen monthCurrent und yearCurrent mit dem aktuellen datum
@@ -163,7 +216,8 @@ public class EditEntryActivity extends AppCompatActivity {
            // String aktuellCatagory = outgo.getCategory();
             int spinnerPosition = adapter.getPosition(category);
             spinnerCategory.setSelection(spinnerPosition);
-        }else{
+        }
+        else{
             TextView textView1 = (TextView) findViewById(R.id.textView8);
             textView1.setVisibility(View.GONE);
             spinnerCategory.setVisibility(View.GONE);
@@ -187,9 +241,22 @@ public class EditEntryActivity extends AppCompatActivity {
         editTextValue.setText(String.valueOf(value));
 
         //Datum setzen
-        editTextDate = (EditText) findViewById(R.id.editTextDate);
-        String dateStr = String.valueOf(day)+"."+String.valueOf(month)+"."+String.valueOf(year);
-        editTextDate.setText(dateStr);
+        editTextDate = (TextView) findViewById(R.id.editTextDate);
+
+        //Leonie
+        String dayString = String.valueOf(day);
+        String monthString = String.valueOf(month);
+        if(day < 10){
+            dayString = "0"+dayString;
+        }
+        if(month < 10){
+            monthString = "0"+monthString;
+        }
+        editTextDate.setText(dayString+"."+monthString+"."+year);
+
+        //Leonie auskommentiert
+       // String dateStr = String.valueOf(day)+"."+String.valueOf(month)+"."+String.valueOf(year);
+       // editTextDate.setText(dateStr);
     }
 
     public void onClickchange(View view){
@@ -204,8 +271,15 @@ public class EditEntryActivity extends AppCompatActivity {
                 Outgo outgo = new Outgo(name, value, day, month, year, cyclus, category);
                 mySQLite.updateOutgo(outgo,id);
             }
+            if((month < monthCurrent) || (year < yearCurrent)) {//Wenn der Eintrag in der Vergangenheit liegt muss das Budget angepasst werden
+                setBudgetEntry(month, year);
+            }
             super.finish();
         }
+        //Leonie
+        Intent intent = getIntent();
+        Intent switchToChartView= new Intent(this, ChartViewActivity.class);
+        startActivity(switchToChartView);
     }
 
     public void onClickdeli(View view){
@@ -214,7 +288,14 @@ public class EditEntryActivity extends AppCompatActivity {
         }else{
             mySQLite.deleteIntakeById(id);
         }
+        if((month < monthCurrent) || (year < yearCurrent)) {//Wenn der Eintrag in der Vergangenheit liegt muss das Budget angepasst werden
+            setBudgetEntry(month, year);
+        }
         super.finish();
+        //Leonie
+        Intent intent = getIntent();
+        Intent switchToChartView= new Intent(this, ChartViewActivity.class);
+        startActivity(switchToChartView);
     }
 
     private boolean getValues(){
@@ -255,5 +336,61 @@ public class EditEntryActivity extends AppCompatActivity {
         }
 
         return retValue;
+    }
+
+
+
+
+    /*
+Funktion geht von moonthEntry +1 bis zum akuellen Monat/Jahr iteraqtiv durch
+löscht den Eintrag mit dem Budget und berechnet den neuen Wert
+ist der Wert positiv wird dieser in Einnahmen, ansonsten in Ausgaben, hinterlegt
+ */
+    private void setBudgetEntry(int monthEntry,int yearEntry){
+        if((monthEntry < monthCurrent) || (yearEntry < yearCurrent)){
+
+            do{
+                // Erst hochzählen da man den nächsten Monat braucht
+                if(monthEntry == 12){
+                    monthEntry = 1;
+                    yearEntry++;
+                }else{
+                    monthEntry++;
+                }
+                //Eintrag muss aus der Datenbank enfernt werden
+                //Wie der Eintrag lautet
+                String titel = "Restbudget vom ";
+                if(monthEntry > 1){
+                    titel = titel+(monthEntry-1)+"."+yearEntry;
+                }else{
+                    titel = titel+12+"."+(yearEntry-1);
+                }
+
+                //id des Eintrags ermitteln
+                int idIntake = mySQLite.getIntakeIdbyName(titel);
+                int idOutgo = mySQLite.getOutgoIdbyName(titel);
+                if(idIntake > -1){
+                    mySQLite.deleteIntakeById(idIntake); //Eintrag löschen
+                }else if(idOutgo > -1){
+                    mySQLite.deleteOutgoById(idOutgo); //Eintrag löschen
+                }
+
+                //Neuer Eintrag erstellen
+                double value = 0.0;
+                if (monthEntry > 1) {
+                    value = mySQLite.getValueIntakesMonth(31, monthEntry - 1, yearEntry) - mySQLite.getValueOutgosMonth(31, monthEntry - 1, yearEntry);
+                } else {
+                    value = mySQLite.getValueIntakesMonth(31, 1, yearEntry - 1) - mySQLite.getValueOutgosMonth(31, 1, yearEntry - 1);
+                }
+                if(value >= 0) { //Einnahme
+                    Intake intake = new Intake(titel, value, 1, monthEntry, yearEntry, "einmalig");
+                    mySQLite.addIntake(intake);
+                }else{ //Ausgabe
+                    value = value * (-1);
+                    Outgo outgo = new Outgo(titel, value, 1, monthEntry, yearEntry, "einmalig","Sonstiges");
+                    mySQLite.addOutgo(outgo);
+                }
+            }while (!((monthEntry != monthCurrent) && (yearEntry != yearCurrent)));
+        }
     }
 }

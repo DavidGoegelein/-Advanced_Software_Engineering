@@ -3,28 +3,32 @@ package com.example.haushaltsapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.HorizontalScrollView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.haushaltsapp.ChartPackage.RecyclerAdapter;
+import com.example.haushaltsapp.ChartPackage.RecyclerAdapterIn;
 import com.example.haushaltsapp.database.Category;
 import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.database.Outgo;
 
+
+//https://www.youtube.com/watch?v=vBxNDtyE_Co
 public class ChartViewActivity extends  AppCompatActivity {
 
     ////Variabeln zur Menünavigation
@@ -39,159 +43,109 @@ public class ChartViewActivity extends  AppCompatActivity {
     private int year;
     ///////////////////////////////
 
-    private final static int[] COLUMN_WIDTHS = new int[]{40, 20, 40}; //Fensterbreite der einzelnen Spalten
-    private final static int CONTENT_ROW_HEIGHT = 80;
-    private final static int FIXED_HEADER_HEIGHT = 60;
 
-    //Textgröße noch ändern und Button zum bearbeiten der Einträge anlegen
+    private Spinner spinner;
 
-    private TableLayout fixedTableLayout;
-    private TableLayout scrollableTableLayout;
-
+    private ArrayList<Outgo> Outgolist;
+    private ArrayList<Intake> Intakelist;
+    private RecyclerView recyclerView;
+    private  RecyclerAdapter.RecyclerViewClickListener listener;
+    private RecyclerAdapterIn.RecyclerViewClickListenerIn listenerIn;
+    private String InOutSpinner;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart_view);
+        mySQLite = new MySQLite(this);
+        Outgolist = mySQLite.getAllOutgo();
+        Intakelist = mySQLite.getAllIntakes();
 
-        Intent intent = getIntent();
-        ArrayList<Outgo> ListeOut = (ArrayList<Outgo>) intent.getSerializableExtra("monthlist");
+        //Spinner zu auswahl von In und Out
+        spinner = findViewById(R.id.SpinnerInOut);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_TabelleInOut, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spinner.setAdapter(adapter);
 
-
-        final HorizontalScrollView tblHeaderhorzScrollView = (HorizontalScrollView) findViewById(R.id.tblHeaderhorzScrollView);
-        tblHeaderhorzScrollView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        tblHeaderhorzScrollView.setHorizontalScrollBarEnabled(false);
-
-        final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
-        horizontalScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            //ausgelesen, welcher Spinner gesetzt ist
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i==0)
+                {
+                    InOutSpinner ="Outgo";
+                    setAddapertOut();
+                }
+                else if (i == 1)
+                {
+                    InOutSpinner ="Intake";
+                    setAddapertIn();
+                }
+            }
 
             @Override
-            public void onScrollChanged() {
-                tblHeaderhorzScrollView.setScrollX(horizontalScrollView.getScrollX());
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
-
-        //zeile
-        this.fixedTableLayout = (TableLayout) findViewById(R.id.fixed_column);
-        //SPalten die zu jeweiligen Zeile gehören
-        this.scrollableTableLayout = (TableLayout) findViewById(R.id.scrollable_part);
-        //Setzt die Spaltenbreite für die Tabelle.
-        setTableHeaderWidth();
-        //Befüllt die Tabelle mit Beispieldaten.
-        fillTable();
+        recyclerView = findViewById((R.id.chartRecyclerView));
     }
 
-    private void setTableHeaderWidth() {
-        TextView textView;
-        textView = (TextView) findViewById(R.id.Ausgabe);
-        setHeaderWidth(textView, COLUMN_WIDTHS[0]);
-        textView = (TextView) findViewById(R.id.Wert);
-        setHeaderWidth(textView, COLUMN_WIDTHS[1]);
-        textView = (TextView) findViewById(R.id.Datum);
-        setHeaderWidth(textView, COLUMN_WIDTHS[2]);
-            /*textView = (TextView) findViewById(R.id.Kategorie);
-            setHeaderWidth(textView, COLUMN_WIDTHS[3]);
-            textView = (TextView) findViewById(R.id.Sonstiges);
-            setHeaderWidth(textView, COLUMN_WIDTHS[4]);*/
+
+    private void setAddapertOut() {
+
+        setOnClickListner();
+        RecyclerAdapter adapter = new RecyclerAdapter(Outgolist, listener);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator( new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+
     }
 
-    private void setHeaderWidth(TextView textView, int width) {
-        textView.setWidth(width * getScreenWidth() / 100);
-        textView.setHeight(FIXED_HEADER_HEIGHT);
+    private void setAddapertIn() {
+
+        setOnClickListner();
+        RecyclerAdapterIn adapter = new RecyclerAdapterIn(Intakelist, listenerIn);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator( new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+
     }
-
-    private void fillTable() {
-
-        Intent intent = getIntent();
-        ArrayList<Outgo> ListeOut = (ArrayList<Outgo>) intent.getSerializableExtra("monthlist");
-
-        Context ctx = getApplicationContext();
-        int lenghtOutgos = ListeOut.size();
-        //begrenzung der ABfrage durch lenghte von Datenbank noch einfügen.
-        for (int position = 1; position < lenghtOutgos; position++) {
-            //Daten aus Datenbank holen
-            String outgo = ListeOut.get(position).getName();
-            String value = Double.toString(ListeOut.get(position).getValue());
-            Integer day = ListeOut.get(position).getDay();
-            //hier sind die vergabe von monat und Jahr verdreht
-            Integer month =ListeOut.get(position).getMonth();
-            Integer year = ListeOut.get(position).getYear();
-            String date = day+"."+month+"."+year;
-
-            fixedTableLayout.addView(createTextView(outgo, COLUMN_WIDTHS[0], position));
-            TableRow row = new TableRow(ctx);
-
-            for (int col = 1; col < 2; col++) //1=Wert, 2=Datum , 3=Kategorie, 4=Sonstiges
-            {
-                //Wert
-                row.addView(createTextView(value, COLUMN_WIDTHS[col], position));
-                //Datum
-                row.addView(createTextView(date, COLUMN_WIDTHS[col], position));
-                //Kategorie
-                //String Kategorie ="alles";
-                //row.addView(createTextView(Kategorie, COLUMN_WIDTHS[col], position));
+    private void setOnClickListner() {
+        listenerIn = new RecyclerAdapterIn.RecyclerViewClickListenerIn() {
+            @Override
+            public void onClick(View v, int position) {
+                String entry="";
+                //Activity Edit entry aufrufen
+                //id wird nicht richtig übergeben
+                Intent intenttoedit = new Intent(getApplicationContext(), EditEntryActivity.class);
+                int Id =Intakelist.get(position).getId_PK();
+                intenttoedit.putExtra("id", Id);
+                intenttoedit.putExtra("entry", InOutSpinner);
+                setResult(RESULT_OK, intenttoedit);
+                startActivity(intenttoedit);
             }
-            scrollableTableLayout.addView(row);
-        }
+        };
+
+        listener = new RecyclerAdapter.RecyclerViewClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+
+                String entry="";
+                //Activity Edit entry aufrufen
+                Intent intenttoedit = new Intent(getApplicationContext(), EditEntryActivity.class);
+                int Id =Outgolist.get(position).getId_PK();
+                intenttoedit.putExtra("id", Id);
+                intenttoedit.putExtra("entry", InOutSpinner);
+                setResult(RESULT_OK, intenttoedit);
+                startActivity(intenttoedit);
+            }
+        };
     }
-
-    private TextView createTextView(String text, int width, int index) {
-        TextView textView = new TextView(getApplicationContext());
-        textView.setText(text);
-        textView.setWidth(width * getScreenWidth() / 100);
-        textView.setHeight(CONTENT_ROW_HEIGHT);
-        return textView;
-    }
-
-    private int getScreenWidth() {
-        return getResources().getDisplayMetrics().widthPixels;
-    }
-
-
-
-/* @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chart_view);
-        ListView mListView = (ListView) findViewById(R.id.listView);
-        Intent intent = getIntent();
-        ArrayList<Outgo> ListeOut = (ArrayList<Outgo>) intent.getSerializableExtra("list");
-        //zum TEsten ohne Datenbankzugriff
-        //Erzeugen die AUsgabe objects
-        Expenditures T1 = new Expenditures("Tanken", "54", "11.11.2021");
-        Expenditures T2 = new Expenditures("Einkaufen Lidl", "24", "13.11.2021");
-        Expenditures T3 = new Expenditures("Handy", "3.99", "01.11.2021");
-        Expenditures T4 = new Expenditures("Penny", "10", "20.11.2021");
-        Expenditures T5 = new Expenditures("Penny EInk.", "34.87", "21.11.2021");
-        //füllen der Array List
-        ArrayList<Expenditures> AusgabeList = new ArrayList<>();
-        AusgabeList.add(T1);
-        AusgabeList.add(T2);
-        AusgabeList.add(T3);
-        AusgabeList.add(T4);
-        AusgabeList.add(T5);
-        AusgabeList.add(T1);
-        AusgabeList.add(T2);
-        AusgabeList.add(T4);
-        AusgabeList.add(T3);
-        AusgabeList.add(T5);
-        AusgabeList.add(T1);
-        AusgabeList.add(T1);
-        AusgabeList.add(T3);
-        AusgabeList.add(T4);
-        AusgabeList.add(T2);
-        //Zum Test ohne Datenbank
-        ExpendituresListAdapter adapter = new ExpendituresListAdapter(this, R.layout.activity_adapter_list_view, AusgabeList);
-        mListView.setAdapter(adapter);
-        //Intent switchOutgoListAdapter =new Intent(this, OutgoListAdapter.A.class);
-        //ArrayList<Outgo> outgoes1 = ListeOut;
-        //switchOutgoListAdapter.putExtra("list",(Serializable) outgoes1);
-        //OutgoListAdapter adapter = new OutgoListAdapter(this,R.layout.activity_adapter_list_view,ListeOut);
-        //mListView.setAdapter(adapter);
-    }*/
-
 
 
     @Override
@@ -294,6 +248,12 @@ public class ChartViewActivity extends  AppCompatActivity {
                 switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
                 startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                return true;
+
+            case R.id.itemDeleteCategory:
+                mySQLite = new MySQLite(this);
+                Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
+                startActivity(switchToDeleteCategory);
                 return true;
 
             case R.id.itemPdfCreator:

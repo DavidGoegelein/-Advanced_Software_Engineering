@@ -17,6 +17,9 @@
             android:name=".AddCategoryActivity"
             android:exported="true" />
         <activity
+            android:name=".DeleteCategoryActivity"
+            android:exported="true" />
+        <activity
             android:name=".PDFCreatorActivity"
             android:exported="true" />
         <activity

@@ -44,7 +44,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     //Aufruf durch RecyclerView, um Verbindug zwischen ViewHolder und zugehörigen Daten zu generieren
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        db.openDatabase();
+        // db.openDatabase(); // nicht mehr notwendig // Auskommentiert von Yvette Groner
         final TaskModel item = todoList.get(position);
         holder.task.setText(item.getTask());
         holder.task.setChecked(toBoolean(item.getStatus()));

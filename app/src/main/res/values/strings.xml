@@ -17,5 +17,9 @@
     <string name="Kat_Einnahmen">Einnahmen</string>
     <string name="Kat_Restbudget">Restbudget</string>
 
+    <string-array name="spinner_TabelleInOut">
+        <item>Ausgaben</item>
+        <item>Einnahmen</item>
+    </string-array>
 
 </resources>

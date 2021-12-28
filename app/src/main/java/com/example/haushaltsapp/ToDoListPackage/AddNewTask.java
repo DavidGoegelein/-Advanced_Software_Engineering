@@ -76,7 +76,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         }
 
         db = new MySQLite(getActivity());
-        db.openDatabase();
+        // db.openDatabase(); // nicht mehr notwendig // Auskommentiert von Yvette Groner
 
 
         newTaskText.addTextChangedListener(new TextWatcher() {

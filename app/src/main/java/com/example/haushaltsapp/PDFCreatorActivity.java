@@ -2,6 +2,8 @@ package com.example.haushaltsapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.fonts.Font;
 import android.net.Uri;
@@ -51,6 +53,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class PDFCreatorActivity extends AppCompatActivity {
@@ -100,7 +103,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         calenderView = findViewById(R.id.calenderView);
 
         db = new MySQLite(this);
-        db.openDatabase();
+        // db.openDatabase(); // nicht mehr notwendig // Auskommentiert von Yvette Groner
 
         Calendar calendar = Calendar.getInstance();
         calendarYear  = calendar.get(Calendar.YEAR);
@@ -112,10 +115,18 @@ public class PDFCreatorActivity extends AppCompatActivity {
         calendar.set(calendarYear,(calendarMonth+1),calendarDay,0,0,0);
         compareTime = calendar.getTimeInMillis();
 
+        //Auf deutsche Kalenderanzeige umstellen
+        Locale locale = new Locale("de");
+        Locale.setDefault(locale);
+        Resources res = this.getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        config.locale = locale;
+        res.updateConfiguration(config, res.getDisplayMetrics());
+
         calenderView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View dateView) {
-                DatePickerDialog dateDialog = new DatePickerDialog(PDFCreatorActivity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog dateDialog = new DatePickerDialog(PDFCreatorActivity.this,R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
 
                     @Override
                     public void onDateSet(DatePicker view, int setYear, int setMonth, int setDay) {
@@ -277,7 +288,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Toast.makeText(this, "There is no app that can support this action",
+            Toast.makeText(this, "Keine App auf Ihrem Handy unterstützt dieses Feature",
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -384,6 +395,12 @@ public class PDFCreatorActivity extends AppCompatActivity {
                 switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
                 startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                return true;
+
+            case R.id.itemDeleteCategory:
+                mySQLite = new MySQLite(this);
+                Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
+                startActivity(switchToDeleteCategory);
                 return true;
 
             case R.id.itemPdfCreator:

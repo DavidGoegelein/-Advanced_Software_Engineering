@@ -8,17 +8,26 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!--neue Farben für Ausgaben einnahmen -->
-    <color name="Einnahmen">#66BB6A</color>
-    <color name="Ausgaben">#EF5350</color>
-    <color name="Restbudget">#FFA726</color>
-    <!--hier sind die Namen den Farben zugeordnet -->
-    <color name="Wohnen">#66BB6A</color>
-    <color name="Lebensmittel">#FFA726</color>
-    <color name="Verkehrsmittel">#EF5350</color>
-    <color name="Gesundheit">#29B6F6</color>
-    <color name="Freizeit">#A5B6DF</color>
-    <color name="Sonstiges">#FF3AFA</color>
+    <!--neue Farben für Ausgaben Einnahmen -->
+    <color name="Einnahmen">#90BE6D</color>
+    <color name="Ausgaben">#F94144</color>
+    <color name="Restbudget">#F9C74F</color>
+    <!--hier sind die Kategorien den Farben zugeordnet -->
+    <color name="Wohnen">#F3722D</color>
+    <color name="Lebensmittel">#90BE6D</color>
+    <color name="Verkehrsmittel">#F94144</color>
+    <color name="Gesundheit">#4DC74F</color>
+    <color name="Freizeit">#F9C74F</color>
+    <color name="Sonstiges">#277DA1</color>
+    <!--Farben für Layout -->
+    <color name="Hintergrund">#F8F9FA</color><!--Farbe für Fläche #F8F9FA -->
+    <color name="Hintergrunddunkel">#6C757D</color><!--Farbe für Rahmen #6C757D-->
+    <color name="Hintergrunddunkelgrün">#90BE6D</color>
+    <color name="Textcolorbright0">#6C757D</color><!--Textfarben grauhell #6C757D-->
+    <color name="Textcolorbright1">#495057</color><!--Textfarben dunkler für Überschriften und Buttons #495057-->
+    <color name="Textcolorbright">#343A40</color>
+    <color name="Textcolordark">#212529</color>
+    <color name="Button">#90BE6D</color><!--Farbe für Button grün #90BE6D-->
 
     <color name="colorPrimary">#024265</color>
     <color name="colorPrimaryDark">#024265</color>
@@ -32,4 +41,17 @@
     <color name="Python">#66BB6A</color>
     <color name="CPP">#EF5350</color>
     <color name="Java">#29B6F6</color>
+
+    <!-- Farben Yvette -->
+    <color name="backgroundY">#0c1821</color>
+    <color name="buttoncolorY">#95a78d</color>
+    <color name="TextcolorY">#000000</color>
+    <color name="TextcolorHeadY">#ccc9dc</color>
+
+    <!-- Farben David -->
+    <color name="PaleOrange">#F4A261</color>
+    <color name="Lavendel">#967AA1</color>
+    <color name="PaleGreen">#D9ED92</color>
+    <color name="MudGreen">#5B8E7D</color>
+
 </resources>

@@ -3,6 +3,8 @@ package com.example.haushaltsapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -35,6 +37,7 @@ import com.example.haushaltsapp.database.Outgo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class CalendarEventActivity extends AppCompatActivity {
 
@@ -66,8 +69,8 @@ public class CalendarEventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calender);
-        dateSelect = findViewById(R.id.ToDoListSpinner);
+        setContentView(R.layout.activity_calendar_event);
+        dateSelect = findViewById(R.id.calendarDate);
         calenderView = findViewById(R.id.calenderView);
         titleSelect = findViewById(R.id.titleSelect);
         locationSelect = findViewById(R.id.locationSelect);
@@ -87,11 +90,19 @@ public class CalendarEventActivity extends AppCompatActivity {
         calendar.set(year,month+1,day,9,0,0);
         endDateInMilliSec =calendar.getTimeInMillis();
 
+        //Auf deutsche Kalenderanzeige umstellen
+        Locale locale = new Locale("de");
+        Locale.setDefault(locale);
+        Resources res = this.getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        config.locale = locale;
+        res.updateConfiguration(config, res.getDisplayMetrics());
+
         //Setzen von Listener auf dem Kalender Symbol
         calenderView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View dateView) {
-                DatePickerDialog dateDialog = new DatePickerDialog(CalendarEventActivity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog dateDialog = new DatePickerDialog(CalendarEventActivity.this,R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
 
                     @Override
                     public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
@@ -118,14 +129,14 @@ public class CalendarEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View insertButtonView) {
 
-                if(!titleSelect.getText().toString().isEmpty()&&!locationSelect.getText().toString().isEmpty()){
+                if(!titleSelect.getText().toString().isEmpty()){
                     if (ContextCompat.checkSelfPermission(CalendarEventActivity.this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
                     }else{
                         requestWritePermission();
                     }
                     insertEvent(titleSelect.getText().toString(), locationSelect.getText().toString(),descriptionSelect.getText().toString(), dailySwitch.isChecked(), startDateInMilliSec, endDateInMilliSec);
                 }else{
-                    Toast.makeText(CalendarEventActivity.this, "Please fill in all the fields",
+                    Toast.makeText(CalendarEventActivity.this, "Bitte wählen Sie einen Titel",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -146,7 +157,7 @@ public class CalendarEventActivity extends AppCompatActivity {
         if (insertEvent.resolveActivity(getPackageManager()) != null) {
             startActivity(insertEvent);
         } else {
-            Toast.makeText(CalendarEventActivity.this, "There is no app that can support this action",
+            Toast.makeText(CalendarEventActivity.this, "Keine App auf Ihrem Handy unterstützt dieses Feature",
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -157,16 +168,19 @@ public class CalendarEventActivity extends AppCompatActivity {
         }else{
             requestReadPermission();
         }
-
         //
         long timeInMilliSec = System.currentTimeMillis();
         Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
         builder.appendPath("time");
         ContentUris.appendId(builder, timeInMilliSec);
-        Intent viewCalendar = new Intent(Intent.ACTION_VIEW).setData(builder.build());
-        startActivity(viewCalendar);
+        Intent viewEvent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+        if (viewEvent.resolveActivity(getPackageManager()) != null) {
+            startActivity(viewEvent);
+        } else {
+            Toast.makeText(CalendarEventActivity.this, "Keine App auf Ihrem Handy unterstützt dieses Feature",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -272,6 +286,12 @@ public class CalendarEventActivity extends AppCompatActivity {
                 startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
                 return true;
 
+            case R.id.itemDeleteCategory:
+                mySQLite = new MySQLite(this);
+                Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
+                startActivity(switchToDeleteCategory);
+                return true;
+
             case R.id.itemPdfCreator:
                 Intent switchToPdfCreator = new Intent(this, PDFCreatorActivity.class);
                 startActivity(switchToPdfCreator);
@@ -286,15 +306,15 @@ public class CalendarEventActivity extends AppCompatActivity {
     public void requestWritePermission(){
         if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_CALENDAR)){
             new AlertDialog.Builder(this)
-                    .setTitle("Permission needed")
-                    .setMessage("This permission is needed to insert events to your calendar")
-                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    .setTitle("Erlaubnis wird benötigt!")
+                    .setMessage("Bestätigen Sie diese Erlaubnis um Einträge Ihrem Kalender hinzuzufügen")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ActivityCompat.requestPermissions(CalendarEventActivity.this, new String[]{Manifest.permission.WRITE_CALENDAR},Storage_Permission_Code);
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -309,15 +329,15 @@ public class CalendarEventActivity extends AppCompatActivity {
     public void requestReadPermission(){
         if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_CALENDAR)){
             new AlertDialog.Builder(this)
-                    .setTitle("Permission needed")
-                    .setMessage("This permission is needed to view your calendar")
-                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    .setTitle("Erlaubnis benötigt!")
+                    .setMessage("Bestätigen Sie diese Erlaubnis Ihrem Kalender anzusehen")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ActivityCompat.requestPermissions(CalendarEventActivity.this, new String[]{Manifest.permission.READ_CALENDAR},Storage_Permission_Code);
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -334,9 +354,9 @@ public class CalendarEventActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Storage_Permission_Code) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Erlaubnis erteilt!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Erlaubnis verweigert!", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MonthcomparisonViewActivity extends AppCompatActivity {
-
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
     private final int REQUESTCODE_ADD = 12; //AddEntryActivity
@@ -39,7 +38,6 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     ///////////////////////////////
     private MySQLite db;
 
-    //private ValueLineChart LineChartyear;
     private BarChart BarChartInOutcomparison;
 
     private TextView tvM1o, tvM2o, tvM1i, tvM2i;
@@ -51,44 +49,36 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     private int year, year1, year2;
     private String datesM1, datesM2;
 
-    private EditText editTextDateM1; //Datum M1
-    private EditText editTextDateM2; //Datum M2
+    private TextView editTextDateM1; //Datum M1
+    private TextView editTextDateM2; //Datum M2
     private long startDateInMilliSec;
     private long endDateInMilliSec;
 
-    // Setzt die Variablen day, month, year
-    private void getDate(){
-        java.util.Calendar calender = java.util.Calendar.getInstance();
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
-        String dates = datumsformat.format(calender.getTime());
-        day = Integer.parseInt(dates.substring(0,2));
-        month = Integer.parseInt(dates.substring(3,5));
-        year = Integer.parseInt(dates.substring(6,10));
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monthcomparison_view);
 
-        getDate();
-
         db = new MySQLite(this);
-        db.openDatabase();
+        //db.openDatabase();
 
         //Aktuelles Datum anzeigen
-        editTextDateM1 = (EditText) findViewById(R.id.editTextDateM1);
-        editTextDateM2 = (EditText) findViewById(R.id.editTextDateM2);
+        editTextDateM1 = (TextView) findViewById(R.id.editTextDateM1);
+        editTextDateM2 = (TextView) findViewById(R.id.editTextDateM2);
         java.util.Calendar calender = Calendar.getInstance();
         SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
 
+        //Beide Tage auf aktuelles Datum setzen
         editTextDateM1.setText(datumsformat.format(calender.getTime()));
         editTextDateM2.setText(datumsformat.format(calender.getTime()));
+
 
         setData();
     }
 
     private void setData()
     {
+        //Datum von Textfeld auslesen
         datesM1 = editTextDateM1.getText().toString();
         day1 = Integer.parseInt(datesM1.substring(0,2));
         month1 = Integer.parseInt(datesM1.substring(3,5));
@@ -115,585 +105,133 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
 
         BarChartInOutcomparison.clearChart();
 
-        //In Balkendiagramm nur zwei bestimmte Werte übergaben
-        //Date1 und Date1 müssen übergaben werden in Methode zur Bargraph
         //BarGraphMonthInOut();
         BarGraphComparision(month1,year1,month2,year2);
-
         setTextInOut(month1,year1,month2,year2);
 
     }
 
     public  void openCalenderM1(View dateview) {
         java.util.Calendar calender = java.util.Calendar.getInstance();
+        year1 = calender.get(Calendar.YEAR);
+        month1 = calender.get(Calendar.MONTH);
+        day1 = calender.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
 
-                day = selectedDay;
-                month = selectedMonth + 1; //richtige monatszahl
-                year = selectedYear;
+                day1 = selectedDay;
+                month1 = selectedMonth+1;
+                year1 = selectedYear;
 
-                //Addition bei Monat von 1, Index beginnend bei 0
-                if (day<10)
+                if (day1<10)
                 {
-                    if(month<10)
+                    if(month1<10)
                     {
-                        editTextDateM1.setText("0"+ selectedDay+".0"+month+"."+selectedYear);
+                        editTextDateM1.setText("0"+ selectedDay+".0"+month1+"."+selectedYear);
                     }
                     else {
-                        editTextDateM1.setText("0" + selectedDay + "." + month + "." + selectedYear);
+                        editTextDateM1.setText("0" + selectedDay + "." + month1 + "." + selectedYear);
                     }
                 }
                 else {
-                    if(month<10)
+                    if(month1<10)
                     {
-                        editTextDateM1.setText(selectedDay+".0"+month+"."+selectedYear);
+                        editTextDateM1.setText(selectedDay+".0"+month1+"."+selectedYear);
                     }
                     else {
-                        editTextDateM1.setText(selectedDay + "." + month + "." + selectedYear);
+                        editTextDateM1.setText(selectedDay + "." + month1 + "." + selectedYear);
                     }
                 }
 
                 //editTextDate.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);
 
                 //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
-                calender.set(year, month, day, 8, 0, 0);
+                calender.set(year1, month1, day1, 8, 0, 0);
                 startDateInMilliSec = calender.getTimeInMillis();
-                calender.set(year, month, day, 9, 0, 0);
+                calender.set(year1, month1, day1, 9, 0, 0);
                 endDateInMilliSec = calender.getTimeInMillis();
             }
-        }, year, month, day);
+        }, year1, month1, day1);
         dateDialog.show();
     }
 
     public  void openCalenderM2(View dateview) {
         java.util.Calendar calender = java.util.Calendar.getInstance();
+        year2 = calender.get(Calendar.YEAR);
+        month2 = calender.get(Calendar.MONTH);
+        day2 = calender.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
 
-                day = selectedDay;
-                month = selectedMonth + 1; //richtige monatszahl
-                year = selectedYear;
+                day2 = selectedDay;
+                month2 = selectedMonth + 1; //richtige monatszahl
+                year2 = selectedYear;
 
                 //Addition bei Monat von 1, Index beginnend bei 0
-                if (day<10)
+                if (day2<10)
                 {
-                    if(month<10)
+                    if(month2<10)
                     {
-                        editTextDateM2.setText("0"+ selectedDay+".0"+month+"."+selectedYear);
+                        editTextDateM2.setText("0"+ selectedDay+".0"+month2+"."+selectedYear);
                     }
                     else {
-                        editTextDateM2.setText("0" + selectedDay + "." + month + "." + selectedYear);
+                        editTextDateM2.setText("0" + selectedDay + "." + month2 + "." + selectedYear);
                     }
                 }
                 else {
-                    if(month<10)
+                    if(month2<10)
                     {
-                        editTextDateM2.setText(selectedDay+".0"+month+"."+selectedYear);
+                        editTextDateM2.setText(selectedDay+".0"+month2+"."+selectedYear);
                     }
                     else {
-                        editTextDateM2.setText(selectedDay + "." + month + "." + selectedYear);
+                        editTextDateM2.setText(selectedDay + "." + month2 + "." + selectedYear);
                     }
                 }
 
                 //editTextDate.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);
 
                 //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
-                calender.set(year, month, day, 8, 0, 0);
+                calender.set(year2, month2, day2, 8, 0, 0);
                 startDateInMilliSec = calender.getTimeInMillis();
-                calender.set(year, month, day, 9, 0, 0);
+                calender.set(year2, month2, day2, 9, 0, 0);
                 endDateInMilliSec = calender.getTimeInMillis();
             }
-        }, year, month, day);
+        }, year2, month2, day2);
         dateDialog.show();
     }
 
-    /*public void LineGraphMonth() {
-
-        //Ausgaben
-        ValueLineSeries Outgoe = new ValueLineSeries();
-        Outgoe.setColor(0xFFEF5350);
-
-        //Einnahmen
-        ValueLineSeries Input = new ValueLineSeries();
-        Input.setColor(0xFF66BB6A);
-
-        int mo = 1; //monate hochzählen
-        int aktuellMonth = month; //1-12
-        int monthrechne;
-        //wegen Darstellung einen Monat mehr anzeigen, weil Achse bei erstem Monat nicht beschriftet wird
-        if( month==1)
-        {
-            monthrechne =12;
-        }
-        else
-        {
-            monthrechne=month-1;
-        }
-        int vorYear = year-1; //2020
-
-        //vorjahresanzeige
-        while (monthrechne <= 12) {
-            String monatJahresansicht = "leer";
-
-            switch (monthrechne) {
-                case 1:
-                    monatJahresansicht = "Jan";
-                    break;
-                case 2:
-                    monatJahresansicht = "Feb";
-                    break;
-                case 3:
-                    monatJahresansicht = "Mar";
-                    break;
-                case 4:
-                    monatJahresansicht = "Apr";
-                    break;
-                case 5:
-                    monatJahresansicht = "Mai";
-                    break;
-                case 6:
-                    monatJahresansicht = "Jun";
-                    break;
-                case 7:
-                    monatJahresansicht = "Jul";
-                    break;
-                case 8:
-                    monatJahresansicht = "Aug";
-                    break;
-                case 9:
-                    monatJahresansicht = "Sep";
-                    break;
-                case 10:
-                    monatJahresansicht = "Okt";
-                    break;
-                case 11:
-                    monatJahresansicht = "Nov";
-                    break;
-                case 12:
-                    monatJahresansicht = "Dez";
-                    break;
-            }
-            //Datnbankzugriff: AUsgaben
-            float AusgabeMonateX = db.getValueOutgosMonth(31,monthrechne,vorYear);
-            Outgoe.addPoint(new ValueLinePoint(monatJahresansicht, AusgabeMonateX));
-
-            //Datnbankzugriff: Einnahmen
-            float IntakeMonateX = db.getValueIntakesMonth(31,monthrechne,vorYear);
-            Input.addPoint(new ValueLinePoint(monatJahresansicht, IntakeMonateX));
-
-            monthrechne++;
-        }
-
-        //dieses Jahr anzeigen
-        //letzer Monata wird die Achse nicht beschriftet
-        while (mo <= (month)) {
-            String monatJahresansicht = "leer";
-
-            switch (mo) {
-                case 1:
-                    monatJahresansicht = "Jan";
-                    break;
-                case 2:
-                    monatJahresansicht = "Feb";
-                    break;
-                case 3:
-                    monatJahresansicht = "Mar";
-                    break;
-                case 4:
-                    monatJahresansicht = "Apr";
-                    break;
-                case 5:
-                    monatJahresansicht = "Mai";
-                    break;
-                case 6:
-                    monatJahresansicht = "Jun";
-                    break;
-                case 7:
-                    monatJahresansicht = "Jul";
-                    break;
-                case 8:
-                    monatJahresansicht = "Aug";
-                    break;
-                case 9:
-                    monatJahresansicht = "Sep";
-                    break;
-                case 10:
-                    monatJahresansicht = "Okt";
-                    break;
-                case 11:
-                    monatJahresansicht = "Nov";
-                    break;
-                case 12:
-                    monatJahresansicht = "Dez";
-                    break;
-            }
-            //Datnbankzugriff:
-            float AusgabeMonateX = db.getValueOutgosMonth(31,mo,year);
-            Outgoe.addPoint(new ValueLinePoint(monatJahresansicht, AusgabeMonateX));
-
-            //Datnbankzugriff: Ausgaben
-            float IntakeMonateX = db.getValueIntakesMonth(31,mo,year);
-            Input.addPoint(new ValueLinePoint(monatJahresansicht, IntakeMonateX));
-
-            mo++;
-        }
-        //Darstellungsoptionen
-        LineChartyear.addSeries(Outgoe);
-        LineChartyear.addSeries(Input);
-        LineChartyear.startAnimation();
-    }*/
-
-    /*public void BarGraphMonth() {
-
-        int m=1; //für Textausgabe
-        int mo = 1; //monate hochzählen
-        int monthrechne=month;//1-12
-
-        int vorYear = year-1; //2020
-
-        //vorjahresanzeige
-        while (monthrechne <= 12) {
-            String monatJahresansicht = "leer";
-
-            switch (monthrechne) {
-                case 1:
-                    monatJahresansicht = "Jan";
-                    break;
-                case 2:
-                    monatJahresansicht = "Feb";
-                    break;
-                case 3:
-                    monatJahresansicht = "Mar";
-                    break;
-                case 4:
-                    monatJahresansicht = "Apr";
-                    break;
-                case 5:
-                    monatJahresansicht = "Mai";
-                    break;
-                case 6:
-                    monatJahresansicht = "Jun";
-                    break;
-                case 7:
-                    monatJahresansicht = "Jul";
-                    break;
-                case 8:
-                    monatJahresansicht = "Aug";
-                    break;
-                case 9:
-                    monatJahresansicht = "Sep";
-                    break;
-                case 10:
-                    monatJahresansicht = "Okt";
-                    break;
-                case 11:
-                    monatJahresansicht = "Nov";
-                    break;
-                case 12:
-                    monatJahresansicht = "Dez";
-                    break;
-            }
-            //Datnbankzugriff: AUsgaben
-            float AusgabeMonateX = db.getValueOutgosMonth(31,monthrechne,vorYear);
-            BarChartyear.addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeMonateX,
-                    Color.parseColor("#EF5350")));
-            //Datnbankzugriff: Einnahmen
-            //noch schauen ob in extra Diagram darstellen
-            //float IntakeMonateX = db.getValueIntakesMonth(31,monthrechne,vorYear);
-
-            //ANzeige von Wert in Text unter Diagramm
-            switch (m) {
-                case 1:
-                    tvM1out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM1.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 2:
-                    tvM2out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM2.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 3:
-                    tvM3out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM3.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 4:
-                    tvM4out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM4.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 5:
-                    tvM5out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM5.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 6:
-                    tvM6out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM6.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 7:
-                    tvM7out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM7.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 8:
-                    tvM8out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM8.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 9:
-                    tvM9out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM9.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 10:
-                    tvM10out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM10.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 11:
-                    tvM11out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM11.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 12:
-                    tvM12out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM12.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 13:
-                    tvM13out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM13.setText(monatJahresansicht+"."+vorYear);
-                    break;
-            }
-
-            m++;
-            monthrechne++;
-        }
-
-        //dieses Jahr anzeigen
-        //letzer Monata wird die Achse nicht beschriftet
-        while (mo <= (month)) {
-            String monatJahresansicht = "leer";
-
-            switch (mo) {
-                case 1:
-                    monatJahresansicht = "Jan";
-                    break;
-                case 2:
-                    monatJahresansicht = "Feb";
-                    break;
-                case 3:
-                    monatJahresansicht = "Mar";
-                    break;
-                case 4:
-                    monatJahresansicht = "Apr";
-                    break;
-                case 5:
-                    monatJahresansicht = "Mai";
-                    break;
-                case 6:
-                    monatJahresansicht = "Jun";
-                    break;
-                case 7:
-                    monatJahresansicht = "Jul";
-                    break;
-                case 8:
-                    monatJahresansicht = "Aug";
-                    break;
-                case 9:
-                    monatJahresansicht = "Sep";
-                    break;
-                case 10:
-                    monatJahresansicht = "Okt";
-                    break;
-                case 11:
-                    monatJahresansicht = "Nov";
-                    break;
-                case 12:
-                    monatJahresansicht = "Dez";
-                    break;
-            }
-            //Datnbankzugriff:
-            float AusgabeMonateX = db.getValueOutgosMonth(31,mo,year);
-            BarChartyear.addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeMonateX,
-                    Color.parseColor("#EF5350")));
-
-
-            //Datnbankzugriff: Einnahmen
-            //noch schauen ob in extra Diagram darstellen
-            //float IntakeMonateX = db.getValueIntakesMonth(31,monthrechne,vorYear);
-
-            //ANzeige von Wert in Text unter Diagramm
-            switch (m) {
-                case 1:
-                    tvM1out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM1.setText(monatJahresansicht+"."+year);
-                    break;
-                case 2:
-                    tvM2out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM2.setText(monatJahresansicht+"."+year);
-                    break;
-                case 3:
-                    tvM3out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM3.setText(monatJahresansicht+"."+year);
-                    break;
-                case 4:
-                    tvM4out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM4.setText(monatJahresansicht+"."+year);
-                    break;
-                case 5:
-                    tvM5out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM5.setText(monatJahresansicht+"."+year);
-                    break;
-                case 6:
-                    tvM6out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM6.setText(monatJahresansicht+"."+year);
-                    break;
-                case 7:
-                    tvM7out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM7.setText(monatJahresansicht+"."+year);
-                    break;
-                case 8:
-                    tvM8out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM8.setText(monatJahresansicht+"."+year);
-                    break;
-                case 9:
-                    tvM9out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM9.setText(monatJahresansicht+"."+year);
-                    break;
-                case 10:
-                    tvM10out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM10.setText(monatJahresansicht+"."+year);
-                    break;
-                case 11:
-                    tvM11out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM11.setText(monatJahresansicht+"."+year);
-                    break;
-                case 12:
-                    tvM12out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM12.setText(monatJahresansicht+"."+year);
-                    break;
-                case 13:
-                    tvM13out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM13.setText(monatJahresansicht+"."+year);
-                    break;
-            }
-            m++;
-            mo++;
-        }
-        //Darstellungsoptionen
-        BarChartyear.startAnimation();
-        BarChartyear.setShowValues(true);
-        BarChartyear.setActivated(false);
-
-    }*/
 
     public void BarGraphComparision(int month1, int year1, int month2, int year2)
     {
         String monthtext1 = monthtoSting(month1);
         String monthtext2 =monthtoSting(month2);
-        /*switch (month1) {
-            case 1:
-                monthtext1 = "Jan";
-                break;
-            case 2:
-                monthtext1 = "Feb";
-                break;
-            case 3:
-                monthtext1 = "Mar";
-                break;
-            case 4:
-                monthtext1 = "Apr";
-                break;
-            case 5:
-                monthtext1 = "Mai";
-                break;
-            case 6:
-                monthtext1 = "Jun";
-                break;
-            case 7:
-                monthtext1 = "Jul";
-                break;
-            case 8:
-                monthtext1 = "Aug";
-                break;
-            case 9:
-                monthtext1 = "Sep";
-                break;
-            case 10:
-                monthtext1 = "Okt";
-                break;
-            case 11:
-                monthtext1 = "Nov";
-                break;
-            case 12:
-                monthtext1 = "Dez";
-                break;
-        }
 
-        switch (month2) {
-            case 1:
-                monthtext2 = "Jan";
-                break;
-            case 2:
-                monthtext2 = "Feb";
-                break;
-            case 3:
-                monthtext2 = "Mar";
-                break;
-            case 4:
-                monthtext2 = "Apr";
-                break;
-            case 5:
-                monthtext2 = "Mai";
-                break;
-            case 6:
-                monthtext2 = "Jun";
-                break;
-            case 7:
-                monthtext2 = "Jul";
-                break;
-            case 8:
-                monthtext2 = "Aug";
-                break;
-            case 9:
-                monthtext2 = "Sep";
-                break;
-            case 10:
-                monthtext2 = "Okt";
-                break;
-            case 11:
-                monthtext2 = "Nov";
-                break;
-            case 12:
-                monthtext2 = "Dez";
-                break;
-        }*/
-
-        //Datnbankzugriff: Einnahmen
-        float IntakeMonate1 = db.getValueIntakesMonth(31,month1,year1);
+        //Monat 1
+        float IntakeMonth1 = db.getValueIntakesMonth(31,month1,year1);
         BarChartInOutcomparison.addBar(new BarModel(
                 "           "+monthtext1 + " "+ year1,
-                IntakeMonate1,
+                IntakeMonth1,
                 Color.parseColor("#66BB6A")));
-        //Datnbankzugriff: AUsgaben
-        float OutgoMonate1 = db.getValueOutgosMonth(31,month1,year1);
+        float OutgoMonth1 = db.getValueOutgosMonth(31,month1,year1);
         BarChartInOutcomparison.addBar(new BarModel(
                 "",//"Aus. "+monthtext1,
-                OutgoMonate1,
+                OutgoMonth1,
                 Color.parseColor("#EF5350")));
 
         //Monat 2
-        float IntakeMonate2 = db.getValueIntakesMonth(31,month2,year2);
+        float IntakeMonth2 = db.getValueIntakesMonth(31,month2,year2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "           "+monthtext2 + " "+ year2,
-                IntakeMonate2,
+                IntakeMonth2,
                 Color.parseColor("#66BB6A")));
-        //Datnbankzugriff: AUsgaben
-        float OutgoMonate2 = db.getValueOutgosMonth(31,month2,year2);
+        float OutgoMonth2 = db.getValueOutgosMonth(31,month2,year2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "",//"Aus. "+monthtext2,
-                OutgoMonate2,
+                OutgoMonth2,
                 Color.parseColor("#EF5350")));
 
     }
@@ -760,509 +298,6 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         tvM2i.setText(monthtext2+"."+year2);
     }
 
-    public void BarGraphMonthInOut() {
-
-        int m=1; //für Textausgabe
-        int mo = 1; //monate hochzählen
-        int monthrechne=month;//1-12
-
-        //erster Monat wird in Balkendiagramm nicht beschriftet
-
-        int vorYear = year-1; //2020
-
-        //vorjahresanzeige
-        while (monthrechne <= 12) {
-            String monatJahresansicht = "leer";
-
-            switch (monthrechne) {
-                case 1:
-                    monatJahresansicht = "Jan";
-                    break;
-                case 2:
-                    monatJahresansicht = "Feb";
-                    break;
-                case 3:
-                    monatJahresansicht = "Mar";
-                    break;
-                case 4:
-                    monatJahresansicht = "Apr";
-                    break;
-                case 5:
-                    monatJahresansicht = "Mai";
-                    break;
-                case 6:
-                    monatJahresansicht = "Jun";
-                    break;
-                case 7:
-                    monatJahresansicht = "Jul";
-                    break;
-                case 8:
-                    monatJahresansicht = "Aug";
-                    break;
-                case 9:
-                    monatJahresansicht = "Sep";
-                    break;
-                case 10:
-                    monatJahresansicht = "Okt";
-                    break;
-                case 11:
-                    monatJahresansicht = "Nov";
-                    break;
-                case 12:
-                    monatJahresansicht = "Dez";
-                    break;
-            }
-            //Datnbankzugriff: Einnahmen
-            float IntakeMonateX = db.getValueIntakesMonth(31,monthrechne,vorYear);
-            BarChartInOutcomparison.addBar(new BarModel(
-                    "     "+monatJahresansicht,
-                    IntakeMonateX,
-                    Color.parseColor("#66BB6A")));
-            //Datnbankzugriff: AUsgaben
-            float AusgabeMonateX = db.getValueOutgosMonth(31,monthrechne,vorYear);
-            BarChartInOutcomparison.addBar(new BarModel(
-                    "",//monatJahresansicht,
-                    AusgabeMonateX,
-                    Color.parseColor("#EF5350")));
-
-
-            //ANzeige von Wert in Text unter Diagramm
-         /*   switch (m) {
-                case 1:
-                    tvM1out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM1.setText(monatJahresansicht+"."+vorYear);
-
-                    tvM1in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM1i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 2:
-                    tvM2out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM2.setText(monatJahresansicht+"."+vorYear);
-                    tvM2in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM2i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 3:
-                    tvM3out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM3.setText(monatJahresansicht+"."+vorYear);
-                    tvM3in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM3i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 4:
-                    tvM4out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM4.setText(monatJahresansicht+"."+vorYear);
-                    tvM4in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM4i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 5:
-                    tvM5out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM5.setText(monatJahresansicht+"."+vorYear);
-                    tvM5in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM5i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 6:
-                    tvM6out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM6.setText(monatJahresansicht+"."+vorYear);
-                    tvM6in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM6i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 7:
-                    tvM7out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM7.setText(monatJahresansicht+"."+vorYear);
-                    tvM7in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM7i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 8:
-                    tvM8out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM8.setText(monatJahresansicht+"."+vorYear);
-                    tvM8in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM8i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 9:
-                    tvM9out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM9.setText(monatJahresansicht+"."+vorYear);
-                    tvM9in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM9i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 10:
-                    tvM10out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM10.setText(monatJahresansicht+"."+vorYear);
-                    tvM10in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM10i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 11:
-                    tvM11out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM11.setText(monatJahresansicht+"."+vorYear);
-                    tvM11in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM11i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 12:
-                    tvM12out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM12.setText(monatJahresansicht+"."+vorYear);
-                    tvM12in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM12i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-                case 13:
-                    tvM13out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM13.setText(monatJahresansicht+"."+vorYear);
-                    tvM13in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM13i.setText(monatJahresansicht+"."+vorYear);
-                    break;
-            }
-*/
-            m++;
-            monthrechne++;
-        }
-
-        //dieses Jahr anzeigen
-        //letzer Monata wird die Achse nicht beschriftet
-        while (mo <= (month)) {
-            String monatJahresansicht = "leer";
-
-            switch (mo) {
-                case 1:
-                    monatJahresansicht = "Jan";
-                    break;
-                case 2:
-                    monatJahresansicht = "Feb";
-                    break;
-                case 3:
-                    monatJahresansicht = "Mar";
-                    break;
-                case 4:
-                    monatJahresansicht = "Apr";
-                    break;
-                case 5:
-                    monatJahresansicht = "Mai";
-                    break;
-                case 6:
-                    monatJahresansicht = "Jun";
-                    break;
-                case 7:
-                    monatJahresansicht = "Jul";
-                    break;
-                case 8:
-                    monatJahresansicht = "Aug";
-                    break;
-                case 9:
-                    monatJahresansicht = "Sep";
-                    break;
-                case 10:
-                    monatJahresansicht = "Okt";
-                    break;
-                case 11:
-                    monatJahresansicht = "Nov";
-                    break;
-                case 12:
-                    monatJahresansicht = "Dez";
-                    break;
-            }
-            //Datnbankzugriff: Einnahmen
-            float IntakeMonateX = db.getValueIntakesMonth(31,mo,year);
-            BarChartInOutcomparison.addBar(new BarModel(
-                    "     "+ monatJahresansicht,
-                    IntakeMonateX,
-                    Color.parseColor("#66BB6A")));
-            //Datnbankzugriff Ausgaben:
-            float AusgabeMonateX = db.getValueOutgosMonth(31,mo,year);
-            BarChartInOutcomparison.addBar(new BarModel(
-                    "",//monatJahresansicht,
-                    AusgabeMonateX,
-                    Color.parseColor("#EF5350")));
-
-
-
-            //ANzeige von Wert in Text unter Diagramm
-         /*   switch (m) {
-                case 1:
-                    tvM1out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM1.setText(monatJahresansicht+"."+year);
-                    tvM1in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM1i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 2:
-                    tvM2out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM2.setText(monatJahresansicht+"."+year);
-                    tvM2in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM2i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 3:
-                    tvM3out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM3.setText(monatJahresansicht+"."+year);
-                    tvM3in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM3i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 4:
-                    tvM4out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM4.setText(monatJahresansicht+"."+year);
-                    tvM4in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM4i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 5:
-                    tvM5out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM5.setText(monatJahresansicht+"."+year);
-                    tvM5in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM5i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 6:
-                    tvM6out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM6.setText(monatJahresansicht+"."+year);
-                    tvM6in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM6i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 7:
-                    tvM7out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM7.setText(monatJahresansicht+"."+year);
-                    tvM7in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM7i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 8:
-                    tvM8out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM8.setText(monatJahresansicht+"."+year);
-                    tvM8in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM8i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 9:
-                    tvM9out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM9.setText(monatJahresansicht+"."+year);
-                    tvM9in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM9i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 10:
-                    tvM10out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM10.setText(monatJahresansicht+"."+year);
-                    tvM10in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM10i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 11:
-                    tvM11out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM11.setText(monatJahresansicht+"."+year);
-                    tvM11in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM11i.setText(monatJahresansicht+"."+year);
-                    break;
-                case 12:
-                    tvM12out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM12.setText(monatJahresansicht+"."+year);
-                    tvM12in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM12i.setText(monatJahresansicht+"."+year);
-
-                    break;
-                case 13:
-                    tvM13out.setText(Float.toString(AusgabeMonateX)+" €");
-                    tvM13.setText(monatJahresansicht+"."+year);
-                    tvM13in.setText(Float.toString(IntakeMonateX)+" €");
-                    tvM13i.setText(monatJahresansicht+"."+year);
-                    break;
-            }*/
-            m++;
-            mo++;
-        }
-        //Darstellungsoptionen
-        BarChartInOutcomparison.startAnimation();
-        BarChartInOutcomparison.setShowValues(true);
-        BarChartInOutcomparison.setActivated(false);
-
-    }
-
-
-  /*  public void StackedBarGraphMonth() {
-
-        //Datenbankzugriff
-        Intent intent = getIntent();
-        ArrayList<Outgo> Data = (ArrayList<Outgo>) intent.getSerializableExtra("dataOut");
-        ArrayList<Intake> DataIn = (ArrayList<Intake>) intent.getSerializableExtra("dataIn");
-
-        StackedBarModel[] StackKat1 =new StackedBarModel[12];
-        StackKat1[0] = M1;
-        StackKat1[1] = M2;
-        StackKat1[2] = M3;
-        StackKat1[3] = M4;
-        StackKat1[4] = M5;
-        StackKat1[5] = M6;
-        StackKat1[6] = M7;
-        StackKat1[7] = M8;
-        StackKat1[8] = M9;
-        StackKat1[9] = M10;
-        StackKat1[10] = M11;
-        StackKat1[11] = M12;
-
-        int mo = 1; //monate hochzählen
-        int monthrechne=month;//1-12
-
-        int vorYear = year-1; //2020
-
-        int stack=0;
-
-        //Für vorjahresanzeige
-        while (monthrechne <= 12) {
-            //Für Achsenbeschriftung
-            String monatJahresansicht = "leer";
-
-            switch (monthrechne) {
-                case 1:
-                    monatJahresansicht = "Jan";
-                    break;
-                case 2:
-                    monatJahresansicht = "Feb";
-                    break;
-                case 3:
-                    monatJahresansicht = "Mar";
-                    break;
-                case 4:
-                    monatJahresansicht = "Apr";
-                    break;
-                case 5:
-                    monatJahresansicht = "Mai";
-                    break;
-                case 6:
-                    monatJahresansicht = "Jun";
-                    break;
-                case 7:
-                    monatJahresansicht = "Jul";
-                    break;
-                case 8:
-                    monatJahresansicht = "Aug";
-                    break;
-                case 9:
-                    monatJahresansicht = "Sep";
-                    break;
-                case 10:
-                    monatJahresansicht = "Okt";
-                    break;
-                case 11:
-                    monatJahresansicht = "Nov";
-                    break;
-                case 12:
-                    monatJahresansicht = "Dez";
-                    break;
-            }
-            //Datnbankzugriff: Kategorien
-
-
-            float AusgabeWohnen = (float) MonthOutgoCategorie(31,monthrechne,vorYear,Data,"Wohnen");
-            float AusgabeLebensmittel =(float) MonthOutgoCategorie(31,monthrechne,vorYear,Data,"Lebensmittel");
-            float AUsgabeVerkehrsmittel = (float) MonthOutgoCategorie(31,monthrechne,vorYear,Data,"Verkehrsmittel");
-            float AusgabeGesundheit =(float) MonthOutgoCategorie(31,monthrechne,vorYear,Data,"Gesundheit");
-            float AusgabeFreizeit =(float) MonthOutgoCategorie(31,monthrechne,vorYear,Data,"Freizeit");
-            float AusgabeSonstiges = (float) MonthOutgoCategorie(31,monthrechne,vorYear,Data,"Sonstiges");
-
-            //geht nicht!!!!
-            M1.addBar(new BarModel(
-                    //monatJahresansicht,
-                    AusgabeWohnen,
-                    Color.parseColor("#66BB6A")));
-
-            StackKat1[stack].addBar(new BarModel(
-                    //monatJahresansicht,
-                    AusgabeLebensmittel,
-                    Color.parseColor("#FFA726")));
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AUsgabeVerkehrsmittel,
-                    Color.parseColor("#EF5350")));
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeGesundheit,
-                    Color.parseColor("#29B6F6")));
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeFreizeit,
-                    Color.parseColor("#A5B6DF")));
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeSonstiges,
-                    Color.parseColor("#FF3AFA")));
-            monthrechne++;
-            stack++;
-        }
-
-        //dieses Jahr anzeigen
-        //letzer Monata wird die Achse nicht beschriftet
-        while (mo <= (month)) {
-            //Für Achsenbeschriftung
-            String monatJahresansicht = "leer";
-
-            switch (mo) {
-                case 1:
-                    monatJahresansicht = "Jan";
-                    break;
-                case 2:
-                    monatJahresansicht = "Feb";
-                    break;
-                case 3:
-                    monatJahresansicht = "Mar";
-                    break;
-                case 4:
-                    monatJahresansicht = "Apr";
-                    break;
-                case 5:
-                    monatJahresansicht = "Mai";
-                    break;
-                case 6:
-                    monatJahresansicht = "Jun";
-                    break;
-                case 7:
-                    monatJahresansicht = "Jul";
-                    break;
-                case 8:
-                    monatJahresansicht = "Aug";
-                    break;
-                case 9:
-                    monatJahresansicht = "Sep";
-                    break;
-                case 10:
-                    monatJahresansicht = "Okt";
-                    break;
-                case 11:
-                    monatJahresansicht = "Nov";
-                    break;
-                case 12:
-                    monatJahresansicht = "Dez";
-                    break;
-            }
-            //Datnbankzugriff:
-
-            float AusgabeWohnen = (float) MonthOutgoCategorie(31,mo,year,Data,"Wohnen");
-            float AusgabeLebensmittel =(float) MonthOutgoCategorie(31,mo,year,Data,"Lebensmittel");
-            float AUsgabeVerkehrsmittel = (float) MonthOutgoCategorie(31,mo,year,Data,"Verkehrsmittel");
-            float AusgabeGesundheit =(float) MonthOutgoCategorie(31,mo,year,Data,"Gesundheit");
-            float AusgabeFreizeit =(float) MonthOutgoCategorie(31,mo,year,Data,"Freizeit");
-            float AusgabeSonstiges = (float) MonthOutgoCategorie(31,mo,year,Data,"Sonstiges");
-
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeWohnen,
-                    Color.parseColor("#66BB6A")));
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeLebensmittel,
-                    Color.parseColor("#FFA726")));
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AUsgabeVerkehrsmittel,
-                    Color.parseColor("#EF5350")));
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeGesundheit,
-                    Color.parseColor("#29B6F6")));
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeFreizeit,
-                    Color.parseColor("#A5B6DF")));
-            StackKat1[stack].addBar(new BarModel(
-                    monatJahresansicht,
-                    AusgabeSonstiges,
-                    Color.parseColor("#FF3AFA")));
-
-
-            mo++;
-            stack++;
-        }
-        //Darstellungsoptionen
-        BarChartyear.startAnimation();
-        BarChartyear.setShowValues(true);
-        BarChartyear.setActivated(false);
-
-    }*/
 
     public void changeMonth1(View view)
     {
@@ -1273,6 +308,8 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     {
         setData();
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -1374,6 +411,12 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
                 switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
                 startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                return true;
+
+            case R.id.itemDeleteCategory:
+                mySQLite = new MySQLite(this);
+                Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
+                startActivity(switchToDeleteCategory);
                 return true;
 
             case R.id.itemPdfCreator:

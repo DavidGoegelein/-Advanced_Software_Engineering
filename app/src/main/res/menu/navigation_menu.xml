@@ -26,6 +26,10 @@
         android:title="Kategorie hinzufügen"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/itemDeleteCategory"
+        android:title="Kategorie löschen"
+        app:showAsAction="never"/>
+
     <item android:id="@+id/itemBudgetLimit"
         android:title="Budget Limit festlegen"
         app:showAsAction="never"/>

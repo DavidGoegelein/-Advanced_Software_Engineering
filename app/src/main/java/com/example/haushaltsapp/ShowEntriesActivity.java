@@ -66,12 +66,14 @@ public class ShowEntriesActivity extends AppCompatActivity {
             text = "Alle Einnahmen des aktuellen Monats:";
             List<Intake> list = (List<Intake>) intent.getSerializableExtra("list");
             //Liste Sortieren
+            /*
             Collections.sort(list, new Comparator<Intake>() {
                 @Override
                 public int compare(Intake o1, Intake o2) {
                     return o1.compareTo(o2);
                 }
             });
+             */
 
             for(int i = 0; i < list.size(); i++){
                 text = text + " '\n' "+list.get(i).toString();
@@ -80,12 +82,15 @@ public class ShowEntriesActivity extends AppCompatActivity {
             text = "Alle Ausgaben des aktuellen Monats:";
             List<Outgo> list = (List<Outgo>) intent.getSerializableExtra("list");
             //Liste Sortieren
+            /*
             Collections.sort(list, new Comparator<Outgo>() {
                 @Override
                 public int compare(Outgo o1, Outgo o2) {
                     return o1.compareTo(o2);
                 }
             });
+
+             */
 
             for(int i = 0; i < list.size(); i++){
                 text = text + " '\n' "+list.get(i).toString();
@@ -214,6 +219,12 @@ public class ShowEntriesActivity extends AppCompatActivity {
                 switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
                 startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                return true;
+
+            case R.id.itemDeleteCategory:
+                mySQLite = new MySQLite(this);
+                Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
+                startActivity(switchToDeleteCategory);
                 return true;
 
             case R.id.itemPdfCreator:
