@@ -60,6 +60,7 @@ public class CalendarEventActivity extends AppCompatActivity {
     private Button addEvent;
     private Switch dailySwitch;
 
+    private String titleValue;
     private  int year;
     private  int month;
     private  int day;
@@ -69,6 +70,7 @@ public class CalendarEventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_calendar_event);
         dateSelect = findViewById(R.id.calendarDate);
         calenderView = findViewById(R.id.calenderView);
@@ -77,6 +79,13 @@ public class CalendarEventActivity extends AppCompatActivity {
         descriptionSelect=findViewById(R.id.descriptionSelect);
         addEvent    = findViewById(R.id.createEvent);
         dailySwitch = findViewById(R.id.switchDaily);
+
+        //Überprüfen ob Daten in savedInstanceState gespeichert wurden
+        if(savedInstanceState != null){
+            titleSelect.setText(savedInstanceState.getString("titleText"));
+            locationSelect.setText(savedInstanceState.getString("locationText"));
+            descriptionSelect.setText(savedInstanceState.getString("descriptionText") );
+        }
 
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -359,5 +368,21 @@ public class CalendarEventActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Erlaubnis verweigert!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putString("titleText", titleSelect.getText().toString());
+        state.putString("descriptionText", descriptionSelect.getText().toString());
+        state.putString("locationText", locationSelect.getText().toString());
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle state) {
+          super.onRestoreInstanceState(state);
+          state.putString("titleText", titleSelect.getText().toString());
+          state.putString("descriptionText", descriptionSelect.getText().toString());
+          state.putString("locationText", locationSelect.getText().toString());
     }
 }

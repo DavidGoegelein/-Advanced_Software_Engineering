@@ -779,14 +779,11 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return taskList;
     }
 
-
-    //neu
-    //FRAGE: Müsste man das Jahr nicht auch berücksichtigen? Und den Tag?
-    public boolean isCatBudgetLimitReached(int month, String category, double categoryLimit) {
+    public boolean isCatBudgetLimitReached(int month, int year, String category, double categoryLimit) {
         Double monthCatValue = 0.0;
         boolean isLimitReached = false;
 
-        Cursor curCatOutgo = getWritableDatabase().rawQuery("SELECT SUM("+KEY_VALUE+") FROM " + TABLE_OUTGO + " WHERE " + KEY_MONTH + " = \"" + month +"\" AND "+KEY_CATEGORY+"= \""+ category+"\"", null);
+        Cursor curCatOutgo = getWritableDatabase().rawQuery("SELECT SUM("+KEY_VALUE+") FROM " + TABLE_OUTGO + " WHERE "+ KEY_MONTH + " = \"" + month +"\" AND "+KEY_YEAR+"= \""+ year+"\" AND "+KEY_CATEGORY+"= \""+ category+"\"", null);
 
         if (curCatOutgo.moveToFirst()) {
             monthCatValue =  curCatOutgo.getDouble(0);
@@ -797,45 +794,22 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
         return isLimitReached;
 
-
-        /*
-        Double monthCatValue = 0.0;
-        boolean isLimitReached = false;
-
-        Cursor curCatOutgo = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_OUTGO + " WHERE " + KEY_MONTH + " = \"" + month +"\" AND "+KEY_CATEGORY+"= \""+ category+"\"", null);
-
-        if ((curCatOutgo.moveToFirst()) || curCatOutgo.getCount() !=0){
-            do {
-                monthCatValue = monthCatValue + curCatOutgo.getDouble(curCatOutgo.getColumnIndexOrThrow(KEY_VALUE));
-            } while (curCatOutgo.moveToNext());
-        }
-        curCatOutgo.close();
-
-        if (monthCatValue >= categoryLimit) {
-            isLimitReached = true;
-        } else {
-            isLimitReached = false;
-        }
-        return isLimitReached;
-
-         */
     }
 
-    //neu
-    public boolean isPercentBudgetLimitReached(int month, Integer percentOfBudget){
+    public boolean isPercentBudgetLimitReached(int month, int year, Integer percentOfBudget){
         Double monthOutgoValue = 0.0 ;
         Double monthIntakeValue = 0.0;
         boolean isLimitReached = false;
 
         //Berechnung der Einnahmen des Monats
-        Cursor curMonthIntakes = getWritableDatabase().rawQuery("SELECT SUM("+KEY_VALUE+") FROM "+TABLE_INTAKE+" WHERE "+KEY_MONTH+" = \""+month+"\"", null);
+        Cursor curMonthIntakes = getWritableDatabase().rawQuery("SELECT SUM("+KEY_VALUE+") FROM "+TABLE_INTAKE+" WHERE "+KEY_MONTH+" = \""+month+"\" AND "+KEY_YEAR+"= \""+ year+"\"", null);
         if (curMonthIntakes.moveToFirst()) {
             monthIntakeValue =  curMonthIntakes.getDouble(0);
         }
         curMonthIntakes.close();
 
         //Berechnung der Ausgaben des Monats
-        Cursor curMonthOutgoes = getWritableDatabase().rawQuery("SELECT SUM(\"+KEY_VALUE+\") FROM "+TABLE_OUTGO+" WHERE "+KEY_MONTH+" = \""+month+"\"", null);
+        Cursor curMonthOutgoes = getWritableDatabase().rawQuery("SELECT SUM("+KEY_VALUE+") FROM "+TABLE_OUTGO+" WHERE "+KEY_MONTH+" = \""+month+"\" AND "+KEY_YEAR+"= \""+ year+"\"", null);
 
         if (curMonthOutgoes.moveToFirst()) {
             monthOutgoValue =  curMonthOutgoes.getDouble(0);
@@ -846,44 +820,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         isLimitReached = (monthOutgoValue>=((percentOfBudget*monthIntakeValue)/100));
 
         return isLimitReached;
-
-        /*
-        Double monthOutgoValue = 0.0 ;
-        Double monthIntakeValue = 0.0;
-        boolean isLimitReached = false;
-
-        //Berechnung der Einnahmen des Monats
-        Cursor curMonthIntakes = getWritableDatabase().rawQuery("SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_MONTH+" = \""+month+"\"", null);
-        if ((curMonthIntakes.moveToFirst()) || curMonthIntakes.getCount() !=0){
-            do{
-                monthIntakeValue= monthIntakeValue+ curMonthIntakes.getDouble(curMonthIntakes.getColumnIndexOrThrow(KEY_VALUE));
-
-            }while(curMonthIntakes.moveToNext());
-        }
-        curMonthIntakes.close();
-
-        //Berechnung der Ausgaben des Monats
-        Cursor curMonthOutgoes = getWritableDatabase().rawQuery("SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_MONTH+" = \""+month+"\"", null);
-        if ((curMonthOutgoes.moveToFirst()) || curMonthOutgoes.getCount() !=0){
-            do{
-                monthOutgoValue= monthOutgoValue+ curMonthOutgoes.getDouble(curMonthOutgoes.getColumnIndexOrThrow(KEY_VALUE));
-
-            }while(curMonthOutgoes.moveToNext());
-        }
-        curMonthOutgoes.close();
-
-        //Vergleich der Einnahmen und Ausgaben
-        if(monthOutgoValue>=((percentOfBudget*monthIntakeValue)/100)){
-            isLimitReached=true;
-        }else {
-            isLimitReached=false;
-        }
-        return isLimitReached;
-
-         */
     }
-
-
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Tabelle limitState: id, name, value, state

@@ -409,32 +409,30 @@ public class AddEntryActivity extends AppCompatActivity {
         String categoryName = "";
         Double categoryLimit= 0.0;
         Boolean categoryLimitReached;
-        // Boolean isCatButtonChecked = BudgetLimitActivity.getCatButtonStatus();
+        int notificationId;
         boolean isCatButtonChecked = mySQLite.getSateLimitState("Kategorielimit").equals("true"); //später aus der Datenbank - Yvette
         if(isCatButtonChecked){
             for(int i = 0; i < categorieList.size(); i++){
                 Category category = categorieList.get(i);
                 categoryName = category.getName_PK();
                 categoryLimit = category.getBorder();
-                categoryLimitReached=mySQLite.isCatBudgetLimitReached(month,categoryName,categoryLimit);
+                notificationId = i;
+                categoryLimitReached=mySQLite.isCatBudgetLimitReached(monthCurrent,yearCurrent,categoryName,categoryLimit);
                 if(categoryLimitReached && categoryLimit>0.0 ){
-                    addCategoryNotification(categoryName);
+                    addCategoryNotification(notificationId,categoryName);
                 }
             }
         }
-
     }
 
     private void checkPercentageLimitReached(){
 
         Integer percentOfBudget=0; //double?
         Boolean isPerecentLimitReached;
-        // Boolean isPercentageButtonChecked = BudgetLimitActivity.getTotalButtonStatus();
         Boolean isPercentageButtonChecked = mySQLite.getSateLimitState("Gesamtlimit").equals("true"); ; //später aus der Dantebank. Yvette
         if(isPercentageButtonChecked){
-            // percentOfBudget = BudgetLimitActivity.getPercentageLimit();
             percentOfBudget =  (int) mySQLite.getSateLimitValue("Gesamtlimit"); //Später aus der Datenbank. Yvette
-            isPerecentLimitReached=mySQLite.isPercentBudgetLimitReached(month, percentOfBudget);
+            isPerecentLimitReached=mySQLite.isPercentBudgetLimitReached(monthCurrent,yearCurrent, percentOfBudget);
             if(isPerecentLimitReached && percentOfBudget>=0 ){
                 addPercentageNotification();
             }
@@ -442,12 +440,12 @@ public class AddEntryActivity extends AppCompatActivity {
 
     }
 
-    private void addCategoryNotification(String category) {
+    private void addCategoryNotification(int id, String category) {
         // Anlegen des Channels der Notifikation
         String NOTIFICATION_CHANNEL_ID = "channel_id";
         String CHANNEL_NAME = "Notification Channel";
-        // notificationId is a unique int for each notification that you must
-        int NOTIFICATION_ID = 0;
+        // eindeutige ID für jede Notifikation
+        int NOTIFICATION_ID = id;
 
         NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
