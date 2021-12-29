@@ -198,6 +198,10 @@ public class DiagramViewActivity extends AppCompatActivity {
             PieChartKat(Categories);
             BarGraphKat(Categories);
         }
+    //runden auf zwei Nachkommazahlen
+    public float roundf(float zahl, int stellen) {
+        return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+    }
 
         public  void setTextandColor ( ArrayList<Category> Categories)
         {
@@ -206,6 +210,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             int n =0;
             String CatName;
             int CatColor;
+            float round;
 
             //Ausgelegt auf max 3 extra Kategorien!!!
             while ( n < numCat)
@@ -214,24 +219,25 @@ public class DiagramViewActivity extends AppCompatActivity {
                 CatColor =Categories.get(n).getColor();
 
                 switch (n)
-                {
-                    case 0:
-                        verkehrsmittelcolor.setBackgroundColor(CatColor);
-                        verkehrsmitteltext.setText(CatName);
-                        lverkehrsmittel.setVisibility(View.VISIBLE);
+                { case 0:
+                    verkehrsmittelcolor.setBackgroundColor(CatColor);
+                    verkehrsmitteltext.setText(CatName);
+                    lverkehrsmittel.setVisibility(View.VISIBLE);
 
-                        verkehrsmittelname.setText(CatName);
-                        tvVerkehrsmittel.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
-                        rVerkehrsmittel.setVisibility(View.VISIBLE);
-                        line1.setVisibility(View.VISIBLE);
-                        break;
+                    verkehrsmittelname.setText(CatName);
+                    round = db.getCategorieOutgosMonth(day,month,year,CatName);
+                    tvVerkehrsmittel.setText(Float.toString(roundf(round,2))+" €");
+                    rVerkehrsmittel.setVisibility(View.VISIBLE);
+                    line1.setVisibility(View.VISIBLE);
+                    break;
                     case 1:
                         wohnencolor.setBackgroundColor(CatColor);
                         wohnentext.setText(CatName);
                         lwohnen.setVisibility(View.VISIBLE);
 
                         wohnenname.setText(CatName);
-                        tvWohnen.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                        round = db.getCategorieOutgosMonth(day,month,year,CatName);
+                        tvWohnen.setText(Float.toString(roundf(round,2))+" €");
                         rWohnen.setVisibility(View.VISIBLE);
                         line2.setVisibility(View.VISIBLE);
                         break;
@@ -241,7 +247,8 @@ public class DiagramViewActivity extends AppCompatActivity {
                         llebensmittel.setVisibility(View.VISIBLE);
 
                         lebensmittelname.setText(CatName);
-                        tvLebensmittel.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                        round = db.getCategorieOutgosMonth(day,month,year,CatName);
+                        tvLebensmittel.setText(Float.toString(roundf(round,2))+" €");
                         rLebensmittel.setVisibility(View.VISIBLE);
                         line3.setVisibility(View.VISIBLE);
                         break;
@@ -251,7 +258,8 @@ public class DiagramViewActivity extends AppCompatActivity {
                         lgesundheit.setVisibility(View.VISIBLE);
 
                         gesundheitname.setText(CatName);
-                        tvGesundheit.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                        round = db.getCategorieOutgosMonth(day,month,year,CatName);
+                        tvGesundheit.setText(Float.toString(roundf(round,2))+" €");
                         rGesundheit.setVisibility(View.VISIBLE);
                         line4.setVisibility(View.VISIBLE);
                         break;
@@ -261,7 +269,8 @@ public class DiagramViewActivity extends AppCompatActivity {
                         lfreizeit.setVisibility(View.VISIBLE);
 
                         freizeitname.setText(CatName);
-                        tvFreizeit.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                        round = db.getCategorieOutgosMonth(day,month,year,CatName);
+                        tvFreizeit.setText(Float.toString(roundf(round,2))+" €");
                         rFreizeit.setVisibility(View.VISIBLE);
                         line5.setVisibility(View.VISIBLE);
                         break;
@@ -271,7 +280,8 @@ public class DiagramViewActivity extends AppCompatActivity {
                         lsonstiges.setVisibility(View.VISIBLE);
 
                         sonstigesname.setText(CatName);
-                        tvSonstiges.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                        round = db.getCategorieOutgosMonth(day,month,year,CatName);
+                        tvSonstiges.setText(Float.toString(roundf(round,2))+" €");
                         rSonstiges.setVisibility(View.VISIBLE);
                         line6.setVisibility(View.VISIBLE);
                         break;
@@ -285,7 +295,8 @@ public class DiagramViewActivity extends AppCompatActivity {
                         letc1.setVisibility(View.VISIBLE);
 
                         etc1name.setText(CatName);
-                        tvetc1.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                        round = db.getCategorieOutgosMonth(day,month,year,CatName);
+                        tvetc1.setText(Float.toString(roundf(round,2))+" €");
                         retc1.setVisibility(View.VISIBLE);
                         line7.setVisibility(View.VISIBLE);
                         break;
@@ -295,7 +306,8 @@ public class DiagramViewActivity extends AppCompatActivity {
                         letc2.setVisibility(View.VISIBLE);
 
                         etc2name.setText(CatName);
-                        tvetc2.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                        round = db.getCategorieOutgosMonth(day,month,year,CatName);
+                        tvetc2.setText(Float.toString(roundf(round,2))+" €");
                         retc2.setVisibility(View.VISIBLE);
                         line8.setVisibility(View.VISIBLE);
                         break;
@@ -305,7 +317,8 @@ public class DiagramViewActivity extends AppCompatActivity {
                         letc3.setVisibility(View.VISIBLE);
 
                         etc3name.setText(CatName);
-                        tvetc3.setText(Float.toString(db.getCategorieOutgosMonth(day,month,year,CatName))+" €");
+                        round = db.getCategorieOutgosMonth(day,month,year,CatName);
+                        tvetc3.setText(Float.toString(roundf(round,2))+" €");
                         retc3.setVisibility(View.VISIBLE);
                         line9.setVisibility(View.VISIBLE);
                         break;

@@ -196,6 +196,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    //runden auf zwei Nachkommazahlen
+    public float roundf(float zahl, int stellen) {
+        return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+    }
 
     //Werte aus der Datenbank
     private void setData() {
@@ -207,9 +211,9 @@ public class MainActivity extends AppCompatActivity {
         pieChart = findViewById(R.id.piechart);
         mBarChart = findViewById(R.id.barchart);
         //Daten von Monat aus Datenbank:
-        float outgo = mySQLite.getValueOutgosMonth(day, month, year);
-        float intake = mySQLite.getValueIntakesMonth(day, month, year);
-        float residualBudget = intake - outgo;
+        float outgo = roundf(mySQLite.getValueOutgosMonth(day,month,year),2);
+        float intake = roundf( mySQLite.getValueIntakesMonth(day,month,year),2);
+        float residualBudget = roundf(intake-outgo,2);
 
         //Setzen von Einnahmen und Ausgaben als Stirng in Textview
         tvIntake.setText(Float.toString(intake) + " €");

@@ -203,6 +203,10 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         }, year2, month2, day2);
         dateDialog.show();
     }
+    //runden auf zwei Nachkommazahlen
+    public float roundf(float zahl, int stellen) {
+        return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+    }
 
 
     public void BarGraphComparision(int month1, int year1, int month2, int year2)
@@ -211,24 +215,24 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         String monthtext2 =monthtoSting(month2);
 
         //Monat 1
-        float IntakeMonth1 = db.getValueIntakesMonth(31,month1,year1);
+        float IntakeMonth1 = roundf(db.getValueIntakesMonth(31,month1,year1),2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "           "+monthtext1 + " "+ year1,
                 IntakeMonth1,
                 Color.parseColor("#66BB6A")));
-        float OutgoMonth1 = db.getValueOutgosMonth(31,month1,year1);
+        float OutgoMonth1 = roundf(db.getValueOutgosMonth(31,month1,year1),2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "",//"Aus. "+monthtext1,
                 OutgoMonth1,
                 Color.parseColor("#EF5350")));
 
         //Monat 2
-        float IntakeMonth2 = db.getValueIntakesMonth(31,month2,year2);
+        float IntakeMonth2 = roundf(db.getValueIntakesMonth(31,month2,year2),2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "           "+monthtext2 + " "+ year2,
                 IntakeMonth2,
                 Color.parseColor("#66BB6A")));
-        float OutgoMonth2 = db.getValueOutgosMonth(31,month2,year2);
+        float OutgoMonth2 = roundf(db.getValueOutgosMonth(31,month2,year2),2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "",//"Aus. "+monthtext2,
                 OutgoMonth2,
@@ -285,16 +289,19 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     {
         String monthtext1= monthtoSting(month1);
         String monthtext2 = monthtoSting(month2);
-        tvM1out.setText(Float.toString(db.getValueOutgosMonth(31,month1,year1))+" €");
+        float round;
+        round= roundf(db.getValueOutgosMonth(31,month1,year1),2);
+        tvM1out.setText(Float.toString(round)+" €");
         tvM1o.setText(monthtext1+"."+year1);
-
-        tvM1in.setText(Float.toString(db.getValueIntakesMonth(31,month1,year1))+" €");
+        round= roundf(db.getValueIntakesMonth(31,month1,year1),2);
+        tvM1in.setText(Float.toString(round)+" €");
         tvM1i.setText(monthtext1+"."+year1);
 
-        tvM2out.setText(Float.toString(db.getValueOutgosMonth(31,month2,year2))+" €");
+        round= roundf(db.getValueOutgosMonth(31,month1,year2),2);
+        tvM2out.setText(Float.toString(round)+" €");
         tvM2o.setText(monthtext2+"."+year2);
-
-        tvM2in.setText(Float.toString(db.getValueIntakesMonth(31,month2,year2))+" €");
+        round= roundf(db.getValueIntakesMonth(31,month1,year1),2);
+        tvM2in.setText(Float.toString(round)+" €");
         tvM2i.setText(monthtext2+"."+year2);
     }
 

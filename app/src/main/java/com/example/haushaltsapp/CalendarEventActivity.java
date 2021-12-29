@@ -3,6 +3,7 @@ package com.example.haushaltsapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -163,9 +164,10 @@ public class CalendarEventActivity extends AppCompatActivity {
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime)
                 .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, isAllDay);
 
-        if (insertEvent.resolveActivity(getPackageManager()) != null) {
+
+        try {
             startActivity(insertEvent);
-        } else {
+        } catch (ActivityNotFoundException e) {
             Toast.makeText(CalendarEventActivity.this, "Keine App auf Ihrem Handy unterstützt dieses Feature",
                     Toast.LENGTH_SHORT).show();
         }
@@ -183,9 +185,9 @@ public class CalendarEventActivity extends AppCompatActivity {
         builder.appendPath("time");
         ContentUris.appendId(builder, timeInMilliSec);
         Intent viewEvent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
-        if (viewEvent.resolveActivity(getPackageManager()) != null) {
+        try {
             startActivity(viewEvent);
-        } else {
+        } catch (ActivityNotFoundException e) {
             Toast.makeText(CalendarEventActivity.this, "Keine App auf Ihrem Handy unterstützt dieses Feature",
                     Toast.LENGTH_SHORT).show();
         }

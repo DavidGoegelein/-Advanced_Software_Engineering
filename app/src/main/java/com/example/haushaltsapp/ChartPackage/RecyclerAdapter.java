@@ -60,13 +60,18 @@ public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClic
         return new MyViewHolder(itemView);
     }
 
+    //runden auf zwei Nachkommazahlen
+    public double round(double zahl, int stellen) {
+        return (double) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+    }
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapter.MyViewHolder holder, int position) {
 
         String name = OutgoList.get(position).getName();
         holder.Outname.setText(name);
 
-        String value = Double.toString(OutgoList.get(position).getValue());
+        double valuedouble = OutgoList.get(position).getValue();
+        String value = Double.toString(round(valuedouble,2));
         holder.OutValue.setText(value+" €");
 
         String day = Integer.toString(OutgoList.get(position).getDay());

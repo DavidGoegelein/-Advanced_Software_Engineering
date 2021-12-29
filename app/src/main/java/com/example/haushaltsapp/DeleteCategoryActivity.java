@@ -1,5 +1,6 @@
 package com.example.haushaltsapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -70,19 +72,17 @@ public class DeleteCategoryActivity extends AppCompatActivity {
 
         deleteAdapter = new deleteCategorieAdapter(CategorieList,listener);
         recyclerView.setAdapter(deleteAdapter);
-        //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeHandlerdelete(deleteAdapter));
-
-        //itemTouchHelper.attachToRecyclerView(recyclerView);
 
     }
 
     private void setOnClickListner(){
+
         listener = new deleteCategorieAdapter.deleteCategorieClickListener() {
+
             @Override
             public void onClick(View v, int position) {
 
                 String Categorie = CategorieList.get(position).getName_PK();
-
 
                 if (Categorie.equals("Sonstiges"))
                 {
@@ -91,17 +91,40 @@ public class DeleteCategoryActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DeleteCategoryActivity.this );
+                    builder.setTitle("Kategorie Löschen");
+                    builder.setMessage("Möchten Sie diese Kategorie löschen?");
+                    builder.setPositiveButton("Ja",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-                    Toast toast = Toast.makeText(getApplicationContext(),Categorie+" Wird gelöscht",Toast.LENGTH_SHORT);
-                    toast.show();
-                    //suchen nach allen einträgen mit Categorie änderen der Categorie zu sonstiges
-                    mySQLite.ChangeCategorietoSonstiges(Categorie);
-                    //Löschen der Kategorie
-                    mySQLite.deleteCategoryByName(Categorie);
+                                    //suchen nach allen einträgen mit Categorie änderen der Categorie zu sonstiges
+                                    mySQLite.ChangeCategorietoSonstiges(Categorie);
+                                    //Löschen der Kategorie
+                                    mySQLite.deleteCategoryByName(Categorie);
+                                    deleteAdapter.deleteCategorie(position);
+                                    Toast toast = Toast.makeText(getApplicationContext(),Categorie+" wurde gelöscht",Toast.LENGTH_SHORT);
+                                    toast.show();
+
+                                }
+                            });
+                    builder.setNegativeButton("Abbruch",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast toast = Toast.makeText(getApplicationContext(),Categorie+" Wird nicht gelöscht",Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
                 }
             }
         };
     }
+
 
 
 

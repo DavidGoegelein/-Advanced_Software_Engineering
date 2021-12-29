@@ -1,6 +1,7 @@
 package com.example.haushaltsapp;
 
 import android.app.DatePickerDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -282,15 +283,17 @@ public class PDFCreatorActivity extends AppCompatActivity {
     }
 
     private void viewPdf(){
+        String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/Haushaltsapp.pdf"), "application/pdf");
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (intent.resolveActivity(getPackageManager()) != null) {
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setDataAndType(Uri.parse(pdfPath + "/Haushaltsplaner.pdf"), "application/pdf");
+        try {
             startActivity(intent);
-        } else {
+        } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "Keine App auf Ihrem Handy unterstützt dieses Feature",
                     Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -415,6 +418,3 @@ public class PDFCreatorActivity extends AppCompatActivity {
 
 
 }
-////table1.addCell(new Cell().add(new Paragraph("ID").setWidth(30).setFontSize(14).setBorder(Border.NO_BORDER).setBackgroundColor(ColorConstants.CYAN)));
-//Table tableOutgoes = new Table(UnitValue.createPercentArray(7)).useAllAvailableWidth();
-

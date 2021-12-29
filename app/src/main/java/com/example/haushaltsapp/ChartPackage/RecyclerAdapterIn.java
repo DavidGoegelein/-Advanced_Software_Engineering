@@ -53,13 +53,18 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chart_item,parent,false);
         return new MyViewHolderIn(itemView);
     }
+    //runden auf zwei Nachkommazahlen
+    public double round(double zahl, int stellen) {
+        return (double) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+    }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolderIn holder, int position) {
         String name = IntakeList.get(position).getName();
         holder.Inname.setText(name);
 
-        String value = Double.toString(IntakeList.get(position).getValue());
+        double valuedouble = IntakeList.get(position).getValue();
+        String value = Double.toString(round(valuedouble,2));
         holder.InValue.setText(value+" €");
 
         String day = Integer.toString(IntakeList.get(position).getDay());
