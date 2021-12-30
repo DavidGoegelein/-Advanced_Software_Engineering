@@ -1,19 +1,26 @@
 package com.example.haushaltsapp;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.fonts.Font;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -22,6 +29,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
 
 import com.example.haushaltsapp.database.Category;
 import com.example.haushaltsapp.database.Intake;
@@ -54,7 +63,9 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 
 public class PDFCreatorActivity extends AppCompatActivity {
@@ -86,7 +97,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
     int calendarMonth;
     int calendarYear;
     int numberOfPages;
-
+    private int Storage_Permission_Code = 1;
     long compareTime;
 
     long intakeTime;
@@ -145,14 +156,23 @@ public class PDFCreatorActivity extends AppCompatActivity {
             }
         });
 
-
         createPdfButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                try {
-                    printPDF();
 
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Storage_Permission_Code);
+                }
+                else
+                {
+                    try {
+                        printPDF();
+                        Toast.makeText(getApplicationContext(), "PDF generiert",
+                                Toast.LENGTH_SHORT).show();
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -167,11 +187,8 @@ public class PDFCreatorActivity extends AppCompatActivity {
 
     public void printPDF()throws FileNotFoundException {
 
-        String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-        File file = new File(pdfPath, "Haushaltsapp.pdf");
-        OutputStream outputStream = new FileOutputStream(file);
+        File file=new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"Haushaltsapp.pdf");
         PdfWriter pdfWriter = new PdfWriter(file);
-
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         Document document = new Document(pdfDocument,PageSize.A4,false );
 
@@ -277,24 +294,26 @@ public class PDFCreatorActivity extends AppCompatActivity {
             document.showTextAligned(new Paragraph(String.format("Seite %s von %s", i, numberOfPages)),
                     560, 15, i, TextAlignment.RIGHT, VerticalAlignment.BOTTOM, 0);
         }
-
         document.close();
-
-    }
+}
 
     private void viewPdf(){
-        String pdfPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setDataAndType(Uri.parse(pdfPath + "/Haushaltsplaner.pdf"), "application/pdf");
+
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Haushaltsapp.pdf");
+            Uri uri =          FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()),
+                    BuildConfig.APPLICATION_ID + ".provider", file);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.setDataAndType(uri, "application/pdf");
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "Keine App auf Ihrem Handy unterstützt dieses Feature",
                     Toast.LENGTH_SHORT).show();
         }
-
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -415,6 +434,5 @@ public class PDFCreatorActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 }
