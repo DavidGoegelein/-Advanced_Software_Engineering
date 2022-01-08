@@ -93,9 +93,9 @@ public class CalendarEventActivity extends AppCompatActivity {
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
         //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
-        calendar.set(year,month+1,day,8,0,0);
+        calendar.set(year,month,day,8,0,0);
         startDateInMilliSec = calendar.getTimeInMillis();
-        calendar.set(year,month+1,day,9,0,0);
+        calendar.set(year,month,day,9,0,0);
         endDateInMilliSec =calendar.getTimeInMillis();
 
         //Auf deutsche Kalenderanzeige umstellen
