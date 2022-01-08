@@ -13,14 +13,16 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
-        <CheckBox
-            android:id="@+id/CategoryDeleteCheckBox"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/CategorieDeleteBox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:buttonTint="@android:color/holo_green_dark"
-            android:paddingStart="8dp"
-            tools:text="Categorie" />
+            android:gravity="center"
+            android:text="Categorie"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/Textcolorbright0"/>
 
     </RelativeLayout>
 

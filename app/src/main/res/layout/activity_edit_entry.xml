@@ -14,7 +14,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewGraph"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="600dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="7dp"
             android:layout_marginRight="7dp"
@@ -148,7 +148,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="10dp"
-                        app:srcCompat="@android:drawable/ic_menu_day" />
+                        app:srcCompat="@drawable/ic_baseline_event" />
 
                 </LinearLayout>
 
@@ -217,21 +217,33 @@
                         android:id="@+id/button2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="45dp"
                         android:layout_gravity="center"
+                        android:layout_marginStart="20dp"
+                        android:backgroundTint="@color/Button"
                         android:onClick="onClickchange"
                         android:text="Ändern"
-                        android:backgroundTint="@color/Button"
                         android:textColor="@color/Textcolorbright1"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/button3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onClickdeli"
-                        android:layout_marginStart="50dp"
+                        android:layout_marginStart="10dp"
                         android:text="Löschen"
+                        android:layout_gravity="center"
+                        android:backgroundTint="@color/Button"
+                        android:textColor="@color/Textcolorbright1"
+                        android:textStyle="bold"/>
+
+                    <Button
+                        android:id="@+id/button4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="onClickCancel"
+                        android:layout_marginStart="10dp"
+                        android:text="Abbrechen"
                         android:layout_gravity="center"
                         android:backgroundTint="@color/Button"
                         android:textColor="@color/Textcolorbright1"

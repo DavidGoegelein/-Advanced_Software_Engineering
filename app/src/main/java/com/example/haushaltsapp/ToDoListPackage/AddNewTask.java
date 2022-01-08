@@ -35,7 +35,6 @@ public class AddNewTask extends BottomSheetDialogFragment {
         type=newType;
     }
 
-    //Wiedergabe eines AddNewTask-Objekts zur Verwendung in Aktivitäten
     public static AddNewTask newInstance(){
         return new AddNewTask();
     }
@@ -74,10 +73,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
             if(task.length()>0)
                 newTaskSaveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark));
         }
-
         db = new MySQLite(getActivity());
-        // db.openDatabase(); // nicht mehr notwendig // Auskommentiert von Yvette Groner
-
 
         newTaskText.addTextChangedListener(new TextWatcher() {
             @Override

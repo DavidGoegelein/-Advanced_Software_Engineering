@@ -13,7 +13,6 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
-
     //Style vom Kalender
     <style name="datePickerStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/MudGreen</item>

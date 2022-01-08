@@ -6,21 +6,18 @@
         android:title="Startseite"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/itemAddIntakesOutgoes"
-        android:title="Einnahmen/Ausnahmen anlegen"
-        app:showAsAction="never"        />
-
     <item android:id="@+id/itemEdit"
-        android:title="Editiere"
+        android:title="Einnahmen/Ausgaben anlegen"
         app:showAsAction="never">
         <menu>
-            <item android:id="@+id/subitemIntakes"
+            <item android:id="@+id/subitemAddIntakes"
                 android:title="Einnahmen"/>
 
-            <item android:id="@+id/subitemOutgoes"
+            <item android:id="@+id/subitemAddOutgoes"
                 android:title="Ausgaben"/>
         </menu>
     </item>
+
 
     <item android:id="@+id/itemAddCategory"
         android:title="Kategorie hinzufügen"

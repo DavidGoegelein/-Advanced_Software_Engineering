@@ -22,7 +22,6 @@ public RecyclerAdapter(ArrayList<Outgo> OutgoList, RecyclerViewClickListener lis
 {
     this.OutgoList = OutgoList;
     this.listener = listener;
-
 }
 
 public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
@@ -41,16 +40,11 @@ public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClic
         OutCategorie =view.findViewById(R.id.ChartCategorie);
 
         view.setOnClickListener(this);
-
-       // view.setOnContextClickListener((View.OnContextClickListener) this);
-
     }
 
     @Override
     public void onClick(View view) {
-        //int po = getAdapterPosition(); //fängt bie po 0 an
         listener.onClick(view, getAdapterPosition());
-
     }
 }
     @NonNull
@@ -67,6 +61,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClic
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapter.MyViewHolder holder, int position) {
 
+        //Setzen der Textview
         String name = OutgoList.get(position).getName();
         holder.Outname.setText(name);
 

@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,10 +14,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.haushaltsapp.database.Category;
 import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.database.Outgo;
@@ -23,20 +23,18 @@ import com.example.haushaltsapp.database.Outgo;
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.models.BarModel;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class MonthcomparisonViewActivity extends AppCompatActivity {
+    private int day, month, year;
+
+
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
-    private final int REQUESTCODE_ADD = 12; //AddEntryActivity
-    private final int REQUESTCODE_SHOW = 13; //ShowEntryActivity
-    private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
-    private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
     ///////////////////////////////
-    private MySQLite db;
 
     private BarChart BarChartInOutcomparison;
 
@@ -44,23 +42,20 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     private TextView tvM1out, tvM2out,tvM1in, tvM2in;
 
     //aktuelles Datum
-    private int day, day1, day2;
-    private int month, month1, month2;
-    private int year, year1, year2;
+    private int day1, day2;
+    private int month1, month2;
+    private int year1, year2;
     private String datesM1, datesM2;
 
     private TextView editTextDateM1; //Datum M1
     private TextView editTextDateM2; //Datum M2
-    private long startDateInMilliSec;
-    private long endDateInMilliSec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monthcomparison_view);
 
-        db = new MySQLite(this);
-        //db.openDatabase();
+        mySQLite = new MySQLite(this);
 
         //Aktuelles Datum anzeigen
         editTextDateM1 = (TextView) findViewById(R.id.editTextDateM1);
@@ -68,10 +63,9 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         java.util.Calendar calender = Calendar.getInstance();
         SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
 
-        //Beide Tage auf aktuelles Datum setzen
+        //Beide Datums auf aktuelles Datum setzen
         editTextDateM1.setText(datumsformat.format(calender.getTime()));
         editTextDateM2.setText(datumsformat.format(calender.getTime()));
-
 
         setData();
     }
@@ -104,19 +98,26 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         tvM2in =findViewById(R.id.tvin_Month2);
 
         BarChartInOutcomparison.clearChart();
-
-        //BarGraphMonthInOut();
         BarGraphComparision(month1,year1,month2,year2);
         setTextInOut(month1,year1,month2,year2);
-
     }
 
+    //Kalender für auswahl des ersten Monats der Anzeige
     public  void openCalenderM1(View dateview) {
         java.util.Calendar calender = java.util.Calendar.getInstance();
         year1 = calender.get(Calendar.YEAR);
         month1 = calender.get(Calendar.MONTH);
         day1 = calender.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+        //Kalender auf Deutsch umstellen
+        Locale locale = new Locale("de");
+        Locale.setDefault(locale);
+        Resources res = this.getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        config.locale = locale;
+        res.updateConfiguration(config, res.getDisplayMetrics());
+
+        DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this,R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
@@ -144,25 +145,27 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
                         editTextDateM1.setText(selectedDay + "." + month1 + "." + selectedYear);
                     }
                 }
-
-                //editTextDate.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);
-
-                //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
-                calender.set(year1, month1, day1, 8, 0, 0);
-                startDateInMilliSec = calender.getTimeInMillis();
-                calender.set(year1, month1, day1, 9, 0, 0);
-                endDateInMilliSec = calender.getTimeInMillis();
             }
         }, year1, month1, day1);
         dateDialog.show();
     }
 
+    //Kalender für auswahl des zweiten Monats der Anzeige
     public  void openCalenderM2(View dateview) {
         java.util.Calendar calender = java.util.Calendar.getInstance();
         year2 = calender.get(Calendar.YEAR);
         month2 = calender.get(Calendar.MONTH);
         day2 = calender.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+        //Kalender auf Deutsch umstellen
+        Locale locale = new Locale("de");
+        Locale.setDefault(locale);
+        Resources res = this.getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        config.locale = locale;
+        res.updateConfiguration(config, res.getDisplayMetrics());
+
+        DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this,R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
@@ -171,7 +174,6 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
                 month2 = selectedMonth + 1; //richtige monatszahl
                 year2 = selectedYear;
 
-                //Addition bei Monat von 1, Index beginnend bei 0
                 if (day2<10)
                 {
                     if(month2<10)
@@ -191,55 +193,48 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
                         editTextDateM2.setText(selectedDay + "." + month2 + "." + selectedYear);
                     }
                 }
-
-                //editTextDate.setText(selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay);
-
-                //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
-                calender.set(year2, month2, day2, 8, 0, 0);
-                startDateInMilliSec = calender.getTimeInMillis();
-                calender.set(year2, month2, day2, 9, 0, 0);
-                endDateInMilliSec = calender.getTimeInMillis();
             }
         }, year2, month2, day2);
         dateDialog.show();
     }
+
     //runden auf zwei Nachkommazahlen
     public float roundf(float zahl, int stellen) {
         return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
     }
 
-
+    //Balkendiagramm, mit Anzeige von zwei ausgewählten Monaten mit Ausgaben und Einnahmen
     public void BarGraphComparision(int month1, int year1, int month2, int year2)
     {
         String monthtext1 = monthtoSting(month1);
         String monthtext2 =monthtoSting(month2);
 
         //Monat 1
-        float IntakeMonth1 = roundf(db.getValueIntakesMonth(31,month1,year1),2);
+        float IntakeMonth1 = roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "           "+monthtext1 + " "+ year1,
                 IntakeMonth1,
-                Color.parseColor("#66BB6A")));
-        float OutgoMonth1 = roundf(db.getValueOutgosMonth(31,month1,year1),2);
+                Color.parseColor("#90BE6D")));
+        float OutgoMonth1 = roundf(mySQLite.getValueOutgosMonth(31,month1,year1),2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "",//"Aus. "+monthtext1,
                 OutgoMonth1,
-                Color.parseColor("#EF5350")));
+                Color.parseColor("#F94144")));
 
         //Monat 2
-        float IntakeMonth2 = roundf(db.getValueIntakesMonth(31,month2,year2),2);
+        float IntakeMonth2 = roundf(mySQLite.getValueIntakesMonth(31,month2,year2),2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "           "+monthtext2 + " "+ year2,
                 IntakeMonth2,
-                Color.parseColor("#66BB6A")));
-        float OutgoMonth2 = roundf(db.getValueOutgosMonth(31,month2,year2),2);
+                Color.parseColor("#90BE6D")));
+        float OutgoMonth2 = roundf(mySQLite.getValueOutgosMonth(31,month2,year2),2);
         BarChartInOutcomparison.addBar(new BarModel(
                 "",//"Aus. "+monthtext2,
                 OutgoMonth2,
-                Color.parseColor("#EF5350")));
-
+                Color.parseColor("#F94144")));
     }
 
+    //Monat in String umwandeln zur Anzeige in Textview
     public String monthtoSting(int month)
     {
         String monthtext="";
@@ -285,33 +280,29 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         return  monthtext;
     }
 
+    //Anzeige von beiden Monaten mit Werten zu Einnahmen und Ausgaben
     public void setTextInOut(int month1, int year1, int month2, int year2)
     {
         String monthtext1= monthtoSting(month1);
         String monthtext2 = monthtoSting(month2);
         float round;
-        round= roundf(db.getValueOutgosMonth(31,month1,year1),2);
+        round= roundf(mySQLite.getValueOutgosMonth(31,month1,year1),2);
         tvM1out.setText(Float.toString(round)+" €");
         tvM1o.setText(monthtext1+"."+year1);
-        round= roundf(db.getValueIntakesMonth(31,month1,year1),2);
+        round= roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
         tvM1in.setText(Float.toString(round)+" €");
         tvM1i.setText(monthtext1+"."+year1);
 
-        round= roundf(db.getValueOutgosMonth(31,month1,year2),2);
+        round= roundf(mySQLite.getValueOutgosMonth(31,month1,year2),2);
         tvM2out.setText(Float.toString(round)+" €");
         tvM2o.setText(monthtext2+"."+year2);
-        round= roundf(db.getValueIntakesMonth(31,month1,year1),2);
+        round= roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
         tvM2in.setText(Float.toString(round)+" €");
         tvM2i.setText(monthtext2+"."+year2);
     }
 
-
-    public void changeMonth1(View view)
-    {
-        setData();
-    }
-
-    public void changeMonth2(View view)
+    //Button zum setzen der Daten zu aktualisierung des Monats
+    public void changeMonth(View view)
     {
         setData();
     }
@@ -321,10 +312,6 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.navigation_menu, menu);
-        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
-        item2.setEnabled(false);
-        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
-        item3.setEnabled(false);
         return true;
     }
 
@@ -338,33 +325,20 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
                 startActivity(switchToMain);
                 return true;
 
-            case R.id.itemAddIntakesOutgoes:
+            case R.id.subitemAddIntakes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Category> categories = mySQLite.getAllCategory();
-                Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
-                switchToAddEntry.putExtra("list",categories);
+                Intent switchToAddIntake = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
+                switchToAddIntake.putExtra("Selected","Einnahme");
+                startActivity(switchToAddIntake);
                 return true;
 
-            case R.id.subitemIntakes:
+            case R.id.subitemAddOutgoes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Intake> intakes = mySQLite.getMonthIntakes(day,month,year);
-                Intent getIntakes = new Intent(this, ShowEntriesActivity.class);
-                getIntakes.putExtra("list",(Serializable) intakes);
-                getIntakes.putExtra("entry","Intake");
+                Intent switchToAddOutgo = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(getIntakes, REQUESTCODE_SHOW);
-                return true;
-
-            case R.id.subitemOutgoes:
-                mySQLite = new MySQLite(this);
-                ArrayList<Outgo> outgoes = mySQLite.getMonthOutgos(day, month, year);
-                Intent getOutgoes = new Intent(this, ShowEntriesActivity.class);
-                getOutgoes.putExtra("list",(Serializable) outgoes);
-                getOutgoes.putExtra("entry","Outgo");
-                mySQLite.close();
-                startActivityForResult(getOutgoes, REQUESTCODE_SHOW);
+                switchToAddOutgo.putExtra("Selected","Ausgabe");
+                startActivity(switchToAddOutgo);
                 return true;
 
             case R.id.itemBudgetLimit:
@@ -414,11 +388,10 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
             case R.id.itemAddCategory:
                 mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                ArrayList<Category> categories1 = mySQLite.getAllCategory();
-                switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
-                startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                startActivity(switchToAddCategory);
                 return true;
+
 
             case R.id.itemDeleteCategory:
                 mySQLite = new MySQLite(this);

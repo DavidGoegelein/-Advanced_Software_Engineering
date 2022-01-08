@@ -15,7 +15,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewGraph"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="600dp"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
@@ -155,7 +155,7 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:layout_marginStart="1dp"
-                            app:srcCompat="@android:drawable/ic_menu_day" />
+                            app:srcCompat="@drawable/ic_baseline_event" />
                     </LinearLayout>
 
 
@@ -216,8 +216,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="40dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="80dp"
                     android:weightSum="2"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
                     tools:layout_editor_absoluteX="16dp">
@@ -228,8 +228,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="25dp"
                         android:backgroundTint="@color/Einnahmen"
-                        android:onClick="onClickIntake"
-                        android:text="Einnahme"
+                        android:onClick="onClickOk"
+                        android:text="Ok"
                         android:textColor="@color/Textcolorbright1" />
 
                     <Button
@@ -238,8 +238,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="50dp"
                         android:backgroundTint="@color/Ausgaben"
-                        android:onClick="onClickOutgo"
-                        android:text="Ausgabe"
+                        android:onClick="onClickCancel"
+                        android:text="Abbrechen"
                         android:textColor="@color/Textcolorbright1" />
                 </LinearLayout>
 

@@ -3,6 +3,8 @@ package com.example.haushaltsapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,12 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import top.defaults.colorpicker.ColorPickerPopup;
@@ -25,29 +22,32 @@ import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.database.Outgo;
 
+
+
 public class AddCategoryActivity extends AppCompatActivity {
 
-    ////Variabeln zur Menünavigation
-    private MySQLite mySQLite;
-    private final int REQUESTCODE_ADD = 12; //AddEntryActivity
-    private final int REQUESTCODE_SHOW = 13; //ShowEntryActivity
-    private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
-    private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
-
-    ////////////////////////////////
+    //Wie viele Kategorien kann man maximal in Summe anlegen?
     private final int maxLimit = 9;
-    ////////////////////////////////
-    private int day;
-    private int month;
-    private int year;
-    ///////////////////////////////
 
-    private Button pickColorButton;
-    private View mColorPreview;
 
-    private int mDefaultColor;
-    private String name;
-    private double border;
+
+    private MySQLite mySQLite;
+
+    //private Button pickColorButton;
+    private View mColorPreview; //Feld, welches gewählte Farbe anzeigt
+
+    private int mDefaultColor; //gewählte Farbe
+    private String name = " "; // Name der Kategorie
+    private double border = 0.0; //Limit der Kategorie
+
+    private int day, month, year;
+
+    /*
+    1: der Titel wurde nicht gesetzt
+    2: den Titel gibt es schon
+    3: es können keine weiteren Kategorien angelegt werden
+     */
+    private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
 
 
     @Override
@@ -58,10 +58,12 @@ public class AddCategoryActivity extends AppCompatActivity {
 
         mySQLite = new MySQLite(this);
 
-        //Kasten der später die Farbe anzeigt
-        mColorPreview = findViewById(R.id.preview_selected_color);
-        mDefaultColor = 0;
+        mColorPreview = findViewById(R.id.preview_selected_color); //Kasten der später die Farbe anzeigt
 
+        //default-Werte setzen
+        mDefaultColor = R.color.defaultCategory;
+        mColorPreview.setBackgroundColor(mDefaultColor);
+        errorValue = 0;
     }
 
 
@@ -87,44 +89,52 @@ public class AddCategoryActivity extends AppCompatActivity {
                         });
     }
 
+
     public void onClickOk(View view){
         ArrayList<Category> categories = mySQLite.getAllCategory();
-
-        if(categories.size() < maxLimit) {
-            boolean valide = getValues();
-            if (valide) {
-                Category category = new Category(name, mDefaultColor, border);
+        if(categories.size() < maxLimit){ //können Kategorien noch angelegt werden?
+            boolean valide = getValues(); //Achtung, wenn valide = false ist errorValue != 0
+            if(valide){ //sind die Eingaben sinnvoll?
+                Category category = new Category(name, mDefaultColor, border); //Kategorie hinzufügen
                 mySQLite.addCategory(category);
-                super.finish();
             }
         }else{
-            Toast.makeText(AddCategoryActivity.this, "Es können keine weiteren Kategorien angelegt werden.",
-                    Toast.LENGTH_SHORT).show();
+            errorValue = 3; //Es gibt bereits "maxLimit" Kategorien
+        }
+
+        if(errorValue > 0){ //Fehler ist aufgetreten. Benutzer hinweisen
+            informUser();
+            errorValue = 0; //muss zurückgesetzt werdenmaxLimit
+        }else{ //zurück zur Startseite. Kategorie wurde hierbei bereits angelegt
+            Intent switchToMain = new Intent(this, MainActivity.class);
+            startActivity(switchToMain);
         }
     }
 
+    //bei Abbruch zurück zur Startseite
     public void onClickBreak(View view){
-        super.finish();
+        Intent switchToMain = new Intent(this, MainActivity.class);
+        startActivity(switchToMain);
     }
+
 
     //um die eingetragene Werte zu ermitteln
     private boolean getValues() {
+
         boolean retValue = true;
 
         //Bezeichnung
         EditText editTextName = (EditText) findViewById(R.id.Bezeichnung);
         name = editTextName.getText().toString();
         if(name.equals("Titel")){ //wurde ein Titel gesetzt?
-            Toast.makeText(AddCategoryActivity.this, "Bitte geben Sie einen Titel ein",
-                    Toast.LENGTH_SHORT).show();
+            errorValue = 1;
             retValue = false;
         }else { //gibt es diesen Titel bereits?
             ArrayList<Category> categories = mySQLite.getAllCategory();
             for( int i = 0; i < categories.size(); i++){
                 if(categories.get(i).getName_PK().equals(name)){
                     retValue = false;
-                    Toast.makeText(AddCategoryActivity.this, "Diese Kategorie exestiert bereits",
-                            Toast.LENGTH_SHORT).show();
+                    errorValue = 2;
                     break;
                 }
             }
@@ -133,10 +143,36 @@ public class AddCategoryActivity extends AppCompatActivity {
         //Limit
         EditText editTextValue = (EditText) findViewById(R.id.editTextLimit);
         String valueString = editTextValue.getText().toString();
+        valueString = valueString.replace(",","."); //Komma muss mit einem Punkt ersetzt werden
         border = Double.parseDouble(valueString);
 
         return retValue;
     }
+
+
+    //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
+    private void informUser(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setTitle("Hinweis");
+        if(errorValue == 1){
+            builder1.setMessage("Bitte setzen Sie einen Titel.");
+        }else if(errorValue == 2){
+            builder1.setMessage("Diese Kategorie gibt es bereits.");
+        }else{ // errorValue == 3
+            builder1.setMessage("Es können lieder keine weiteren Kategorien angelegt werden.");
+        }
+
+        builder1.setCancelable(true);
+        builder1.setNeutralButton(android.R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
 
 
     @Override
@@ -147,7 +183,6 @@ public class AddCategoryActivity extends AppCompatActivity {
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemAddCategory);
         item.setEnabled(false);
-
 
         return true;
     }
@@ -162,33 +197,20 @@ public class AddCategoryActivity extends AppCompatActivity {
                 startActivity(switchToMain);
                 return true;
 
-            case R.id.itemAddIntakesOutgoes:
+            case R.id.subitemAddIntakes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Category> categories = mySQLite.getAllCategory();
-                Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
-                switchToAddEntry.putExtra("list",categories);
+                Intent switchToAddIntake = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
+                switchToAddIntake.putExtra("Selected","Einnahme");
+                startActivity(switchToAddIntake);
                 return true;
 
-            case R.id.subitemIntakes:
+            case R.id.subitemAddOutgoes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Intake> intakes = mySQLite.getMonthIntakes(day,month,year);
-                Intent getIntakes = new Intent(this, ShowEntriesActivity.class);
-                getIntakes.putExtra("list",(Serializable) intakes);
-                getIntakes.putExtra("entry","Intake");
+                Intent switchToAddOutgo = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(getIntakes, REQUESTCODE_SHOW);
-                return true;
-
-            case R.id.subitemOutgoes:
-                mySQLite = new MySQLite(this);
-                ArrayList<Outgo> outgoes = mySQLite.getMonthOutgos(day, month, year);
-                Intent getOutgoes = new Intent(this, ShowEntriesActivity.class);
-                getOutgoes.putExtra("list",(Serializable) outgoes);
-                getOutgoes.putExtra("entry","Outgo");
-                mySQLite.close();
-                startActivityForResult(getOutgoes, REQUESTCODE_SHOW);
+                switchToAddOutgo.putExtra("Selected","Ausgabe");
+                startActivity(switchToAddOutgo);
                 return true;
 
             case R.id.itemBudgetLimit:
@@ -238,10 +260,8 @@ public class AddCategoryActivity extends AppCompatActivity {
             case R.id.itemAddCategory:
                 mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                ArrayList<Category> categories1 = mySQLite.getAllCategory();
-                switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
-                startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                startActivity(switchToAddCategory);
                 return true;
 
 
@@ -260,6 +280,5 @@ public class AddCategoryActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 }

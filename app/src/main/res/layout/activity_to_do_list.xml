@@ -7,6 +7,10 @@
     android:background="@color/Hintergrunddunkel"
     tools:context=".ToDoListActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewGraph"
         android:layout_width="match_parent"
@@ -21,7 +25,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="600dp"
             android:layout_marginTop="10dp"
             android:orientation="vertical">
 
@@ -29,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="5dp"
                 android:text="To-Do Liste"
                 android:textSize="35sp"
                 android:gravity="center"
@@ -39,30 +43,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/tasksRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:nestedScrollingEnabled="true"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.497"
-                tools:layout_editor_absoluteX="0dp" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/PaleOrange"
-                android:src="@drawable/ic_baseline_add"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintHorizontal_bias="0.9"
-                app:layout_constraintVertical_bias="0.9" />
 
             <Spinner
                 android:id="@+id/ToDoListSpinner"
@@ -77,8 +57,35 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintVertical_bias="0.0" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tasksRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="50dp"
+                android:nestedScrollingEnabled="true"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.497"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/Button"
+                android:src="@drawable/ic_baseline_add"
+                app:backgroundTint="@color/Button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.9"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.9" />
+
 
       </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
   </androidx.cardview.widget.CardView>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

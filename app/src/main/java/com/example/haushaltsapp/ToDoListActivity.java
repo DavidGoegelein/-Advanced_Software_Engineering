@@ -39,10 +39,6 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
 
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
-    private final int REQUESTCODE_ADD = 12; //AddEntryActivity
-    private final int REQUESTCODE_SHOW = 13; //ShowEntryActivity
-    private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
-    private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
 
     private int day;
     private int month;
@@ -63,15 +59,13 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         setContentView(R.layout.activity_to_do_list);
         mySQLite = new MySQLite(this);
 
-        Intent intent = getIntent();
         ArrayList<Category> list = mySQLite.getAllCategory();
         spinner = findViewById(R.id.ToDoListSpinner);
-        ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, list);
+        ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        // db.openDatabase(); // nicht mehr notwendig // Auskommentiert von Yvette Groner
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         tasksAdapter = new ToDoAdapter(mySQLite,this,this);
@@ -81,7 +75,6 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         fabAddTask = findViewById(R.id.fab);
 
         taskList = mySQLite.getTaskByType(type);
-        //Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
 
@@ -98,7 +91,6 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.navigation_menu, menu);
-
         //Die aktuelle Activity im Menü ausblenden
         MenuItem item = menu.findItem(R.id.itemToDoListe);
         item.setEnabled(false);
@@ -116,33 +108,20 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
                 startActivity(switchToMain);
                 return true;
 
-            case R.id.itemAddIntakesOutgoes:
+            case R.id.subitemAddIntakes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Category> categories = mySQLite.getAllCategory();
-                Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
-                switchToAddEntry.putExtra("list",categories);
+                Intent switchToAddIntake = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
+                switchToAddIntake.putExtra("Selected","Einnahme");
+                startActivity(switchToAddIntake);
                 return true;
 
-            case R.id.subitemIntakes:
+            case R.id.subitemAddOutgoes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Intake> intakes = mySQLite.getMonthIntakes(day,month,year);
-                Intent getIntakes = new Intent(this, ShowEntriesActivity.class);
-                getIntakes.putExtra("list",(Serializable) intakes);
-                getIntakes.putExtra("entry","Intake");
+                Intent switchToAddOutgo = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(getIntakes, REQUESTCODE_SHOW);
-                return true;
-
-            case R.id.subitemOutgoes:
-                mySQLite = new MySQLite(this);
-                ArrayList<Outgo> outgoes = mySQLite.getMonthOutgos(day, month, year);
-                Intent getOutgoes = new Intent(this, ShowEntriesActivity.class);
-                getOutgoes.putExtra("list",(Serializable) outgoes);
-                getOutgoes.putExtra("entry","Outgo");
-                mySQLite.close();
-                startActivityForResult(getOutgoes, REQUESTCODE_SHOW);
+                switchToAddOutgo.putExtra("Selected","Ausgabe");
+                startActivity(switchToAddOutgo);
                 return true;
 
             case R.id.itemBudgetLimit:
@@ -192,11 +171,10 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
             case R.id.itemAddCategory:
                 mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                ArrayList<Category> categories1 = mySQLite.getAllCategory();
-                switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
-                startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                startActivity(switchToAddCategory);
                 return true;
+
 
             case R.id.itemDeleteCategory:
                 mySQLite = new MySQLite(this);
@@ -255,6 +233,4 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-
 }

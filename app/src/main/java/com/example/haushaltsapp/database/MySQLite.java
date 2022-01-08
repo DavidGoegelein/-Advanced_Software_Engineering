@@ -917,4 +917,5 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
         return value;
     }
+
 }

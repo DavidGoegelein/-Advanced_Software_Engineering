@@ -33,13 +33,11 @@ public class deleteCategorieAdapter extends RecyclerView.Adapter<deleteCategorie
     public class MyViewHolderCat extends  RecyclerView.ViewHolder implements View.OnClickListener
     {
         private TextView Catname;
-        CheckBox deleteCat;
 
         public MyViewHolderCat(final View view)
         {
             super(view);
-            Catname = view.findViewById(R.id.CategoryDeleteCheckBox);
-            //deleteCat = view.findViewById(R.id.CategoryDeleteCheckBox);
+            Catname = view.findViewById(R.id.CategorieDeleteBox);
             view.setOnClickListener(this);
         }
 
@@ -61,7 +59,9 @@ public class deleteCategorieAdapter extends RecyclerView.Adapter<deleteCategorie
     public void onBindViewHolder(@NonNull deleteCategorieAdapter.MyViewHolderCat holder, int position) {
 
         String nameCat = CategoryList.get(position).getName_PK();
+        int colorCat = CategoryList.get(position).getColor();
         holder.Catname.setText(nameCat);
+        holder.Catname.setTextColor(colorCat);
 
     }
 

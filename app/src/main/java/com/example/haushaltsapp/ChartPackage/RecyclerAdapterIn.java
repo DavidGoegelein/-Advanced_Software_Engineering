@@ -21,7 +21,6 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
     {
         this.IntakeList = IntakeList;
         this.listener = listener;
-
     }
     public class MyViewHolderIn extends RecyclerView.ViewHolder implements View.OnClickListener
     {
@@ -42,7 +41,6 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
 
         @Override
         public void onClick(View view) {
-            int po = getAdapterPosition(); //fängt bie po 0 an
             listener.onClick(view, getAdapterPosition());
         }
     }
@@ -60,6 +58,8 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolderIn holder, int position) {
+
+        //Setzen der Textview
         String name = IntakeList.get(position).getName();
         holder.Inname.setText(name);
 

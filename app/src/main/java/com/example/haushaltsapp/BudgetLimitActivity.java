@@ -2,10 +2,11 @@ package com.example.haushaltsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,62 +16,44 @@ import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.database.Outgo;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.MySQLite;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BudgetLimitActivity extends AppCompatActivity {
 
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
-    private final int REQUESTCODE_ADD = 12; //AddEntryActivity
-    private final int REQUESTCODE_SHOW = 13; //ShowEntryActivity
-    private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
-    private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
-
-
-    private static boolean limitGesamt = false;
-    private static boolean limitCategory = false;
 
     private LinearLayout linearLayout;
     private CheckBox checkBoxGesamt, checkBoxCategory;
 
-    //gibt an, welche Limits betrachtet werden sollen?
-    //die für die Kategorien (Datenbank) oder
-    //das Gesamtlimit (Variable gesamtLimit)
-    private boolean gesamtButton = false;
-    private boolean categoryButton = false;
 
     //Variablen für Gesamtlimit
     private String gesamtString = "Gesamtbudget";
-    private double gesamtLimit = 0;
-    private int gesamtColor = 10;
+    private double gesamtLimit = 0; //Dafaultvalue
+    private int gesamtColor = 0; //Dafaultvalue
 
     //aktuelles Datum
     private int day;
     private int month;
     private int year;
+
+    /*
+    1: Wert von Gesamtlimit liegt nicht zwischen 0 und 100
+    2: Gesamtbudget einer Kategorie wird überschritten
+    4: Eingabe bezüglich des Wertes ist Fehlerhaft (3 Nachkommastellen)
+     */
+    private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +63,19 @@ public class BudgetLimitActivity extends AppCompatActivity {
         //Datenbank
         mySQLite = new MySQLite(this);
 
+        //Layout aufbauen
+        setLayout();
+
+        getDate(); //aktueler Tag, Monat, Jahr wichtig für Eingabeprüfung
+    }
+
+
+    //Methode um das Layout aufzubauen
+    private void setLayout(){
         //checkBox
         checkBoxGesamt = findViewById(R.id.checkBox);
         checkBoxCategory = findViewById(R.id.checkBox2);
+
         //Ggf Hacken setzen
         if(mySQLite.getSateLimitState("Gesamtlimit").equals("true")){
             checkBoxGesamt.setChecked(true);
@@ -91,7 +84,6 @@ public class BudgetLimitActivity extends AppCompatActivity {
         if(mySQLite.getSateLimitState("Kategorielimit").equals("true")){
             checkBoxCategory.setChecked(true);
         }
-
 
         //Kategorien in der View darstellen
         linearLayout = findViewById(R.id.container);
@@ -104,39 +96,23 @@ public class BudgetLimitActivity extends AppCompatActivity {
             Category category = list.get(i);
             addCategory(category.getName_PK(), category.getBorder(), category.getColor());
         }
-
-        getDate(); //aktueler Tag, Monat, Jahr wichtig für Eingabeprüfung
     }
 
-    /*
-    public static boolean getCatButtonStatus(){
-        return limitCategory;
-    }
 
-    public static boolean getTotalButtonStatus(){
-        return limitGesamt;
-    }
 
-    public static Integer getPercentageLimit(){
-        return gesamtLimit;
-    }
-
-     */
 
     // Setzt die Variablen day, month, year
     private void getDate() {
-
         java.util.Calendar calender = java.util.Calendar.getInstance();
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
-        String dates = datumsformat.format(calender.getTime());
-        day = Integer.parseInt(dates.substring(0, 2));
-        month = Integer.parseInt(dates.substring(3, 5));
-        year = Integer.parseInt(dates.substring(6, 10));
+        year = calender.get(Calendar.YEAR);
+        month = calender.get(Calendar.MONTH)+1;//Fängt bei mit 0 an
+        day = calender.get(Calendar.DAY_OF_MONTH);
     }
 
-    //layout aufbauen
-    private void addCategory(String str, double value,int color){
 
+    //Layout aufbauen
+    //fügt die einzelnen Zeilen hinzu mit den Kategorien und ihren Limits
+    private void addCategory(String str, double value,int color){
         View view  = getLayoutInflater().inflate(R.layout.category_limit, null);
 
         View viewColor = view.findViewById(R.id.preview_selected_color);
@@ -146,7 +122,9 @@ public class BudgetLimitActivity extends AppCompatActivity {
         textView.setText(str);
 
         EditText editText = view.findViewById(R.id.limit);
-        editText.setText(String.valueOf((int) value));
+        // Wenn value keine zwei Nachkommastellen hat - welche einfügen
+        DecimalFormat df = new DecimalFormat("0.00");
+        editText.setText(df.format(value));
 
         if(str.equals("Gesamtbudget")){
             TextView prozent = view.findViewById(R.id.prozent);
@@ -160,10 +138,8 @@ public class BudgetLimitActivity extends AppCompatActivity {
     //Vermeiden, dass man zwei gleichzeitig setzen kann
     //Variablen gesamtButton und categoryButton setzen
     public void onCheckboxClicked(View view) {
-        // Is the view now checked?
         boolean checked = ((CheckBox) view).isChecked();
 
-        // Check which checkbox was clicked
         switch(view.getId()) {
             case R.id.checkBox: //Gesamtlimit
                 if (checked) {
@@ -187,10 +163,11 @@ public class BudgetLimitActivity extends AppCompatActivity {
     }
 
 
-
     //Abbrechen
     public void clickCancel(View view){
-        super.finish(); //zurück zum letzten Frame
+        //Zurück zur Main
+        Intent switchToMainActivity= new Intent(this, MainActivity.class);
+        startActivity(switchToMainActivity);
     }
 
     //Ok
@@ -200,50 +177,85 @@ public class BudgetLimitActivity extends AppCompatActivity {
         boolean valideValues = checkValues();
         if(valideValues){
             writeValues(); //Werte in die Datenbank schreiben
-            super.finish();
+            //Zurück zur Main
+            Intent switchToMainActivity= new Intent(this, MainActivity.class);
+            startActivity(switchToMainActivity);
+        }else {
+            informUser();
         }
     }
 
+    //Prüfe ob die Eingaben Sinn machen. Setzt ggf errorValue
     private boolean checkValues(){
-
         double summe = 0;
 
         int childCount = linearLayout.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View v = linearLayout.getChildAt(i);
             EditText valueLimit = v.findViewById(R.id.limit);
-            double valueInt = Double.valueOf(valueLimit.getText().toString());
+            double valueInt = 0.0;
+            Pattern p = Pattern.compile("^\\d+([\\.,]\\d{2})?$");
+            Matcher m = p.matcher(valueLimit.getText().toString());
+            if(m.find()){ //Eintrag ist valide
+                valueInt = Double.parseDouble(valueLimit.getText().toString().replace(",",".")); //Eingabe mit Komma abfangen
+            }else{ //Eingabe gibt keinen Sinn (3 Nachkommastellen ect.)
+                errorValue = 4;
+                return false;
+            }
 
             if(i > 0) { //Erster Eintrag ist Gesamtbudget
                 summe = summe + valueInt;
             }else if(valueInt > 100 || valueInt < 0){
                 TextView name = v.findViewById(R.id.name);
-                Toast.makeText(BudgetLimitActivity.this, "Ihre Eingabe bei "+name.getText()+" ist fehlerhaft.",
-                        Toast.LENGTH_SHORT).show();
+                errorValue = 1;
                 return false;
             }
         }
 
         double gesamtbudget = mySQLite.getValueIntakesMonth(day,month,year);
         if(summe > gesamtbudget){
-            Toast.makeText(BudgetLimitActivity.this, "Das Gesamtbudget des Montas von "+gesamtbudget+"€ wird mit diesen Angaben überschritten.",
-                    Toast.LENGTH_SHORT).show();
+            errorValue = 2;
             return false;
         }
 
         return true;
     }
 
+    //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
+    private void informUser(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setTitle("Hinweis");
 
+        if(errorValue == 1){
+            builder1.setMessage("Das Eintrag bezüglich Gesamtbudget liegt nicht zwischen 0% und 100%.");
+        }else if(errorValue == 2){
+            builder1.setMessage("Mit den gewählten Grenzen wird das Gesamtbudget überschritten");
+        }else{ // errorValue 4
+            builder1.setMessage("Ihre Eingabe bezüglich des Werts ist nicht valide.");
+        }
+
+        builder1.setCancelable(true);
+        builder1.setNeutralButton(android.R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+
+        errorValue = 0; //danach zurücksetzen
+    }
+
+
+    //Methode um die eingabe in die Datenbank zu speichern
     private void writeValues(){
-
-
         //Gesamt
         View v = linearLayout.getChildAt(0);
         EditText valueLimit = v.findViewById(R.id.limit);
-        gesamtLimit = Double.parseDouble(valueLimit.getText().toString());
+        String entryString = valueLimit.getText().toString().replace(",","."); //Eingabe mit Komma abfangen
+        gesamtLimit = Double.parseDouble(entryString);
         //Wert in die Datanbank
-        //mySQLite.updateStateLimitValue("Gesamtlimit",gesamtLimit);
         if(checkBoxGesamt.isChecked()){
             mySQLite.updateStateLimit("Gesamtlimit", gesamtLimit, "true");
         }else{
@@ -259,20 +271,21 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
         //Kategorien
         int childCount = linearLayout.getChildCount();
-        for (int i = 1; i < childCount; i++) {
+        for (int i = 1; i < childCount; i++) { //bei 1 anfangen um "Gesamtbudget" zu überspringen
             v = linearLayout.getChildAt(i);
             valueLimit = v.findViewById(R.id.limit);
             TextView name = v.findViewById(R.id.name);
-
             Category category = mySQLite.getCategory(name.getText().toString());
-            category.setBorder(Double.valueOf(valueLimit.getText().toString()));
+            entryString = valueLimit.getText().toString().replace(",","."); //Eingabe mit Komma abfangen
+            category.setBorder(Double.valueOf(entryString));
             mySQLite.updateCategory(category);
         }
     }
 
 
 
-/*
+    //Menü
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -284,7 +297,6 @@ public class BudgetLimitActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -294,33 +306,20 @@ public class BudgetLimitActivity extends AppCompatActivity {
                 startActivity(switchToMain);
                 return true;
 
-            case R.id.itemAddIntakesOutgoes:
+            case R.id.subitemAddIntakes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Category> categories = mySQLite.getAllCategory();
-                Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
-                switchToAddEntry.putExtra("list",categories);
+                Intent switchToAddIntake = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
+                switchToAddIntake.putExtra("Selected","Einnahme");
+                startActivity(switchToAddIntake);
                 return true;
 
-            case R.id.subitemIntakes:
+            case R.id.subitemAddOutgoes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Intake> intakes = mySQLite.getMonthIntakes(day,month,year);
-                Intent getIntakes = new Intent(this, ShowEntriesActivity.class);
-                getIntakes.putExtra("list",(Serializable) intakes);
-                getIntakes.putExtra("entry","Intake");
+                Intent switchToAddOutgo = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(getIntakes, REQUESTCODE_SHOW);
-                return true;
-
-            case R.id.subitemOutgoes:
-                mySQLite = new MySQLite(this);
-                ArrayList<Outgo> outgoes = mySQLite.getMonthOutgos(day, month, year);
-                Intent getOutgoes = new Intent(this, ShowEntriesActivity.class);
-                getOutgoes.putExtra("list",(Serializable) outgoes);
-                getOutgoes.putExtra("entry","Outgo");
-                mySQLite.close();
-                startActivityForResult(getOutgoes, REQUESTCODE_SHOW);
+                switchToAddOutgo.putExtra("Selected","Ausgabe");
+                startActivity(switchToAddOutgo);
                 return true;
 
             case R.id.itemBudgetLimit:
@@ -370,11 +369,10 @@ public class BudgetLimitActivity extends AppCompatActivity {
             case R.id.itemAddCategory:
                 mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                ArrayList<Category> categories1 = mySQLite.getAllCategory();
-                switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
-                startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                startActivity(switchToAddCategory);
                 return true;
+
 
             case R.id.itemDeleteCategory:
                 mySQLite = new MySQLite(this);
@@ -391,7 +389,5 @@ public class BudgetLimitActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
- */
 
 }

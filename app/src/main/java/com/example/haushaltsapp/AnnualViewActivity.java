@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,44 +16,31 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import com.example.haushaltsapp.database.Category;
 import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.database.Outgo;
 
 import org.eazegraph.lib.charts.BarChart;
-import org.eazegraph.lib.charts.StackedBarChart;
-import org.eazegraph.lib.charts.ValueLineChart;
 import org.eazegraph.lib.models.BarModel;
-import org.eazegraph.lib.models.StackedBarModel;
-import org.eazegraph.lib.models.ValueLinePoint;
-import org.eazegraph.lib.models.ValueLineSeries;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class AnnualViewActivity extends AppCompatActivity {
 
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
-    private final int REQUESTCODE_ADD = 12; //AddEntryActivity
-    private final int REQUESTCODE_SHOW = 13; //ShowEntryActivity
-    private final int REQUESTCODE_EDIT = 14; //EditEntryActivity
-    private final int REQUESTCODE_ADD_CATEGORY = 15; //AddCategoryActivity
     ///////////////////////////////
-    private MySQLite db;
 
     //private ValueLineChart LineChartyear;
     private BarChart BarChartInOut;
-    //private BarChart BarChartyear;
 
     private TextView tvM1o, tvM2o, tvM3o, tvM4o,tvM5o,tvM6o,tvM7o,tvM8o,tvM9o,tvM10o,tvM11o,tvM12o,tvM13o;
     private TextView tvM1out, tvM2out, tvM3out, tvM4out,tvM5out,tvM6out,tvM7out,tvM8out,tvM9out,tvM10out,tvM11out,tvM12out,tvM13out;
     private TextView tvM1i, tvM2i, tvM3i, tvM4i,tvM5i,tvM6i,tvM7i,tvM8i,tvM9i,tvM10i,tvM11i,tvM12i,tvM13i;
     private  TextView tvM1in, tvM2in,tvM3in,tvM4in,tvM5in,tvM6in,tvM7in,tvM8in,tvM9in,tvM10in,tvM11in,tvM12in,tvM13in;
-
 
     //aktuelles Datum
     private int day;
@@ -61,16 +50,13 @@ public class AnnualViewActivity extends AppCompatActivity {
     private TextView editTextDate; //Datum
     private String dates;
 
-    private long startDateInMilliSec;
-    private long endDateInMilliSec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_annual_view);
 
-        db = new MySQLite(this);
-        // db.openDatabase(); // nicht mehr notwendig // Auskommentiert von Yvette Groner
+        mySQLite = new MySQLite(this);
 
         //Aktuelles Datum anzeigen
         editTextDate = (TextView) findViewById(R.id.editTextDate);
@@ -91,6 +77,7 @@ public class AnnualViewActivity extends AppCompatActivity {
 
         BarChartInOut= findViewById(R.id.barchartinout);
 
+        //Anzeige Monat Ausgaben
         tvM1o = findViewById(R.id.tvMonth1);
         tvM2o = findViewById(R.id.tvMonth2);
         tvM3o = findViewById(R.id.tvMonth3);
@@ -104,7 +91,7 @@ public class AnnualViewActivity extends AppCompatActivity {
         tvM11o = findViewById(R.id.tvMonth11);
         tvM12o = findViewById(R.id.tvMonth12);
         tvM13o = findViewById(R.id.tvMonth13);
-
+        //Anzeige Monat Einnahmen
         tvM1i = findViewById(R.id.tvMonth1in);
         tvM2i = findViewById(R.id.tvMonth2in);
         tvM3i = findViewById(R.id.tvMonth3in);
@@ -118,7 +105,7 @@ public class AnnualViewActivity extends AppCompatActivity {
         tvM11i = findViewById(R.id.tvMonth11in);
         tvM12i = findViewById(R.id.tvMonth12in);
         tvM13i = findViewById(R.id.tvMonth13in);
-
+        //Anzeige Wert Ausgaben
         tvM1out = findViewById(R.id.tvout_Month1);
         tvM2out = findViewById(R.id.tvout_Month2);
         tvM3out = findViewById(R.id.tvout_Month3);
@@ -132,7 +119,7 @@ public class AnnualViewActivity extends AppCompatActivity {
         tvM11out = findViewById(R.id.tvout_Month11);
         tvM12out = findViewById(R.id.tvout_Month12);
         tvM13out = findViewById(R.id.tvout_Month13);
-
+        //Anzeige Wert Einnahmen
         tvM1in =findViewById(R.id.tvin_Month1);
         tvM2in =findViewById(R.id.tvin_Month2);
         tvM3in =findViewById(R.id.tvin_Month3);
@@ -149,18 +136,18 @@ public class AnnualViewActivity extends AppCompatActivity {
 
         BarChartInOut.clearChart();
         BarGraphMonthInOut();
-
     }
 
+    //Balkendiagramm mit Einnahmen und Ausgaben der letzten 12 Monate
     public void BarGraphMonthInOut() {
 
-        int m=1; //für Textausgabe
+        int mtextout=1; //für Textausgabe
         int mo = 1; //monate hochzählen
-        int monthr=month;//1-12
+        int monthr=month;
 
         //erster Monat wird in Balkendiagramm nicht beschriftet
 
-        int preYear = year-1; //2020
+        int preYear = year-1; //Vorjahr
 
         //vorjahresanzeige
         while (monthr <= 12) {
@@ -204,26 +191,24 @@ public class AnnualViewActivity extends AppCompatActivity {
                     monthname = "Dez";
                     break;
             }
-            //Datenbankzugriff: Einnahmen
-            float IntakeMonthX = roundf(db.getValueIntakesMonth(31,monthr,preYear),2);
+            //Balkendiagramm füllen mit Einnahmen des Monats
+            float IntakeMonthX = roundf(mySQLite.getValueIntakesMonth(31,monthr,preYear),2);
             BarChartInOut.addBar(new BarModel(
-                    "     "+monthname,
+                    "     "+monthname+"."+ year,
                     IntakeMonthX,
-                    Color.parseColor("#66BB6A")));
-            //Datenbankzugriff: Ausgaben
-            float OutgosMonthX = roundf( db.getValueOutgosMonth(31,monthr,preYear),2);
+                    Color.parseColor("#90BE6D")));
+            //Balkendiagramm füllen mit Ausgaben des Monats
+            float OutgosMonthX = roundf( mySQLite.getValueOutgosMonth(31,monthr,preYear),2);
             BarChartInOut.addBar(new BarModel(
-                    "",//monatJahresansicht,
+                    "",
                     OutgosMonthX,
-                    Color.parseColor("#EF5350")));
+                    Color.parseColor("#F94144")));
 
-
-            //ANzeige von Wert in Text unter Diagramm
-            switch (m) {
+            //Anzeige von Werten in Text unter Diagramm
+            switch (mtextout) {
                 case 1:
                     tvM1out.setText(Float.toString(OutgosMonthX)+" €");
                     tvM1o.setText(monthname+"."+preYear);
-
                     tvM1in.setText(Float.toString(IntakeMonthX)+" €");
                     tvM1i.setText(monthname+"."+preYear);
                     break;
@@ -300,16 +285,13 @@ public class AnnualViewActivity extends AppCompatActivity {
                     tvM13i.setText(monthname+"."+preYear);
                     break;
             }
-
-            m++;
+            mtextout++;
             monthr++;
         }
 
-        //dieses Jahr anzeigen
-        //letzer Monata wird die Achse nicht beschriftet
+        //aktuelles Jahr anzeigen
         while (mo <= (month)) {
             String monthname = "leer";
-
             switch (mo) {
                 case 1:
                     monthname = "Jan";
@@ -348,23 +330,21 @@ public class AnnualViewActivity extends AppCompatActivity {
                     monthname = "Dez";
                     break;
             }
-            //Datnbankzugriff: Einnahmen
-            float IntakeMonthX = roundf( db.getValueIntakesMonth(31,mo,year),2);
+            //Balkendiagramm füllen mit Einnahmen des Monats
+            float IntakeMonthX = roundf( mySQLite.getValueIntakesMonth(31,mo,year),2);
             BarChartInOut.addBar(new BarModel(
-                    "     "+ monthname,
+                    "     "+ monthname +"."+ year,
                     IntakeMonthX,
-                    Color.parseColor("#66BB6A")));
-            //Datnbankzugriff Ausgaben:
-            float OutgoMonthX = roundf( db.getValueOutgosMonth(31,mo,year),2);
+                    Color.parseColor("#90BE6D")));
+            //Balkendiagramm füllen mit Ausgaben des Monats
+            float OutgoMonthX = roundf( mySQLite.getValueOutgosMonth(31,mo,year),2);
             BarChartInOut.addBar(new BarModel(
-                    "",//monatJahresansicht,
+                    "",
                     OutgoMonthX,
-                    Color.parseColor("#EF5350")));
+                    Color.parseColor("#F94144")));
 
-
-
-            //ANzeige von Wert in Text unter Diagramm
-            switch (m) {
+            //Anzeige von Werten in Text unter Diagramm
+            switch (mtextout) {
                 case 1:
                     tvM1out.setText(Float.toString(OutgoMonthX)+" €");
                     tvM1o.setText(monthname+"."+year);
@@ -445,14 +425,13 @@ public class AnnualViewActivity extends AppCompatActivity {
                     tvM13i.setText(monthname+"."+year);
                     break;
             }
-            m++;
+            mtextout++;
             mo++;
         }
         //Darstellungsoptionen
         BarChartInOut.startAnimation();
         BarChartInOut.setShowValues(true);
         BarChartInOut.setActivated(false);
-
     }
 
     //runden auf zwei Nachkommazahlen
@@ -460,17 +439,28 @@ public class AnnualViewActivity extends AppCompatActivity {
         return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
     }
 
+    //Ändern des letzen Anzuzeigenden Monats
     public void changelastMonth(View view)
     {
         setData();
     }
 
+    //Kalender zu auswahl des Monats
     public  void openCalender(View dateview) {
         java.util.Calendar calender = java.util.Calendar.getInstance();
         year = calender.get(Calendar.YEAR);
         month = calender.get(Calendar.MONTH);
         day = calender.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog dateDialog = new DatePickerDialog(AnnualViewActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+        //Kalender auf Deutsch umstellen
+        Locale locale = new Locale("de");
+        Locale.setDefault(locale);
+        Resources res = this.getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        config.locale = locale;
+        res.updateConfiguration(config, res.getDisplayMetrics());
+
+        DatePickerDialog dateDialog = new DatePickerDialog(AnnualViewActivity.this, R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
@@ -498,11 +488,6 @@ public class AnnualViewActivity extends AppCompatActivity {
                         editTextDate.setText(selectedDay + "." + month + "." + selectedYear);
                     }
                 }
-                //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
-                //calender.set(year, month, day, 8, 0, 0);
-                //startDateInMilliSec = calender.getTimeInMillis();
-                //calender.set(year, month, day, 9, 0, 0);
-                //endDateInMilliSec = calender.getTimeInMillis();
             }
         }, year, month, day);
         dateDialog.show();
@@ -513,10 +498,6 @@ public class AnnualViewActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.navigation_menu, menu);
-        MenuItem item2 = menu.findItem(R.id.itemPdfCreator);
-        item2.setEnabled(false);
-        MenuItem item3 = menu.findItem(R.id.itemBudgetLimit);
-        item3.setEnabled(false);
         return true;
     }
 
@@ -530,33 +511,20 @@ public class AnnualViewActivity extends AppCompatActivity {
                 startActivity(switchToMain);
                 return true;
 
-            case R.id.itemAddIntakesOutgoes:
+            case R.id.subitemAddIntakes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Category> categories = mySQLite.getAllCategory();
-                Intent switchToAddEntry = new Intent(this, AddEntryActivity.class);
-                switchToAddEntry.putExtra("list",categories);
+                Intent switchToAddIntake = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(switchToAddEntry,REQUESTCODE_ADD);
+                switchToAddIntake.putExtra("Selected","Einnahme");
+                startActivity(switchToAddIntake);
                 return true;
 
-            case R.id.subitemIntakes:
+            case R.id.subitemAddOutgoes:
                 mySQLite = new MySQLite(this);
-                ArrayList<Intake> intakes = mySQLite.getMonthIntakes(day,month,year);
-                Intent getIntakes = new Intent(this, ShowEntriesActivity.class);
-                getIntakes.putExtra("list",(Serializable) intakes);
-                getIntakes.putExtra("entry","Intake");
+                Intent switchToAddOutgo = new Intent(this, AddEntryActivity.class);
                 mySQLite.close();
-                startActivityForResult(getIntakes, REQUESTCODE_SHOW);
-                return true;
-
-            case R.id.subitemOutgoes:
-                mySQLite = new MySQLite(this);
-                ArrayList<Outgo> outgoes = mySQLite.getMonthOutgos(day, month, year);
-                Intent getOutgoes = new Intent(this, ShowEntriesActivity.class);
-                getOutgoes.putExtra("list",(Serializable) outgoes);
-                getOutgoes.putExtra("entry","Outgo");
-                mySQLite.close();
-                startActivityForResult(getOutgoes, REQUESTCODE_SHOW);
+                switchToAddOutgo.putExtra("Selected","Ausgabe");
+                startActivity(switchToAddOutgo);
                 return true;
 
             case R.id.itemBudgetLimit:
@@ -606,11 +574,10 @@ public class AnnualViewActivity extends AppCompatActivity {
             case R.id.itemAddCategory:
                 mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                ArrayList<Category> categories1 = mySQLite.getAllCategory();
-                switchToAddCategory.putExtra("list",(Serializable) categories1);
                 mySQLite.close();
-                startActivityForResult(switchToAddCategory, REQUESTCODE_ADD_CATEGORY);
+                startActivity(switchToAddCategory);
                 return true;
+
 
             case R.id.itemDeleteCategory:
                 mySQLite = new MySQLite(this);
@@ -627,5 +594,4 @@ public class AnnualViewActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }

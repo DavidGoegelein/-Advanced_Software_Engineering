@@ -27,22 +27,6 @@ public class EntryFinance implements Serializable {
         this.cycle = cycle;
     }
 
-    //Damit man die Array-Listen später nach dem Datum sortieren kann
-    /*
-    public int compareTo(EntryFinance entryFinance) {
-        String firstString = year + "/" + month + "/" + day;
-        String secondString = entryFinance.year + "/" + entryFinance.month + "/" + entryFinance.day;
-        try {
-            Date firstDate = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH).parse(firstString);
-            Date secondDate = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH).parse(secondString);
-            return firstDate.compareTo(secondDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return 0; // default
-    }
-     */
-
     public int getId_PK() {
         return id_PK;
     }
