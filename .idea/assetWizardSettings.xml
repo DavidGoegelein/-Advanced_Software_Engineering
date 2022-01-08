@@ -115,7 +115,7 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="9fc782" />
-                                      <entry key="outputName" value="ic_app_symbol" />
+                                      <entry key="outputName" value="ic_symbol_app" />
                                     </map>
                                   </option>
                                 </PersistentState>
