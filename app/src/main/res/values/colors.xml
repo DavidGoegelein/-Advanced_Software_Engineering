@@ -45,6 +45,10 @@
 
     <!-- Farben David -->
     <color name="MudGreen">#5B8E7D</color>
+    <color name="LeafGreen">#8daf72</color>
+    <color name="OliveGreen">#90a955</color>
+    <color name="DarkGreen">#132a13</color>
+    <color name="LightGreen">#588157</color>
 
     <!-- Farben Yvette -->
     <color name="defaultCategory">#9caaa9</color>

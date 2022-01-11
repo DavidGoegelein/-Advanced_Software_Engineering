@@ -398,31 +398,12 @@ public class AddEntryActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemDiagramView:
-                mySQLite = new MySQLite(this);
                 Intent switchToDiagramView = new Intent(this, DiagramViewActivity.class);
-                //Alle Ausgaben in Datenbank
-                ArrayList<Outgo> AlloutgoD =mySQLite.getAllOutgo();
-                switchToDiagramView.putExtra("dataOut",AlloutgoD);
-                //Alle Einnahmen in Datenbank
-                ArrayList<Intake> AllIntakeD =mySQLite.getAllIntakes();
-                switchToDiagramView.putExtra("dataIn",AllIntakeD);
-                mySQLite.close();
                 startActivity(switchToDiagramView);
                 return true;
 
             case R.id.itemTableView:
-                mySQLite = new MySQLite(this);
                 Intent switchToChartView = new Intent(this, ChartViewActivity.class);
-                //Alle Ausgaben in Datenbank
-                ArrayList<Outgo> AlloutgoT =mySQLite.getAllOutgo();
-                switchToChartView.putExtra("dataOut",AlloutgoT);
-                //Ausgaben von aktuellem Monat
-                ArrayList<Outgo> outgoesT = mySQLite.getMonthOutgos(day,month,year);
-                switchToChartView.putExtra("monthlist",outgoesT);
-                //Alle Einnahmen in Datenbank
-                ArrayList<Outgo> AllintakeT =mySQLite.getAllOutgo();
-                switchToChartView.putExtra("dataIn",AllintakeT);
-                mySQLite.close();
                 startActivity(switchToChartView);
                 return true;
 
@@ -498,10 +479,12 @@ public class AddEntryActivity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
             }
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_house)
-                .setContentTitle("Überschreitung des definierten Budget Limits:")
+                .setContentTitle("Überschreitung des Budgets:")
                 .setContentText("Betroffene Kategorie: "+category)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Sie haben das von Ihnen definierte Budget überschritten! Betroffene Kategorie: \n"+category))
                 .setAutoCancel(true);
 
         //Intent, welcher aufgerufen wird, wenn Notifikation in der Statuszeile angeklickt wird
@@ -527,8 +510,10 @@ public class AddEntryActivity extends AppCompatActivity {
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_house)
-                .setContentTitle("Überschreitung des definierten Budget Limits:")
-                .setContentText("Sie haben das von Ihnen gesetzte Budget überschritten!")
+                .setContentTitle("Überschreitung des Budgets:")
+                .setContentText("Betroffenes Budget: Gesamtbudget")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Sie haben das von Ihnen definierte Gesamtbudget überschritten!"))
                 .setAutoCancel(true);
 
         //Intent, welcher aufgerufen wird, wenn Notifikation in der Statuszeile angeklickt wird

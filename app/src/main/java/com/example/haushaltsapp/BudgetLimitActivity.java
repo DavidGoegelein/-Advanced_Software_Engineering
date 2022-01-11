@@ -328,31 +328,12 @@ public class BudgetLimitActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemDiagramView:
-                mySQLite = new MySQLite(this);
                 Intent switchToDiagramView = new Intent(this, DiagramViewActivity.class);
-                //Alle Ausgaben in Datenbank
-                ArrayList<Outgo> AlloutgoD =mySQLite.getAllOutgo();
-                switchToDiagramView.putExtra("dataOut",AlloutgoD);
-                //Alle Einnahmen in Datenbank
-                ArrayList<Intake> AllIntakeD =mySQLite.getAllIntakes();
-                switchToDiagramView.putExtra("dataIn",AllIntakeD);
-                mySQLite.close();
                 startActivity(switchToDiagramView);
                 return true;
 
             case R.id.itemTableView:
-                mySQLite = new MySQLite(this);
                 Intent switchToChartView = new Intent(this, ChartViewActivity.class);
-                //Alle Ausgaben in Datenbank
-                ArrayList<Outgo> AlloutgoT =mySQLite.getAllOutgo();
-                switchToChartView.putExtra("dataOut",AlloutgoT);
-                //Ausgaben von aktuellem Monat
-                ArrayList<Outgo> outgoesT = mySQLite.getMonthOutgos(day,month,year);
-                switchToChartView.putExtra("monthlist",outgoesT);
-                //Alle Einnahmen in Datenbank
-                ArrayList<Outgo> AllintakeT =mySQLite.getAllOutgo();
-                switchToChartView.putExtra("dataIn",AllintakeT);
-                mySQLite.close();
                 startActivity(switchToChartView);
                 return true;
 
