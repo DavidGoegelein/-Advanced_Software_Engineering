@@ -2,17 +2,13 @@ package com.example.haushaltsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentUris;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.view.Menu;
@@ -27,17 +23,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 

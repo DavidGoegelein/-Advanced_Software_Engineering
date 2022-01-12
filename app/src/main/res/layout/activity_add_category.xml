@@ -158,7 +158,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginStart="40dp"
                         android:layout_gravity="center"
-                        android:backgroundTint="@color/Button"
+                        android:backgroundTint="@color/Sonstiges"
                         android:bottomLeftRadius="20dp"
                         android:bottomRightRadius="20dp"
                         android:onClick="onClickBreak"

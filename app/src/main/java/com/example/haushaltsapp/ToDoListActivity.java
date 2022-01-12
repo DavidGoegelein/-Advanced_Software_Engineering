@@ -24,13 +24,9 @@ import com.example.haushaltsapp.ToDoListPackage.SwipeHandler;
 import com.example.haushaltsapp.ToDoListPackage.ToDoAdapter;
 import com.example.haushaltsapp.ToDoListPackage.TaskModel;
 import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

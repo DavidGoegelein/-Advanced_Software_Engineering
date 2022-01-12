@@ -232,8 +232,8 @@
                         android:onClick="onClickdeli"
                         android:layout_marginStart="10dp"
                         android:text="Löschen"
+                        android:backgroundTint="@color/Ausgaben"
                         android:layout_gravity="center"
-                        android:backgroundTint="@color/Button"
                         android:textColor="@color/Textcolorbright1"
                         android:textStyle="bold"/>
 
@@ -244,8 +244,8 @@
                         android:onClick="onClickCancel"
                         android:layout_marginStart="10dp"
                         android:text="Abbrechen"
+                        android:backgroundTint="@color/Sonstiges"
                         android:layout_gravity="center"
-                        android:backgroundTint="@color/Button"
                         android:textColor="@color/Textcolorbright1"
                         android:textStyle="bold"/>
                 </LinearLayout>

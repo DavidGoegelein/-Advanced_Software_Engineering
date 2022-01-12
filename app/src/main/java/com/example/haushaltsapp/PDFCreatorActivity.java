@@ -1,17 +1,13 @@
 package com.example.haushaltsapp;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.fonts.Font;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -29,18 +24,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
 
-import com.itextpdf.kernel.colors.CalGray;
-import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.colors.WebColors;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -48,23 +36,16 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -311,19 +292,23 @@ public class PDFCreatorActivity extends AppCompatActivity {
                     560, 15, i, TextAlignment.RIGHT, VerticalAlignment.BOTTOM, 0);
         }
         document.close();
-}
+    }
 
     private void viewPdf(){
-
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Haushaltplaner.pdf");
-            Uri uri = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()),
-                    BuildConfig.APPLICATION_ID + ".provider", file);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.setDataAndType(uri, "application/pdf");
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Haushaltplaner.pdf");
+        Uri uri = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()),
+                BuildConfig.APPLICATION_ID + ".provider", file);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.setDataAndType(uri, "application/pdf");
         try {
-            startActivity(intent);
+            if(file.exists()) {
+                startActivity(intent);
+            }else{
+                Toast.makeText(this, "Diese Datei existiert nicht, bitte generieren Sie diese Datei zuerst!",
+                        Toast.LENGTH_SHORT).show();
+            }
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "Keine App auf Ihrem Handy unterstützt dieses Feature!",
                     Toast.LENGTH_SHORT).show();
