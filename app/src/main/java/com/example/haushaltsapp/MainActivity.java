@@ -2,7 +2,6 @@ package com.example.haushaltsapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
 
@@ -26,12 +25,6 @@ import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.charts.ValueLineChart;
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.PieModel;
-import org.eazegraph.lib.models.ValueLinePoint;
-import org.eazegraph.lib.models.ValueLineSeries;
-
-
-
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvOutgo, tvIntake, tvResidualbudget;
     private PieChart pieChart;
     private BarChart mBarChart;
-    private ValueLineChart LineChart;
 
     //beide Datanbanken anlegen für die Einnahmen und Ausgaben
     private MySQLite mySQLite = new MySQLite(this, null, null, 0);
@@ -85,10 +77,9 @@ public class MainActivity extends AppCompatActivity {
         year = Integer.parseInt(dates.substring(6, 10));
     }
 
-
-    //LimitState dafault anlegen
+    //LimitState default anlegen
     private void setLimitState() {
-        String state = mySQLite.getSateLimitState("Gesamtlimit");
+        String state = mySQLite.getStateLimitState("Gesamtlimit");
         if (state.equals("")) {
             mySQLite.addLimitState("Gesamtlimit", "false");
             mySQLite.addLimitState("Kategorielimit", "false");
@@ -114,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
             mySQLite.addCategory(category);
         }
     }
-
 
     //Übertrage das Budget des letzten Monats
     private void setLastBudget() {
@@ -241,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 Color.parseColor("#F94144")));
         //Darstellungsoptionen
         mBarChart.startAnimation();
-        mBarChart.setShowValues(true);  //werte auf Balken
+        mBarChart.setShowValues(false);  //werte auf Balken
         mBarChart.setActivated(false);
 
     }
@@ -310,15 +300,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemAddCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                mySQLite.close();
                 startActivity(switchToAddCategory);
                 return true;
 
-
             case R.id.itemDeleteCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
                 startActivity(switchToDeleteCategory);
                 return true;

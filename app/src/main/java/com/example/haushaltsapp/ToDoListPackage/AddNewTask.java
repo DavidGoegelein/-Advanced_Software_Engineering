@@ -30,7 +30,6 @@ public class AddNewTask extends BottomSheetDialogFragment {
     private Button newTaskSaveButton;
     private MySQLite db;
     public static String type ="";
-
     public static void setNewType(String newType){
         type=newType;
     }

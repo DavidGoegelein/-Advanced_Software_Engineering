@@ -29,24 +29,19 @@ public class AddCategoryActivity extends AppCompatActivity {
     //Wie viele Kategorien kann man maximal in Summe anlegen?
     private final int maxLimit = 9;
 
-
-
     private MySQLite mySQLite;
-
-    //private Button pickColorButton;
     private View mColorPreview; //Feld, welches gewählte Farbe anzeigt
 
     private int mDefaultColor; //gewählte Farbe
     private String name = " "; // Name der Kategorie
     private double border = 0.0; //Limit der Kategorie
 
-    private int day, month, year;
-
     /*
     1: der Titel wurde nicht gesetzt
     2: den Titel gibt es schon
     3: es können keine weiteren Kategorien angelegt werden
      */
+
     private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
 
 
@@ -55,9 +50,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_category);
 
-
         mySQLite = new MySQLite(this);
-
         mColorPreview = findViewById(R.id.preview_selected_color); //Kasten der später die Farbe anzeigt
 
         //default-Werte setzen
@@ -126,7 +119,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         //Bezeichnung
         EditText editTextName = (EditText) findViewById(R.id.Bezeichnung);
         name = editTextName.getText().toString();
-        if(name.equals("Titel")){ //wurde ein Titel gesetzt?
+        if(name.equals("Titel") || name.trim().isEmpty()){ //wurde ein Titel gesetzt?
             errorValue = 1;
             retValue = false;
         }else { //gibt es diesen Titel bereits?
@@ -159,7 +152,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         }else if(errorValue == 2){
             builder1.setMessage("Diese Kategorie gibt es bereits.");
         }else{ // errorValue == 3
-            builder1.setMessage("Es können lieder keine weiteren Kategorien angelegt werden.");
+            builder1.setMessage("Es können leider keine weiteren Kategorien angelegt werden.");
         }
 
         builder1.setCancelable(true);
@@ -239,15 +232,11 @@ public class AddCategoryActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemAddCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                mySQLite.close();
                 startActivity(switchToAddCategory);
                 return true;
 
-
             case R.id.itemDeleteCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
                 startActivity(switchToDeleteCategory);
                 return true;

@@ -35,10 +35,6 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
 
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
-
-    private int day;
-    private int month;
-    private int year;
     ///////////////////////////////
 
     private RecyclerView tasksRecyclerView;
@@ -146,15 +142,11 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
                 return true;
 
             case R.id.itemAddCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                mySQLite.close();
                 startActivity(switchToAddCategory);
                 return true;
 
-
             case R.id.itemDeleteCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
                 startActivity(switchToDeleteCategory);
                 return true;

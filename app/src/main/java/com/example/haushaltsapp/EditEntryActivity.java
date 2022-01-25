@@ -65,6 +65,7 @@ public class EditEntryActivity extends AppCompatActivity {
     1: gewähltes Datum liegt in der Zukunft
     2: der Titel wurde nicht gesetzt
     3: es wurde kein Wert gesetzt
+    4: Wert ist nicht sinnvoll
     */
      private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
 
@@ -118,6 +119,7 @@ public class EditEntryActivity extends AppCompatActivity {
         Configuration config = new Configuration(res.getConfiguration());
         config.locale = locale;
         res.updateConfiguration(config, res.getDisplayMetrics());
+
         //Kalender
         calenderView = findViewById(R.id.calenderView);
         month = month - 1; // Januar ist 0, demnach monat um 1 minimieren
@@ -172,7 +174,7 @@ public class EditEntryActivity extends AppCompatActivity {
             }
 
 
-            //Spinner Kategory
+            //Spinner Kategorie
             spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
             if (entry.equals("Outgo")) {
                 ArrayList<Category> list = mySQLite.getAllCategory();
@@ -251,8 +253,8 @@ public class EditEntryActivity extends AppCompatActivity {
                 if ((month < monthCurrent) || (year < yearCurrent)) {//Wenn der Eintrag in der Vergangenheit liegt muss das Budget angepasst werden
                     setBudgetEntry(month, year);
                 }
-                Intent switchToMainActivity= new Intent(this, MainActivity.class);
-                startActivity(switchToMainActivity);
+                Intent switchToChartActivity= new Intent(this, ChartViewActivity.class);
+                startActivity(switchToChartActivity);
             }else{
                 informUser();
             }
@@ -268,8 +270,8 @@ public class EditEntryActivity extends AppCompatActivity {
             if ((month < monthCurrent) || (year < yearCurrent)) {//Wenn der Eintrag in der Vergangenheit liegt muss das Budget angepasst werden
                 setBudgetEntry(month, year);
             }
-            Intent switchToMainActivity= new Intent(this, MainActivity.class);
-            startActivity(switchToMainActivity);
+            Intent switchToChartActivity= new Intent(this, ChartViewActivity.class);
+            startActivity(switchToChartActivity);
         }
 
         private boolean getValues() {
@@ -304,6 +306,10 @@ public class EditEntryActivity extends AppCompatActivity {
             //Name
             EditText editTextName = (EditText) findViewById(R.id.Bezeichnung);
             name = editTextName.getText().toString();
+            if(name.equals("Titel") || name.trim().isEmpty()){
+                errorValue = 2;
+                retValue = false;
+            }
 
             //Zyklus
             cyclus = spinnerCyclus.getSelectedItem().toString();
@@ -320,8 +326,8 @@ public class EditEntryActivity extends AppCompatActivity {
 Abbrechen
 */
     public void onClickCancel(View view){
-        Intent switchToMainActivity= new Intent(this, MainActivity.class);
-        startActivity(switchToMainActivity);
+        Intent switchToChartActivity= new Intent(this, ChartViewActivity.class);
+        startActivity(switchToChartActivity);
     }
 
     //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
@@ -331,6 +337,8 @@ Abbrechen
 
         if(errorValue == 1){
             builder1.setMessage("Das gewählte Datum liegt in der Zukunft.");
+        }else if(errorValue == 2){
+            builder1.setMessage("Bitte setzen Sie einen Titel..");
         }else if(errorValue == 3){
             builder1.setMessage("Bitte geben Sie einen Wert an.");
         }else{ // errorValue 4

@@ -73,7 +73,7 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
         String date = day+"."+month+"."+year;
         holder.InDate.setText(date);
 
-        //bei EInnahme keine Kategorie vorhanden
+        //bei Einnahme keine Kategorie vorhanden
         String categorie = "Einnahmen";//IntakeList.get(position).getCategory();
         holder.Categorie.setText(categorie);
     }

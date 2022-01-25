@@ -167,6 +167,7 @@ public class AddEntryActivity extends AppCompatActivity {
     /*
     Eingabe Anlegen
      */
+
     public void onClickOk(View view){
         boolean valide = getValues();
         if(valide){ //Titel und Wert wurde gesetzt
@@ -196,7 +197,7 @@ public class AddEntryActivity extends AppCompatActivity {
     }
 
     /*
-    Abbrechne
+    Abbrechen
     */
     public void onClickCancel(View view){
         Intent switchToMainActivity= new Intent(this, MainActivity.class);
@@ -240,7 +241,7 @@ public class AddEntryActivity extends AppCompatActivity {
         //Name
         EditText editTextName = (EditText) findViewById(R.id.Bezeichnung);
         name = editTextName.getText().toString();
-        if(name.equals("Titel")){
+        if(name.equals("Titel") || name.trim().isEmpty()){
             errorValue = 2;
             retValue = false;
         }
@@ -418,15 +419,11 @@ public class AddEntryActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemAddCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                mySQLite.close();
                 startActivity(switchToAddCategory);
                 return true;
 
-
             case R.id.itemDeleteCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
                 startActivity(switchToDeleteCategory);
                 return true;
@@ -444,8 +441,7 @@ public class AddEntryActivity extends AppCompatActivity {
     private void checkCatLimitReached(String categoryName){
         Double categoryLimit= 0.0;
         Boolean categoryLimitReached;
-        int notificationId;
-        boolean isCatButtonChecked = mySQLite.getSateLimitState("Kategorielimit").equals("true");
+        boolean isCatButtonChecked = mySQLite.getStateLimitState("Kategorielimit").equals("true");
         if(isCatButtonChecked){
             Category category = mySQLite.getCategory(categoryName);
             categoryLimit = category.getBorder();
@@ -458,12 +454,12 @@ public class AddEntryActivity extends AppCompatActivity {
 
     private void checkPercentageLimitReached(){
         Integer percentOfBudget=0;
-        Boolean isPerecentLimitReached;
-        Boolean isPercentageButtonChecked = mySQLite.getSateLimitState("Gesamtlimit").equals("true");
+        Boolean isPercentLimitReached;
+        Boolean isPercentageButtonChecked = mySQLite.getStateLimitState("Gesamtlimit").equals("true");
         if(isPercentageButtonChecked){
             percentOfBudget =  (int) mySQLite.getSateLimitValue("Gesamtlimit");
-            isPerecentLimitReached=mySQLite.isPercentBudgetLimitReached(monthCurrent,yearCurrent, percentOfBudget);
-            if(isPerecentLimitReached && percentOfBudget>=0 ){
+            isPercentLimitReached =mySQLite.isPercentBudgetLimitReached(monthCurrent,yearCurrent, percentOfBudget);
+            if(isPercentLimitReached && percentOfBudget>=0 ){
                 addPercentageNotification();
             }
         }

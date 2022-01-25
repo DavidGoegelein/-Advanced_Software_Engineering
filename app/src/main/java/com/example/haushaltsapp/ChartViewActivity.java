@@ -38,8 +38,6 @@ import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
 import com.example.haushaltsapp.database.Outgo;
 
-
-//https://www.youtube.com/watch?v=vBxNDtyE_Co
 public class ChartViewActivity extends  AppCompatActivity {
 
     ////Variabeln zur Menünavigation
@@ -75,7 +73,7 @@ public class ChartViewActivity extends  AppCompatActivity {
         SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
         editTextDate.setText(datumsformat.format(calender.getTime()));
 
-        //Spinner zu auswahl von Einnahmen oder Ausgaben
+        //Spinner zur Auswahl von Einnahmen oder Ausgaben
         spinner = findViewById(R.id.SpinnerInOut);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_TabelleInOut, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
@@ -134,12 +132,99 @@ public class ChartViewActivity extends  AppCompatActivity {
             @Override
             public void onClick(View v, int position) {
                 //Activity Edit entry aufrufen
-                Intent intenttoedit = new Intent(getApplicationContext(), EditEntryActivity.class);
-                int Id =Intakelist.get(position).getId_PK();
-                intenttoedit.putExtra("id", Id);
-                intenttoedit.putExtra("entry", InOutSpinner);
-                setResult(RESULT_OK, intenttoedit);
-                startActivity(intenttoedit);
+                //Alternative mit:
+                // str = name.substring(0,12); //ersten 12 Zeichen
+                // boolean istEnthalten = str.contains("Übertrag vom");
+                String name =Intakelist.get(position).getName();
+                char[] checkÜbertrag = name.toCharArray();
+                char[] check = new char[12];
+
+                if (checkÜbertrag.length>12)
+                {
+                    int charnum= 12;
+                    int i=0;
+                    while (i <charnum)
+                    {
+                        char letter = checkÜbertrag[i];
+                        check[i] = letter;
+                        i++;
+                    }
+                    String Übertrag = new String(check);
+
+                    if (Übertrag.equals("Übertrag vom"))
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
+                        builder.setTitle("Eintrag bearbeiten");
+                        builder.setMessage("Überträge vom Vormonat können nicht bearbeitet werden!");
+                        builder.setNeutralButton(android.R.string.ok,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                    else {
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
+                        builder.setTitle("Eintrag bearbeiten");
+                        builder.setMessage("Möchten Sie den Eintrag " +name+ " bearbeiten?");
+                        builder.setPositiveButton("Ja",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        //Activity Edit entry aufrufen
+                                        Intent intenttoedit = new Intent(getApplicationContext(), EditEntryActivity.class);
+                                        int Id =Intakelist.get(position).getId_PK();
+                                        intenttoedit.putExtra("id", Id);
+                                        intenttoedit.putExtra("entry", InOutSpinner);
+                                        setResult(RESULT_OK, intenttoedit);
+                                        startActivity(intenttoedit);
+                                    }
+                                });
+                        builder.setNegativeButton("Nein",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                }
+
+                else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
+                    builder.setTitle("Eintrag bearbeiten");
+                    builder.setMessage("Möchten Sie den Eintrag " +name+ " bearbeiten?");
+                    builder.setPositiveButton("Ja",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    //Activity Edit entry aufrufen
+                                    Intent intenttoedit = new Intent(getApplicationContext(), EditEntryActivity.class);
+                                    int Id =Intakelist.get(position).getId_PK();
+                                    intenttoedit.putExtra("id", Id);
+                                    intenttoedit.putExtra("entry", InOutSpinner);
+                                    setResult(RESULT_OK, intenttoedit);
+                                    startActivity(intenttoedit);
+                                }
+                            });
+                    builder.setNegativeButton("Nein",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+
             }
         };
 
@@ -182,7 +267,7 @@ public class ChartViewActivity extends  AppCompatActivity {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
                         builder.setTitle("Eintrag bearbeiten");
-                        builder.setMessage("Möchtest du den Eintrag " +name+ " bearbeiten?");
+                        builder.setMessage("Möchten Sie den Eintrag " +name+ " bearbeiten?");
                         builder.setPositiveButton("Ja",
                                 new DialogInterface.OnClickListener() {
                                     @Override
@@ -212,7 +297,7 @@ public class ChartViewActivity extends  AppCompatActivity {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
                     builder.setTitle("Eintrag bearbeiten");
-                    builder.setMessage("Möchtest du den Eintrag " +name+ " bearbeiten?");
+                    builder.setMessage("Möchten Sie den Eintrag " +name+ " bearbeiten?");
                     builder.setPositiveButton("Ja",
                             new DialogInterface.OnClickListener() {
                                 @Override
@@ -255,7 +340,7 @@ public class ChartViewActivity extends  AppCompatActivity {
         }
     }
 
-    //Kalender zu auswahl des Monats, der angezeigt werden soll
+    //Kalender zur Auswahl des Monats, der angezeigt werden soll
     public  void openCalender(View dateview) {
         java.util.Calendar calender = java.util.Calendar.getInstance();
         year = calender.get(Calendar.YEAR);
@@ -366,15 +451,11 @@ public class ChartViewActivity extends  AppCompatActivity {
                 return true;
 
             case R.id.itemAddCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                mySQLite.close();
                 startActivity(switchToAddCategory);
                 return true;
 
-
             case R.id.itemDeleteCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
                 startActivity(switchToDeleteCategory);
                 return true;

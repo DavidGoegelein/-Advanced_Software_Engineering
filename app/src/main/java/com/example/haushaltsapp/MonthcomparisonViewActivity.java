@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Calendar;
 
 public class MonthcomparisonViewActivity extends AppCompatActivity {
     private int day, month, year;
@@ -60,7 +61,7 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         //Aktuelles Datum anzeigen
         editTextDateM1 = (TextView) findViewById(R.id.editTextDateM1);
         editTextDateM2 = (TextView) findViewById(R.id.editTextDateM2);
-        java.util.Calendar calender = Calendar.getInstance();
+        Calendar calender = Calendar.getInstance();
         SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
 
         //Beide Datums auf aktuelles Datum setzen
@@ -104,7 +105,7 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
 
     //Kalender für auswahl des ersten Monats der Anzeige
     public  void openCalenderM1(View dateview) {
-        java.util.Calendar calender = java.util.Calendar.getInstance();
+        Calendar calender = Calendar.getInstance();
         year1 = calender.get(Calendar.YEAR);
         month1 = calender.get(Calendar.MONTH);
         day1 = calender.get(Calendar.DAY_OF_MONTH);
@@ -198,7 +199,7 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         dateDialog.show();
     }
 
-    //runden auf zwei Nachkommazahlen
+    //Runden auf zwei Nachkommazahlen
     public float roundf(float zahl, int stellen) {
         return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
     }
@@ -293,10 +294,10 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         tvM1in.setText(Float.toString(round)+" €");
         tvM1i.setText(monthtext1+"."+year1);
 
-        round= roundf(mySQLite.getValueOutgosMonth(31,month1,year2),2);
+        round= roundf(mySQLite.getValueOutgosMonth(31,month2,year2),2);
         tvM2out.setText(Float.toString(round)+" €");
         tvM2o.setText(monthtext2+"."+year2);
-        round= roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
+        round= roundf(mySQLite.getValueIntakesMonth(31,month2,year2),2);
         tvM2in.setText(Float.toString(round)+" €");
         tvM2i.setText(monthtext2+"."+year2);
     }
@@ -367,15 +368,11 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemAddCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                mySQLite.close();
                 startActivity(switchToAddCategory);
                 return true;
 
-
             case R.id.itemDeleteCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
                 startActivity(switchToDeleteCategory);
                 return true;

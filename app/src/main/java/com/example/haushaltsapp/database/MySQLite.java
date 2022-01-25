@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Color;
 import android.util.Log;
 import com.example.haushaltsapp.ToDoListPackage.TaskModel;
 
@@ -80,17 +79,9 @@ public class MySQLite extends SQLiteOpenHelper {
     private static final String KEY_STATUS = "status";
     private static final String KEY_TYPE = "type";
     //////////////////////////////////////////////////////////////////////////////////////////
-    private static final String TABLE_LIMITSATATE = "limitState";
+    private static final String TABLE_LIMITSTATE = "limitState";
     private static final String KEY_STATE = "state";
 
-   // private SQLiteDatabase db; // auch nicht mehr nötig //Yvette
-
-    //nicht mehr nötig
-    /*
-    public void openDatabase() {
-        db = this.getWritableDatabase();
-    }
-     */
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Tabelle intake: id, name, calue, day, month, year, cycle
@@ -541,10 +532,8 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
-
-      /*
-    Tabelle category: id, name, color, border
-     */
+    // Tabelle category: id, name, color, border
+    //////////////////////////////////////////////////////////////////////////////////////////
 
     /*
     Category hinzufügen
@@ -612,7 +601,6 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
         }
         db.close();
-        Log.d("getAllCategories", categories.toString());
         return categories;
     }
 
@@ -634,7 +622,6 @@ Periodische Ausgaben wurden dabei berücksichtigt.
             category.setBorder(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_BORDER)));
         }
         db.close();
-
         return category;
     }
 
@@ -669,11 +656,11 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // To Do Listen: Task, Status, Type
+    //////////////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////To Do Listen ////////////////////////////////////////////
-
-
-
+// Einfügen einer Task
     public void insertTask(TaskModel task){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -684,13 +671,12 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
 
-    //neu
+// Ausgabe jeder angelegten Task
     public List<TaskModel> getAllTasks(){
         List<TaskModel> taskList = new ArrayList<>();
 
         String query = "SELECT * FROM "+TABLE_TODO;
-        SQLiteDatabase db = this.getReadableDatabase(); //neu
-        //        db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
         if(cursor != null){
@@ -712,7 +698,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return taskList;
     }
 
-    //neu
+    //Aktualisieren einer Task
     public void updateTask(int id, String task){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -720,14 +706,9 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.update(TABLE_TODO, cv, KEY_ID + "= ?", new String[] {String.valueOf(id)});
         db.close();
 
-        /*
-        ContentValues cv = new ContentValues();
-        cv.put(KEY_TASK, task);
-        db.update(TABLE_TODO, cv, KEY_ID + "= ?", new String[] {String.valueOf(id)});
-         */
     }
 
-    //neu
+
     //Auffrischen des Task Status
     public void updateStatus(int id, int status){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -735,30 +716,20 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         cv.put(KEY_STATUS, status);
         db.update(TABLE_TODO, cv, KEY_ID + "= ?", new String[] {String.valueOf(id)});
         db.close();
-
-        /*
-        ContentValues cv = new ContentValues();
-        cv.put(KEY_STATUS, status);
-        db.update(TABLE_TODO, cv, KEY_ID + "= ?", new String[] {String.valueOf(id)});
-
-         */
     }
 
-    //neu
     //Löschen der Task
     public void deleteTask(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TODO, KEY_ID + "= ?", new String[] {String.valueOf(id)});
         db.close();
 
-        //db.delete(TABLE_TODO, KEY_ID + "= ?", new String[] {String.valueOf(id)});
     }
 
-    //neu
+    // Sortiere Task nach Type
     public List<TaskModel> getTaskByType(String type){
         List<TaskModel> taskList = new ArrayList<>();
-        SQLiteDatabase db = this.getWritableDatabase(); //neu
-        //    db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_TODO+" WHERE "+KEY_TYPE+" = \""+type+"\"";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor != null){
@@ -779,6 +750,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return taskList;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // Tabelle limitState: id, name, value, state
+    //////////////////////////////////////////////////////////////////////////////////////////
+
     public boolean isCatBudgetLimitReached(int month, int year, String category, double categoryLimit) {
         Double monthCatValue = 0.0;
         boolean isLimitReached = false;
@@ -789,7 +764,6 @@ Periodische Ausgaben wurden dabei berücksichtigt.
             monthCatValue =  curCatOutgo.getDouble(0);
         }
         curCatOutgo.close();
-
         isLimitReached = (monthCatValue >= categoryLimit);
 
         return isLimitReached;
@@ -822,26 +796,20 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return isLimitReached;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // Tabelle limitState: id, name, value, state
-    //@David es gibt die Einträge mit dem Namen Gesamtlimit und Kategorielimit
-    //State ist dabei true oder false.
-    //////////////////////////////////////////////////////////////////////////////////////////
-
     //LimitSate hinzufügen
-    //value ist default 0.ß
+    //value ist default 0.0
     public void addLimitState(String name, String state){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
         value.put(KEY_NAME, name);
         value.put(KEY_STATE, state);
         value.put(KEY_VALUE, 0);
-        db.insert(TABLE_LIMITSATATE, null, value);
+        db.insert(TABLE_LIMITSTATE, null, value);
         db.close();
     }
 
     //Update LimitSate
-    public int updateLimitSate(String name, String state){
+    public int updateLimitState(String name, String state){
         int id = -1;
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -849,13 +817,13 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         value.put(KEY_STATE, state);
 
         //id ermitteln
-        String query = "SELECT * FROM "+TABLE_LIMITSATATE+" WHERE "+KEY_NAME+" = \""+name+"\"";
+        String query = "SELECT * FROM "+ TABLE_LIMITSTATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
             id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
         }
 
-        int i = db.update(TABLE_LIMITSATATE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
+        int i = db.update(TABLE_LIMITSTATE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
         db.close();
         return i;
     }
@@ -870,22 +838,22 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         value.put(KEY_STATE, state);
 
         //id ermitteln
-        String query = "SELECT * FROM "+TABLE_LIMITSATATE+" WHERE "+KEY_NAME+" = \""+name+"\"";
+        String query = "SELECT * FROM "+ TABLE_LIMITSTATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
             id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
         }
 
-        int i = db.update(TABLE_LIMITSATATE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
+        int i = db.update(TABLE_LIMITSTATE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
         db.close();
         return i;
     }
 
     //status ermitteln
-    public String getSateLimitState(String name){
+    public String getStateLimitState(String name){
         String state = "";
 
-        String query = "SELECT * FROM "+TABLE_LIMITSATATE+" WHERE "+KEY_NAME+" = \""+name+"\"";
+        String query = "SELECT * FROM "+ TABLE_LIMITSTATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor != null) {
@@ -895,7 +863,6 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         }
 
         db.close();
-
         return state;
     }
 
@@ -904,7 +871,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         double value = 0.0;
 
 
-        String query = "SELECT * FROM "+TABLE_LIMITSATATE+" WHERE "+KEY_NAME+" = \""+name+"\"";
+        String query = "SELECT * FROM "+ TABLE_LIMITSTATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor != null) {
@@ -914,7 +881,6 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         }
 
         db.close();
-
         return value;
     }
 

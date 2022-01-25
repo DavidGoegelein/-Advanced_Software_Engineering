@@ -12,9 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
 import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -33,7 +31,6 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
-
     private LinearLayout linearLayout;
     private CheckBox checkBoxGesamt, checkBoxCategory;
 
@@ -63,28 +60,65 @@ public class BudgetLimitActivity extends AppCompatActivity {
         //Datenbank
         mySQLite = new MySQLite(this);
 
-        //Layout aufbauen
+        //Layout aufbauen - wird aber nicht angezeigt
         setLayout();
+
+        //Letzte Werte der Checkbox setzen
+        setCheckBoxes();
 
         getDate(); //aktueler Tag, Monat, Jahr wichtig für Eingabeprüfung
     }
 
-
-    //Methode um das Layout aufzubauen
-    private void setLayout(){
+    private void setCheckBoxes(){
         //checkBox
         checkBoxGesamt = findViewById(R.id.checkBox);
         checkBoxCategory = findViewById(R.id.checkBox2);
 
         //Ggf Hacken setzen
-        if(mySQLite.getSateLimitState("Gesamtlimit").equals("true")){
+        if(mySQLite.getStateLimitState("Gesamtlimit").equals("true")){
             checkBoxGesamt.setChecked(true);
+            //Möglichkiet, um den Wert für das Gesamtlimit zu setzen
+            showTotalBudget();
         }
 
-        if(mySQLite.getSateLimitState("Kategorielimit").equals("true")){
+        if(mySQLite.getStateLimitState("Kategorielimit").equals("true")){
             checkBoxCategory.setChecked(true);
+            //Möglichkeit, um den Wert für die Kategorien zu setzen
+            showChategories();
         }
+    }
 
+    private void showTotalBudget(){
+        View v = linearLayout.getChildAt(0); //immer an erster Stelle
+        v.setVisibility(View.VISIBLE);
+    }
+
+    private void showTotalBudgetNot(){
+        View v = linearLayout.getChildAt(0); //immer an erster Stelle
+        v.setVisibility(View.INVISIBLE);
+    }
+
+
+    private void showChategories(){
+        int childCount = linearLayout.getChildCount();
+        for (int i = 1; i < childCount; i++) { //0 überspringen
+            View v = linearLayout.getChildAt(i);
+            v.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showChategoriesNot(){
+        int childCount = linearLayout.getChildCount();
+        for (int i = 1; i < childCount; i++) { //0 überspringen
+            View v = linearLayout.getChildAt(i);
+            v.setVisibility(View.INVISIBLE);
+        }
+    }
+
+
+
+    //Methode um das Layout aufzubauen
+    private void setLayout(){
         //Kategorien in der View darstellen
         linearLayout = findViewById(R.id.container);
         //Gesamtlimit
@@ -112,6 +146,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
     //Layout aufbauen
     //fügt die einzelnen Zeilen hinzu mit den Kategorien und ihren Limits
+
     private void addCategory(String str, double value,int color){
         View view  = getLayoutInflater().inflate(R.layout.category_limit, null);
 
@@ -123,6 +158,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
         EditText editText = view.findViewById(R.id.limit);
         // Wenn value keine zwei Nachkommastellen hat - welche einfügen
+
         DecimalFormat df = new DecimalFormat("0.00");
         editText.setText(df.format(value));
 
@@ -131,6 +167,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
             prozent.setText("%");
         }
 
+        view.setVisibility(View.INVISIBLE);
         linearLayout.addView(view);
     }
 
@@ -147,7 +184,11 @@ public class BudgetLimitActivity extends AppCompatActivity {
                         Toast.makeText(BudgetLimitActivity.this, "Es kann nur ein Limit betrachtet werden",
                                 Toast.LENGTH_SHORT).show();
                         checkBoxGesamt.setChecked(false);
+                    }else{
+                        showTotalBudget();
                     }
+                }else{
+                    showTotalBudgetNot();
                 }
                 break;
             case R.id.checkBox2: //Kategorie
@@ -156,7 +197,11 @@ public class BudgetLimitActivity extends AppCompatActivity {
                         Toast.makeText(BudgetLimitActivity.this, "Es kann nur ein Limit betrachtet werden",
                                 Toast.LENGTH_SHORT).show();
                         checkBoxCategory.setChecked(false);
+                    }else{
+                        showChategories();
                     }
+                }else{
+                    showChategoriesNot();
                 }
                 break;
         }
@@ -190,7 +235,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
         double summe = 0;
 
         int childCount = linearLayout.getChildCount();
-        for (int i = 0; i < childCount; i++) {
+        for (int i = 1; i < childCount; i++) {
             View v = linearLayout.getChildAt(i);
             EditText valueLimit = v.findViewById(R.id.limit);
             double valueInt = 0.0;
@@ -217,7 +262,6 @@ public class BudgetLimitActivity extends AppCompatActivity {
             errorValue = 2;
             return false;
         }
-
         return true;
     }
 
@@ -227,7 +271,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
         builder1.setTitle("Hinweis");
 
         if(errorValue == 1){
-            builder1.setMessage("Das Eintrag bezüglich Gesamtbudget liegt nicht zwischen 0% und 100%.");
+            builder1.setMessage("Der Eintrag bezüglich des Gesamtbudget liegt nicht zwischen 0% und 100%.");
         }else if(errorValue == 2){
             builder1.setMessage("Mit den gewählten Grenzen wird das Gesamtbudget überschritten");
         }else{ // errorValue 4
@@ -251,10 +295,12 @@ public class BudgetLimitActivity extends AppCompatActivity {
     //Methode um die eingabe in die Datenbank zu speichern
     private void writeValues(){
         //Gesamt
+
         View v = linearLayout.getChildAt(0);
         EditText valueLimit = v.findViewById(R.id.limit);
         String entryString = valueLimit.getText().toString().replace(",","."); //Eingabe mit Komma abfangen
         gesamtLimit = Double.parseDouble(entryString);
+
         //Wert in die Datanbank
         if(checkBoxGesamt.isChecked()){
             mySQLite.updateStateLimit("Gesamtlimit", gesamtLimit, "true");
@@ -264,11 +310,10 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
         //Kategorie-Limit in DB
         if(checkBoxCategory.isChecked()){
-            mySQLite.updateLimitSate("Kategorielimit","true");
+            mySQLite.updateLimitState("Kategorielimit","true");
         }else{
-            mySQLite.updateLimitSate("Kategorielimit","false");
+            mySQLite.updateLimitState("Kategorielimit","false");
         }
-
         //Kategorien
         int childCount = linearLayout.getChildCount();
         for (int i = 1; i < childCount; i++) { //bei 1 anfangen um "Gesamtbudget" zu überspringen
@@ -280,9 +325,9 @@ public class BudgetLimitActivity extends AppCompatActivity {
             category.setBorder(Double.valueOf(entryString));
             mySQLite.updateCategory(category);
         }
+
+
     }
-
-
 
     //Menü
 
@@ -348,15 +393,11 @@ public class BudgetLimitActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemAddCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                mySQLite.close();
                 startActivity(switchToAddCategory);
                 return true;
 
-
             case R.id.itemDeleteCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
                 startActivity(switchToDeleteCategory);
                 return true;

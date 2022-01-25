@@ -3,12 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/itemMainPage"
-        android:title="Startseite"
-        app:showAsAction="never"/>
+        android:title="Startseite"/>
 
     <item android:id="@+id/itemEdit"
-        android:title="Einnahmen/Ausgaben anlegen"
-        app:showAsAction="never">
+        android:title="Einnahmen/Ausgaben anlegen">
         <menu>
             <item android:id="@+id/subitemAddIntakes"
                 android:title="Einnahmen"/>
@@ -20,36 +18,28 @@
 
 
     <item android:id="@+id/itemAddCategory"
-        android:title="Kategorie hinzufügen"
-        app:showAsAction="never"/>
+        android:title="Kategorie hinzufügen"/>
 
     <item android:id="@+id/itemDeleteCategory"
-        android:title="Kategorie löschen"
-        app:showAsAction="never"/>
+        android:title="Kategorie löschen"/>
 
     <item android:id="@+id/itemBudgetLimit"
-        android:title="Budget Limit festlegen"
-        app:showAsAction="never"/>
+        android:title="Budget Limit festlegen"/>
 
     <item android:id="@+id/itemDiagramView"
-        android:title="Diagrammansicht"
-        app:showAsAction="never"/>
+        android:title="Diagrammansicht"/>
 
     <item android:id="@+id/itemTableView"
-        android:title="Tabellenansicht"
-        app:showAsAction="never"/>
+        android:title="Tabellenansicht"/>
 
     <item android:id="@+id/itemCalendar"
-        android:title="Kalender"
-        app:showAsAction="never"/>
+        android:title="Kalender"/>
 
     <item android:id="@+id/itemToDoListe"
-        android:title="To-Do Liste"
-        app:showAsAction="never"/>
+        android:title="To-Do Liste"/>
 
     <item android:id="@+id/itemPdfCreator"
-        android:title="Generiere PDF"
-        app:showAsAction="never"/>
+        android:title="Generiere PDF"/>
 
 
 </menu>

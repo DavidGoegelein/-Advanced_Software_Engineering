@@ -176,7 +176,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             BarGraphKat(Categories);
         }
 
-        //runden auf zwei Nachkommazahlen
+        //Runden auf zwei Nachkommazahlen
         public float roundf(float zahl, int stellen) {
             return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
         }
@@ -301,7 +301,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             }
         }
 
-        //Kreisdiagram mit anzeige der vorhandenen Kategorien im Ausgewählten Monat
+        //Kreisdiagramm mit anzeige der vorhandenen Kategorien im Ausgewählten Monat
         public void PieChartKat (ArrayList<Category> Categories){
             int num=0;
             int Catnum =Categories.size();
@@ -328,7 +328,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             pieChart.setBackgroundColor(0);
         }
 
-        //Balkendiagramm mit anzeige der vorhanden Kategorien im ausgewählten Monat
+        //Balkendiagramm mit Anzeige der vorhanden Kategorien im ausgewählten Monat
         public void BarGraphKat(ArrayList<Category> Categories)
         {
             int num=0;
@@ -356,13 +356,13 @@ public class DiagramViewActivity extends AppCompatActivity {
             BarChart.setActivated(false);
         }
 
-        //Button zum aktualisieren des Monats
+        //Button zum Aktualisieren des Monats
         public void changeMonth(View view)
         {
             setData();
         }
 
-        //Kalender zu auswahl des Monats, der angezeigt werden soll
+        //Kalender zur Auswahl des Monats, der angezeigt werden soll
         public  void openCalender(View dateview) {
             java.util.Calendar calender = java.util.Calendar.getInstance();
             year = calender.get(Calendar.YEAR);
@@ -410,7 +410,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             dateDialog.show();
         }
 
-        //Link zu Jahresansicht
+        //Link zur Jahresansicht
         public void changeToAnnual(View view) {
 
             Intent intent = getIntent();
@@ -418,7 +418,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             startActivity(switchToAnnualView);
         }
 
-        //Link zu Monatsvergleich
+        //Link zum Monatsvergleich
         public void changeToMonthcomparison(View view) {
 
             Intent intent = getIntent();
@@ -491,15 +491,11 @@ public class DiagramViewActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemAddCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                mySQLite.close();
                 startActivity(switchToAddCategory);
                 return true;
 
-
             case R.id.itemDeleteCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
                 startActivity(switchToDeleteCategory);
                 return true;

@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class EntryFinance implements Serializable {
+public abstract class EntryFinance implements Serializable {
     int id_PK;
     String name;
     double value;

@@ -20,6 +20,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="7dp"
             android:layout_marginRight="7dp"
+            android:layout_marginBottom="10dp"
             android:elevation="10dp"
             app:cardCornerRadius="10dp"
             app:cardBackgroundColor="@color/Hintergrund">
@@ -123,9 +124,9 @@
 
                         <org.eazegraph.lib.charts.BarChart
                             android:id="@+id/barchart"
-                            android:layout_width="450dp"
+                            android:layout_width="500dp"
                             android:layout_height="300dp"
-                            android:layout_marginStart="25dp"
+                            android:layout_marginStart="45dp"
                             android:layout_marginTop="15dp"
                             android:padding="6dp"
                             app:egBarWidth="40dp"
@@ -787,7 +788,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="100dp"
                     android:onClick="changeToMonthcomparison"
-                    android:text="Montatsvergleich"
+                    android:text="Monatsvergleich"
                     android:backgroundTint="@color/Button"
                     android:textStyle="bold"
                     android:textColor="@color/Textcolorbright1"

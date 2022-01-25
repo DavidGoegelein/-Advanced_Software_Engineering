@@ -34,9 +34,6 @@ public class DeleteCategoryActivity extends AppCompatActivity {
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
 
-    private int day;
-    private int month;
-    private int year;
     ///////////////////////////////
 
     private RecyclerView recyclerView;
@@ -60,7 +57,6 @@ public class DeleteCategoryActivity extends AppCompatActivity {
     private void setAdapter()
     {
         setOnClickListner();
-
         deleteCategorieAdapter adapter = new deleteCategorieAdapter(CategorieList,listener);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -82,7 +78,7 @@ public class DeleteCategoryActivity extends AppCompatActivity {
                 String Categorie = CategorieList.get(position).getName_PK();
 
                 //Sonstiges kann nicht gelöscht werden
-                //Melung bringen über AlertDiagog
+                //Meldung bringen über AlertDialog
                 if (Categorie.equals("Sonstiges"))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(DeleteCategoryActivity.this );
@@ -99,12 +95,12 @@ public class DeleteCategoryActivity extends AppCompatActivity {
                 }
 
                 //Kategorie löschen
-                //Melung bringen über AlertDiagog
+                //Meldung bringen über AlertDiagog
                 else
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(DeleteCategoryActivity.this );
                     builder.setTitle("Kategorie löschen");
-                    builder.setMessage("Möchtest du die Kategorie " +Categorie+ " löschen?");
+                    builder.setMessage("Möchten Sie die Kategorie " +Categorie+ " löschen?");
                     builder.setPositiveButton("Ja",
                             new DialogInterface.OnClickListener() {
                                 @Override
@@ -140,7 +136,6 @@ public class DeleteCategoryActivity extends AppCompatActivity {
         inflater.inflate(R.menu.navigation_menu, menu);
         MenuItem item = menu.findItem(R.id.itemDeleteCategory);
         item.setEnabled(false);
-
         return true;
     }
 
@@ -196,15 +191,11 @@ public class DeleteCategoryActivity extends AppCompatActivity {
                 return true;
 
             case R.id.itemAddCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToAddCategory = new Intent(this, AddCategoryActivity.class);
-                mySQLite.close();
                 startActivity(switchToAddCategory);
                 return true;
 
-
             case R.id.itemDeleteCategory:
-                mySQLite = new MySQLite(this);
                 Intent switchToDeleteCategory = new Intent(this, DeleteCategoryActivity.class);
                 startActivity(switchToDeleteCategory);
                 return true;

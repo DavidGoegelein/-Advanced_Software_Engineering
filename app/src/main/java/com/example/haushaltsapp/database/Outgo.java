@@ -5,7 +5,6 @@ import com.example.haushaltsapp.database.EntryFinance;
 /*
 Repräsentation einer Ausgabe
 id, name, value, day, month, year, cyclus, category
--- !! wird später noch um eine Kategorie erweitert !!--
  */
 public class Outgo extends EntryFinance {
     String category;
