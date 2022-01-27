@@ -12,14 +12,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-
-import com.example.haushaltsapp.ToDoListActivity;
-import com.example.haushaltsapp.database.MySQLite;
+import com.example.haushaltsapp.Database.MySQLite;
 import com.example.haushaltsapp.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -30,6 +26,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
     private Button newTaskSaveButton;
     private MySQLite db;
     public static String type ="";
+
     public static void setNewType(String newType){
         type=newType;
     }

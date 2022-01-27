@@ -2,7 +2,6 @@ package com.example.haushaltsapp;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
@@ -18,25 +17,19 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.haushaltsapp.ChartPackage.RecyclerAdapter;
+import com.example.haushaltsapp.ChartPackage.RecyclerAdapterOut;
 import com.example.haushaltsapp.ChartPackage.RecyclerAdapterIn;
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
-import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
+import com.example.haushaltsapp.Database.Intake;
+import com.example.haushaltsapp.Database.MySQLite;
+import com.example.haushaltsapp.Database.Outgo;
 
 public class ChartViewActivity extends  AppCompatActivity {
 
@@ -50,28 +43,27 @@ public class ChartViewActivity extends  AppCompatActivity {
     private Spinner spinner;
     private TextView editTextDate;
 
-    private ArrayList<Outgo> Outgolist;
-    private ArrayList<Intake> Intakelist;
+    private ArrayList<Outgo> outgoList;
+    private ArrayList<Intake> intakeList;
     private RecyclerView recyclerView;
-    private RecyclerAdapter.RecyclerViewClickListener listener;
+    private RecyclerAdapterOut.RecyclerViewClickListener listenerOut;
     private RecyclerAdapterIn.RecyclerViewClickListenerIn listenerIn;
-    private String InOutSpinner;
+    private String inOutSpinner;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart_view);
         mySQLite = new MySQLite(this);
-        Outgolist = mySQLite.getAllOutgo();
-        Intakelist = mySQLite.getAllIntakes();
+        outgoList = mySQLite.getAllOutgo();
+        intakeList = mySQLite.getAllIntakes();
 
         //Aktuelles Datum anzeigen
         editTextDate = (TextView) findViewById(R.id.editTextDate);
-        java.util.Calendar calender = Calendar.getInstance();
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
-        editTextDate.setText(datumsformat.format(calender.getTime()));
+        java.util.Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        editTextDate.setText(dateFormat.format(calendar.getTime()));
 
         //Spinner zur Auswahl von Einnahmen oder Ausgaben
         spinner = findViewById(R.id.SpinnerInOut);
@@ -83,15 +75,12 @@ public class ChartViewActivity extends  AppCompatActivity {
             //ausgelesen, welcher Spinner gesetzt ist
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i==0)
-                {
-                    InOutSpinner ="Outgo";
-                    setAddapertOut();
-                }
-                else if (i == 1)
-                {
-                    InOutSpinner ="Intake";
-                    setAddapertIn();
+                if (i==0) {
+                    inOutSpinner ="Outgo";
+                    setAdapterOut();
+                } else if (i == 1) {
+                    inOutSpinner ="Intake";
+                    setAdapterIn();
                 }
             }
 
@@ -104,10 +93,9 @@ public class ChartViewActivity extends  AppCompatActivity {
 
 
     //Ausgaben anzeigen in Recyclerview mit RecyclerAdapter
-    private void setAddapertOut() {
-
-        setOnClickListner();
-        RecyclerAdapter adapter = new RecyclerAdapter(Outgolist, listener);
+    private void setAdapterOut() {
+        setOnClickListener();
+        RecyclerAdapterOut adapter = new RecyclerAdapterOut(outgoList, listenerOut);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator( new DefaultItemAnimator());
@@ -115,18 +103,18 @@ public class ChartViewActivity extends  AppCompatActivity {
     }
 
     //Einnahmen anzeigen in Recyclerview mit RecyclerAdapterIn
-    private void setAddapertIn() {
-
-        setOnClickListner();
-        RecyclerAdapterIn adapter = new RecyclerAdapterIn(Intakelist, listenerIn);
+    private void setAdapterIn() {
+        setOnClickListener();
+        RecyclerAdapterIn adapter = new RecyclerAdapterIn(intakeList, listenerIn);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator( new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
 
+
     //Auswahl eines Eintrags in der Tabelle um zu bearbeiten
-    private void setOnClickListner() {
+    private void setOnClickListener() {
         //Einnahmen
         listenerIn = new RecyclerAdapterIn.RecyclerViewClickListenerIn() {
             @Override
@@ -135,24 +123,23 @@ public class ChartViewActivity extends  AppCompatActivity {
                 //Alternative mit:
                 // str = name.substring(0,12); //ersten 12 Zeichen
                 // boolean istEnthalten = str.contains("Übertrag vom");
-                String name =Intakelist.get(position).getName();
-                char[] checkÜbertrag = name.toCharArray();
+                String name = intakeList.get(position).getName();
+                char[] checkTransfer = name.toCharArray();
                 char[] check = new char[12];
 
-                if (checkÜbertrag.length>12)
+                if (checkTransfer.length>12)
                 {
-                    int charnum= 12;
+                    int charNum = 12;
                     int i=0;
-                    while (i <charnum)
+                    while (i < charNum)
                     {
-                        char letter = checkÜbertrag[i];
+                        char letter = checkTransfer[i];
                         check[i] = letter;
                         i++;
                     }
                     String Übertrag = new String(check);
 
-                    if (Übertrag.equals("Übertrag vom"))
-                    {
+                    if (Übertrag.equals("Übertrag vom")) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
                         builder.setTitle("Eintrag bearbeiten");
                         builder.setMessage("Überträge vom Vormonat können nicht bearbeitet werden!");
@@ -164,9 +151,7 @@ public class ChartViewActivity extends  AppCompatActivity {
                                 });
                         AlertDialog dialog = builder.create();
                         dialog.show();
-                    }
-                    else {
-
+                    } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
                         builder.setTitle("Eintrag bearbeiten");
                         builder.setMessage("Möchten Sie den Eintrag " +name+ " bearbeiten?");
@@ -177,9 +162,9 @@ public class ChartViewActivity extends  AppCompatActivity {
 
                                         //Activity Edit entry aufrufen
                                         Intent intenttoedit = new Intent(getApplicationContext(), EditEntryActivity.class);
-                                        int Id =Intakelist.get(position).getId_PK();
-                                        intenttoedit.putExtra("id", Id);
-                                        intenttoedit.putExtra("entry", InOutSpinner);
+                                        int id = intakeList.get(position).getId_PK();
+                                        intenttoedit.putExtra("id", id);
+                                        intenttoedit.putExtra("entry", inOutSpinner);
                                         setResult(RESULT_OK, intenttoedit);
                                         startActivity(intenttoedit);
                                     }
@@ -193,9 +178,7 @@ public class ChartViewActivity extends  AppCompatActivity {
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     }
-                }
-
-                else {
+                } else {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
                     builder.setTitle("Eintrag bearbeiten");
@@ -207,9 +190,9 @@ public class ChartViewActivity extends  AppCompatActivity {
 
                                     //Activity Edit entry aufrufen
                                     Intent intenttoedit = new Intent(getApplicationContext(), EditEntryActivity.class);
-                                    int Id =Intakelist.get(position).getId_PK();
-                                    intenttoedit.putExtra("id", Id);
-                                    intenttoedit.putExtra("entry", InOutSpinner);
+                                    int id = intakeList.get(position).getId_PK();
+                                    intenttoedit.putExtra("id", id);
+                                    intenttoedit.putExtra("entry", inOutSpinner);
                                     setResult(RESULT_OK, intenttoedit);
                                     startActivity(intenttoedit);
                                 }
@@ -223,17 +206,15 @@ public class ChartViewActivity extends  AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
-
-
             }
         };
 
         //Ausgaben
-        listener = new RecyclerAdapter.RecyclerViewClickListener() {
+        listenerOut = new RecyclerAdapterOut.RecyclerViewClickListener() {
             @Override
             public void onClick(View v, int position) {
 
-                String name =Outgolist.get(position).getName();
+                String name = outgoList.get(position).getName();
                 char[] checkÜbertrag = name.toCharArray();
                 char[] check = new char[12];
 
@@ -249,8 +230,7 @@ public class ChartViewActivity extends  AppCompatActivity {
                     }
                     String Übertrag = new String(check);
 
-                    if (Übertrag.equals("Übertrag vom"))
-                    {
+                    if (Übertrag.equals("Übertrag vom")) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
                         builder.setTitle("Eintrag bearbeiten");
                         builder.setMessage("Überträge vom Vormonat können nicht bearbeitet werden!");
@@ -262,8 +242,7 @@ public class ChartViewActivity extends  AppCompatActivity {
                                 });
                         AlertDialog dialog = builder.create();
                         dialog.show();
-                    }
-                    else {
+                    } else {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
                         builder.setTitle("Eintrag bearbeiten");
@@ -275,9 +254,9 @@ public class ChartViewActivity extends  AppCompatActivity {
 
                                         //Activity Edit entry aufrufen
                                         Intent intenttoedit = new Intent(getApplicationContext(), EditEntryActivity.class);
-                                        int Id =Outgolist.get(position).getId_PK();
-                                        intenttoedit.putExtra("id", Id);
-                                        intenttoedit.putExtra("entry", InOutSpinner);
+                                        int id = outgoList.get(position).getId_PK();
+                                        intenttoedit.putExtra("id", id);
+                                        intenttoedit.putExtra("entry", inOutSpinner);
                                         setResult(RESULT_OK, intenttoedit);
                                         startActivity(intenttoedit);
                                     }
@@ -291,10 +270,7 @@ public class ChartViewActivity extends  AppCompatActivity {
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     }
-                }
-
-                else {
-
+                } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ChartViewActivity.this );
                     builder.setTitle("Eintrag bearbeiten");
                     builder.setMessage("Möchten Sie den Eintrag " +name+ " bearbeiten?");
@@ -305,9 +281,9 @@ public class ChartViewActivity extends  AppCompatActivity {
 
                                     //Activity Edit entry aufrufen
                                     Intent intenttoedit = new Intent(getApplicationContext(), EditEntryActivity.class);
-                                    int Id =Outgolist.get(position).getId_PK();
+                                    int Id = outgoList.get(position).getId_PK();
                                     intenttoedit.putExtra("id", Id);
-                                    intenttoedit.putExtra("entry", InOutSpinner);
+                                    intenttoedit.putExtra("entry", inOutSpinner);
                                     setResult(RESULT_OK, intenttoedit);
                                     startActivity(intenttoedit);
                                 }
@@ -328,15 +304,12 @@ public class ChartViewActivity extends  AppCompatActivity {
     //Button zum aktualisieren des Monats und laden der Tabelle
     public void changeMonth(View view)
     {
-        if (InOutSpinner.equals("Outgo"))
-        {
-            Outgolist = mySQLite.getMonthOutgos(day,month,year);
-            setAddapertOut();
-        }
-        else if( InOutSpinner.equals("Intake"))
-        {
-            Intakelist= mySQLite.getMonthIntakes(day,month,year);
-            setAddapertIn();
+        if (inOutSpinner.equals("Outgo")) {
+            outgoList = mySQLite.getMonthOutgos(day,month,year);
+            setAdapterOut();
+        } else if( inOutSpinner.equals("Intake")) {
+            intakeList = mySQLite.getMonthIntakes(day,month,year);
+            setAdapterIn();
         }
     }
 

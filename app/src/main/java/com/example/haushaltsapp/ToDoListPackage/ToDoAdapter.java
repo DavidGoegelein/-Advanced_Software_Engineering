@@ -7,15 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.haushaltsapp.database.MySQLite;
+import com.example.haushaltsapp.Database.MySQLite;
 import com.example.haushaltsapp.R;
 import com.example.haushaltsapp.ToDoListActivity;
-
 import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {

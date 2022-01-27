@@ -1,7 +1,6 @@
 package com.example.haushaltsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,10 +9,8 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.MySQLite;
-
+import com.example.haushaltsapp.Database.Category;
+import com.example.haushaltsapp.Database.MySQLite;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import android.view.View;
@@ -32,13 +29,13 @@ public class BudgetLimitActivity extends AppCompatActivity {
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
     private LinearLayout linearLayout;
-    private CheckBox checkBoxGesamt, checkBoxCategory;
+    private CheckBox checkBoxTotal, checkBoxCategory;
 
 
     //Variablen für Gesamtlimit
-    private String gesamtString = "Gesamtbudget";
-    private double gesamtLimit = 0; //Dafaultvalue
-    private int gesamtColor = 0; //Dafaultvalue
+    private String totalString = "Gesamtbudget";
+    private double totalLimit = 0; //Dafaultvalue
+    private int totalColor = 0; //Dafaultvalue
 
     //aktuelles Datum
     private int day;
@@ -71,12 +68,12 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
     private void setCheckBoxes(){
         //checkBox
-        checkBoxGesamt = findViewById(R.id.checkBox);
+        checkBoxTotal = findViewById(R.id.checkBox);
         checkBoxCategory = findViewById(R.id.checkBox2);
 
         //Ggf Hacken setzen
         if(mySQLite.getStateLimitState("Gesamtlimit").equals("true")){
-            checkBoxGesamt.setChecked(true);
+            checkBoxTotal.setChecked(true);
             //Möglichkiet, um den Wert für das Gesamtlimit zu setzen
             showTotalBudget();
         }
@@ -84,7 +81,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
         if(mySQLite.getStateLimitState("Kategorielimit").equals("true")){
             checkBoxCategory.setChecked(true);
             //Möglichkeit, um den Wert für die Kategorien zu setzen
-            showChategories();
+            showCategories();
         }
     }
 
@@ -99,7 +96,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
     }
 
 
-    private void showChategories(){
+    private void showCategories(){
         int childCount = linearLayout.getChildCount();
         for (int i = 1; i < childCount; i++) { //0 überspringen
             View v = linearLayout.getChildAt(i);
@@ -107,7 +104,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
         }
     }
 
-    private void showChategoriesNot(){
+    private void showCategoriesNot(){
         int childCount = linearLayout.getChildCount();
         for (int i = 1; i < childCount; i++) { //0 überspringen
             View v = linearLayout.getChildAt(i);
@@ -123,8 +120,8 @@ public class BudgetLimitActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.container);
         //Gesamtlimit
         ArrayList<Category> list = mySQLite.getAllCategory();
-        gesamtLimit = mySQLite.getSateLimitValue("Gesamtlimit");
-        addCategory(gesamtString, gesamtLimit, gesamtColor);
+        totalLimit = mySQLite.getSateLimitValue("Gesamtlimit");
+        addCategory(totalString, totalLimit, totalColor);
         //Darstellen der Kategorien
         for(int i = 0; i < list.size(); i++){
             Category category = list.get(i);
@@ -183,7 +180,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
                     if (checkBoxCategory.isChecked()) {
                         Toast.makeText(BudgetLimitActivity.this, "Es kann nur ein Limit betrachtet werden",
                                 Toast.LENGTH_SHORT).show();
-                        checkBoxGesamt.setChecked(false);
+                        checkBoxTotal.setChecked(false);
                     }else{
                         showTotalBudget();
                     }
@@ -193,15 +190,15 @@ public class BudgetLimitActivity extends AppCompatActivity {
                 break;
             case R.id.checkBox2: //Kategorie
                 if (checked) {
-                    if (checkBoxGesamt.isChecked()) {
+                    if (checkBoxTotal.isChecked()) {
                         Toast.makeText(BudgetLimitActivity.this, "Es kann nur ein Limit betrachtet werden",
                                 Toast.LENGTH_SHORT).show();
                         checkBoxCategory.setChecked(false);
                     }else{
-                        showChategories();
+                        showCategories();
                     }
                 }else{
-                    showChategoriesNot();
+                    showCategoriesNot();
                 }
                 break;
         }
@@ -227,6 +224,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
             startActivity(switchToMainActivity);
         }else {
             informUser();
+            errorValue = 0; //danach zurücksetzen
         }
     }
 
@@ -267,28 +265,26 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
     //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
     private void informUser(){
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setTitle("Hinweis");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Hinweis");
 
         if(errorValue == 1){
-            builder1.setMessage("Der Eintrag bezüglich des Gesamtbudget liegt nicht zwischen 0% und 100%.");
+            builder.setMessage("Der Eintrag bezüglich des Gesamtbudget liegt nicht zwischen 0% und 100%.");
         }else if(errorValue == 2){
-            builder1.setMessage("Mit den gewählten Grenzen wird das Gesamtbudget überschritten");
+            builder.setMessage("Mit den gewählten Grenzen wird das Gesamtbudget überschritten");
         }else{ // errorValue 4
-            builder1.setMessage("Ihre Eingabe bezüglich des Werts ist nicht valide.");
+            builder.setMessage("Ihre Eingabe bezüglich des Werts ist nicht valide.");
         }
 
-        builder1.setCancelable(true);
-        builder1.setNeutralButton(android.R.string.ok,
+        builder.setCancelable(true);
+        builder.setNeutralButton(android.R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
                 });
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
-
-        errorValue = 0; //danach zurücksetzen
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 
@@ -299,13 +295,13 @@ public class BudgetLimitActivity extends AppCompatActivity {
         View v = linearLayout.getChildAt(0);
         EditText valueLimit = v.findViewById(R.id.limit);
         String entryString = valueLimit.getText().toString().replace(",","."); //Eingabe mit Komma abfangen
-        gesamtLimit = Double.parseDouble(entryString);
+        totalLimit = Double.parseDouble(entryString);
 
         //Wert in die Datanbank
-        if(checkBoxGesamt.isChecked()){
-            mySQLite.updateStateLimit("Gesamtlimit", gesamtLimit, "true");
+        if(checkBoxTotal.isChecked()){
+            mySQLite.updateStateLimit("Gesamtlimit", totalLimit, "true");
         }else{
-            mySQLite.updateStateLimit("Gesamtlimit", gesamtLimit, "false");
+            mySQLite.updateStateLimit("Gesamtlimit", totalLimit, "false");
         }
 
         //Kategorie-Limit in DB
@@ -330,7 +326,6 @@ public class BudgetLimitActivity extends AppCompatActivity {
     }
 
     //Menü
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -342,6 +337,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
         return true;
     }
 
+    //Menü
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

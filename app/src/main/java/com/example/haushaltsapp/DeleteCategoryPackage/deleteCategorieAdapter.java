@@ -1,43 +1,33 @@
 package com.example.haushaltsapp.DeleteCategoryPackage;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.haushaltsapp.ChartPackage.RecyclerAdapter;
-import com.example.haushaltsapp.DeleteCategoryActivity;
 import com.example.haushaltsapp.R;
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.MySQLite;
-
+import com.example.haushaltsapp.Database.Category;
 import java.util.ArrayList;
 
 public class deleteCategorieAdapter extends RecyclerView.Adapter<deleteCategorieAdapter.MyViewHolderCat> {
 
-    private ArrayList<Category> CategoryList;
+    private ArrayList<Category> categoryList;
     private deleteCategorieClickListener listener;
 
-    public deleteCategorieAdapter(ArrayList<Category> CategoryList, deleteCategorieClickListener listener)
-    {
-        this.CategoryList = CategoryList;
+    public deleteCategorieAdapter(ArrayList<Category> categoryList, deleteCategorieClickListener listener) {
+        this.categoryList = categoryList;
         this.listener = listener;
     }
 
-    public class MyViewHolderCat extends  RecyclerView.ViewHolder implements View.OnClickListener
-    {
-        private TextView Catname;
+
+    public class MyViewHolderCat extends  RecyclerView.ViewHolder implements View.OnClickListener {
+        private TextView catname;
 
         public MyViewHolderCat(final View view)
         {
             super(view);
-            Catname = view.findViewById(R.id.CategorieDeleteBox);
+            catname = view.findViewById(R.id.CategorieDeleteBox);
             view.setOnClickListener(this);
         }
 
@@ -57,27 +47,23 @@ public class deleteCategorieAdapter extends RecyclerView.Adapter<deleteCategorie
 
     @Override
     public void onBindViewHolder(@NonNull deleteCategorieAdapter.MyViewHolderCat holder, int position) {
-
-        String nameCat = CategoryList.get(position).getName_PK();
-        int colorCat = CategoryList.get(position).getColor();
-        holder.Catname.setText(nameCat);
-        holder.Catname.setTextColor(colorCat);
-
+        String nameCat = categoryList.get(position).getName_PK();
+        int colorCat = categoryList.get(position).getColor();
+        holder.catname.setText(nameCat);
+        holder.catname.setTextColor(colorCat);
     }
 
     @Override
     public int getItemCount() {
-        return CategoryList.size();
+        return categoryList.size();
     }
 
-    public  interface deleteCategorieClickListener{
-
+    public interface deleteCategorieClickListener{
         void  onClick(View v, int position);
-
     }
 
     public void deleteCategorie (int position) {
-        CategoryList.remove(position);
+        categoryList.remove(position);
         notifyItemRemoved(position);
     }
 

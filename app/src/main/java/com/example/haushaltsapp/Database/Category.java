@@ -1,4 +1,4 @@
-package com.example.haushaltsapp.database;
+package com.example.haushaltsapp.Database;
 
 import java.io.Serializable;
 
@@ -20,7 +20,7 @@ public class Category implements Serializable {
     }
 
     public String toString(){
-       return name_PK;
+        return name_PK;
     }
 
     public int getId() {

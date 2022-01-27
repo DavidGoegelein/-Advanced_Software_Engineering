@@ -26,10 +26,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
-import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
+import com.example.haushaltsapp.Database.Category;
+import com.example.haushaltsapp.Database.Intake;
+import com.example.haushaltsapp.Database.MySQLite;
+import com.example.haushaltsapp.Database.Outgo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,9 +42,9 @@ public class AddEntryActivity extends AppCompatActivity {
 
     private MySQLite mySQLite;
 
-    private String selected; //Einnahe oder Ausgabe
+    private String selected; //Einnahme oder Ausgabe
 
-    private Spinner spinnerCyclus, spinnerCategory; //Zyklus, Kategorie
+    private Spinner spinnerCycle, spinnerCategory; //Zyklus, Kategorie
     private TextView editTextDate; //Datum
     private ImageView calenderView; //Kalender
 
@@ -90,14 +90,14 @@ public class AddEntryActivity extends AppCompatActivity {
 
         //Aktuelles Datum anzeigen
         editTextDate = (TextView) findViewById(R.id.editTextDate);
-        java.util.Calendar kalender = Calendar.getInstance();
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
-        editTextDate.setText(datumsformat.format(kalender.getTime()));
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        editTextDate.setText(dateFormat.format(calendar.getTime()));
 
         //Aktuelles Datum von Kalendar holen, um im CalenderView einzubinden
-        year = kalender.get(Calendar.YEAR);
-        month = kalender.get(Calendar.MONTH);
-        day = kalender.get(Calendar.DAY_OF_MONTH);
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
 
         //Auf deutsche Kalenderanzeige umstellen
         Locale locale = new Locale("de");
@@ -145,10 +145,10 @@ public class AddEntryActivity extends AppCompatActivity {
         titel.setText(selected+" anlegen");
 
         //Spinner um den Zyklus anzugeben
-        spinnerCyclus = (Spinner) findViewById(R.id.spinnerCyclus);
+        spinnerCycle = (Spinner) findViewById(R.id.spinnerCyclus);
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,  R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCyclus.setAdapter(adapter2);
+        spinnerCycle.setAdapter(adapter2);
 
         //Spinner Kategorie - nur anzeigen, wenn es eine Ausgabe ist
         spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
@@ -193,11 +193,12 @@ public class AddEntryActivity extends AppCompatActivity {
             startActivity(switchToMainActivity);
         }else{
             informUser(); //Was für ein Fehler ist aufgetreten?
+            errorValue = 0; //danach zurücksetzen
         }
     }
 
     /*
-    Abbrechen
+    Abbrechen gedrückt
     */
     public void onClickCancel(View view){
         Intent switchToMainActivity= new Intent(this, MainActivity.class);
@@ -248,7 +249,7 @@ public class AddEntryActivity extends AppCompatActivity {
 
 
         //Zyklus
-        cyclus = spinnerCyclus.getSelectedItem().toString();
+        cyclus = spinnerCycle.getSelectedItem().toString();
 
         //Kategorie
         if(selected.equals("Ausgabe")){
@@ -261,30 +262,28 @@ public class AddEntryActivity extends AppCompatActivity {
 
     //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
     private void informUser(){
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setTitle("Hinweis");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Hinweis");
 
         if(errorValue == 1){
-            builder1.setMessage("Das gewählte Datum liegt in der Zukunft.");
+            builder.setMessage("Das gewählte Datum liegt in der Zukunft.");
         }else if(errorValue == 2){
-            builder1.setMessage("Bitte setzen Sie einen Titel.");
+            builder.setMessage("Bitte setzen Sie einen Titel.");
         }else if(errorValue == 3){
-            builder1.setMessage("Bitte geben Sie einen Wert an.");
+            builder.setMessage("Bitte geben Sie einen Wert an.");
         }else{ // errorValue 4
-            builder1.setMessage("Ihre Eingabe bezüglich des Werts ist nicht valide.");
+            builder.setMessage("Ihre Eingabe bezüglich des Werts ist nicht valide.");
         }
 
-        builder1.setCancelable(true);
-        builder1.setNeutralButton(android.R.string.ok,
+        builder.setCancelable(true);
+        builder.setNeutralButton(android.R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
                 });
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
-
-        errorValue = 0; //danach zurücksetzen
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
         month--; //damit im Kalender der aktuelle Monat angezeigt wird.
     }
 
@@ -352,6 +351,7 @@ public class AddEntryActivity extends AppCompatActivity {
         }
     }
 
+    //Menü
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -367,7 +367,7 @@ public class AddEntryActivity extends AppCompatActivity {
         return true;
     }
 
-
+    //Menü
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

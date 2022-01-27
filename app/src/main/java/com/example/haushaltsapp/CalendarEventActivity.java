@@ -1,7 +1,6 @@
 package com.example.haushaltsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ActivityNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -23,20 +22,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-
-import com.example.haushaltsapp.database.MySQLite;
-
+import com.example.haushaltsapp.Database.MySQLite;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class CalendarEventActivity extends AppCompatActivity {
 
-    ////Variabeln zur Menünavigation
-    private MySQLite mySQLite;
-    ///////////////////////////////
 
-    private int Storage_Permission_Code = 1;
+    private MySQLite mySQLite;
     private TextView dateSelect;
     private ImageView calenderView;
     private EditText titleSelect;
@@ -73,8 +67,8 @@ public class CalendarEventActivity extends AppCompatActivity {
 
         //aktuelles Datum auslesen und an Textview übergeben
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateForm = new SimpleDateFormat("dd.MM.yyyy");
-        dateSelect.setText(dateForm.format(calendar.getTime()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        dateSelect.setText(dateFormat.format(calendar.getTime()));
 
         //Daten zur Übergaben an DatepickerDialog,übergeben. Ansonsten Start im Jahr 1970
         year = calendar.get(Calendar.YEAR);

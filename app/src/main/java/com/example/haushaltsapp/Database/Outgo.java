@@ -1,6 +1,4 @@
-package com.example.haushaltsapp.database;
-
-import com.example.haushaltsapp.database.EntryFinance;
+package com.example.haushaltsapp.Database;
 
 /*
 Repräsentation einer Ausgabe

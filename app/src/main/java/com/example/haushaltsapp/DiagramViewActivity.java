@@ -17,17 +17,12 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
-import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
-
+import com.example.haushaltsapp.Database.Category;
+import com.example.haushaltsapp.Database.MySQLite;
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.PieModel;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,7 +44,7 @@ public class DiagramViewActivity extends AppCompatActivity {
         private View line0, line1, line2, line3, line4, line5, line6, line7, line8, line9;
 
         private PieChart pieChart;
-        private BarChart BarChart;
+        private BarChart barChart;
 
         //aktuelles Datum
         private int day;
@@ -84,7 +79,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             year = Integer.parseInt(dates.substring(6,10));
 
             pieChart = findViewById(R.id.piechart);
-            BarChart = findViewById(R.id.barchart);
+            barChart = findViewById(R.id.barchart);
 
             //linear Layouts
             lverkehrsmittel= findViewById(R.id.LinearLayoutVerkehrsmittel);
@@ -143,18 +138,18 @@ public class DiagramViewActivity extends AppCompatActivity {
             line9 = findViewById(R.id.line9);
 
             //Kategoriename in Tabelle
-            verkehrsmittelname =findViewById(R.id.Verkehrmittelname);
-            wohnenname =findViewById(R.id.Wohnenname);
-            lebensmittelname =findViewById(R.id.Lebensmittelname);
-            gesundheitname=findViewById(R.id.Gesundheitname);
-            freizeitname =findViewById(R.id.Freizeitname);
-            sonstigesname =findViewById(R.id.Sonstigesname);
+            verkehrsmittelname = findViewById(R.id.Verkehrmittelname);
+            wohnenname = findViewById(R.id.Wohnenname);
+            lebensmittelname = findViewById(R.id.Lebensmittelname);
+            gesundheitname = findViewById(R.id.Gesundheitname);
+            freizeitname = findViewById(R.id.Freizeitname);
+            sonstigesname = findViewById(R.id.Sonstigesname);
             etc1name = findViewById(R.id.etc1name);
             etc2name = findViewById(R.id.etc2name);
             etc3name = findViewById(R.id.etc3name);
 
             //Anzeige für Werte in Tabelle
-            tvWohnen =findViewById(R.id.tvWohnen);
+            tvWohnen = findViewById(R.id.tvWohnen);
             tvLebensmittel = findViewById(R.id.tvLebensmittel);
             tvVerkehrsmittel = findViewById(R.id.tvVerkehrsmittel);
             tvGesundheit = findViewById(R.id.tvGesundheit);
@@ -164,134 +159,133 @@ public class DiagramViewActivity extends AppCompatActivity {
             tvetc2 = findViewById(R.id.tvect2);
             tvetc3 = findViewById(R.id.tvetc3);
 
-            ArrayList<Category> Categories = mySQLite.getAllCategory();
+            ArrayList<Category> categories = mySQLite.getAllCategory();
             //Textfelder und Farben setzen
-            setTextandColor( Categories);
+            setTextandColor( categories);
 
             //Diagramme zurücksetzten
             pieChart.clearChart();
-            BarChart.clearChart();
+            barChart.clearChart();
             //Diagram Methoden aufrufen
-            PieChartKat(Categories);
-            BarGraphKat(Categories);
+            pieChartKat(categories);
+            barGraphKat(categories);
         }
 
         //Runden auf zwei Nachkommazahlen
-        public float roundf(float zahl, int stellen) {
-            return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+        public float roundf(float number, int positions) {
+            return (float) ((int)number + (Math.round(Math.pow(10,positions)*(number-(int)number)))/(Math.pow(10,positions)));
         }
 
+
         //Setzen der Textfelder und Farben in der Anzeige
-        public  void setTextandColor ( ArrayList<Category> Categories)
-        {
-            int numCat= Categories.size();
+        public  void setTextandColor ( ArrayList<Category> categories) {
+            int numCat = categories.size();
             int num =0;
-            String CatName;
-            int CatColor;
+            String catName;
+            int catColor;
             float round;
 
             //Ausgelegt auf max 9 Kategorien
-            while ( num < numCat)
-            {
-                CatName = Categories.get(num).getName_PK();
-                CatColor =Categories.get(num).getColor();
+            while ( num < numCat) {
+                catName = categories.get(num).getName_PK();
+                catColor = categories.get(num).getColor();
 
-                switch (num)
-                { case 0:
-                    verkehrsmittelcolor.setBackgroundColor(CatColor);
-                    verkehrsmitteltext.setText(CatName);
+                switch (num) {
+                    case 0:
+                    verkehrsmittelcolor.setBackgroundColor(catColor);
+                    verkehrsmitteltext.setText(catName);
                     lverkehrsmittel.setVisibility(View.VISIBLE);
 
-                    verkehrsmittelname.setText(CatName);
-                    round = mySQLite.getCategorieOutgosMonth(day,month,year,CatName);
+                    verkehrsmittelname.setText(catName);
+                    round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
                     tvVerkehrsmittel.setText(Float.toString(roundf(round,2))+" €");
                     rVerkehrsmittel.setVisibility(View.VISIBLE);
                     line1.setVisibility(View.VISIBLE);
                     break;
                     case 1:
-                        wohnencolor.setBackgroundColor(CatColor);
-                        wohnentext.setText(CatName);
+                        wohnencolor.setBackgroundColor(catColor);
+                        wohnentext.setText(catName);
                         lwohnen.setVisibility(View.VISIBLE);
 
-                        wohnenname.setText(CatName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,CatName);
+                        wohnenname.setText(catName);
+                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
                         tvWohnen.setText(Float.toString(roundf(round,2))+" €");
                         rWohnen.setVisibility(View.VISIBLE);
                         line2.setVisibility(View.VISIBLE);
                         break;
                     case 2:
-                        lebensmittelcolor.setBackgroundColor(CatColor);
-                        lebensmitteltext.setText(CatName);
+                        lebensmittelcolor.setBackgroundColor(catColor);
+                        lebensmitteltext.setText(catName);
                         llebensmittel.setVisibility(View.VISIBLE);
 
-                        lebensmittelname.setText(CatName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,CatName);
+                        lebensmittelname.setText(catName);
+                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
                         tvLebensmittel.setText(Float.toString(roundf(round,2))+" €");
                         rLebensmittel.setVisibility(View.VISIBLE);
                         line3.setVisibility(View.VISIBLE);
                         break;
                     case 3:
-                        gesundheitcolor.setBackgroundColor(CatColor);
-                        gesundheittext.setText(CatName);
+                        gesundheitcolor.setBackgroundColor(catColor);
+                        gesundheittext.setText(catName);
                         lgesundheit.setVisibility(View.VISIBLE);
 
-                        gesundheitname.setText(CatName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,CatName);
+                        gesundheitname.setText(catName);
+                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
                         tvGesundheit.setText(Float.toString(roundf(round,2))+" €");
                         rGesundheit.setVisibility(View.VISIBLE);
                         line4.setVisibility(View.VISIBLE);
                         break;
                     case 4:
-                        freizeitcolor.setBackgroundColor(CatColor);
-                        freitzeittext.setText(CatName);
+                        freizeitcolor.setBackgroundColor(catColor);
+                        freitzeittext.setText(catName);
                         lfreizeit.setVisibility(View.VISIBLE);
 
-                        freizeitname.setText(CatName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,CatName);
+                        freizeitname.setText(catName);
+                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
                         tvFreizeit.setText(Float.toString(roundf(round,2))+" €");
                         rFreizeit.setVisibility(View.VISIBLE);
                         line5.setVisibility(View.VISIBLE);
                         break;
                     case 5:
-                        sonstigescolor.setBackgroundColor(CatColor);
-                        sonstigesttext.setText(CatName);
+                        sonstigescolor.setBackgroundColor(catColor);
+                        sonstigesttext.setText(catName);
                         lsonstiges.setVisibility(View.VISIBLE);
 
-                        sonstigesname.setText(CatName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,CatName);
+                        sonstigesname.setText(catName);
+                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
                         tvSonstiges.setText(Float.toString(roundf(round,2))+" €");
                         rSonstiges.setVisibility(View.VISIBLE);
                         line6.setVisibility(View.VISIBLE);
                         break;
                     case 6:
-                        etc1color.setBackgroundColor(CatColor);
-                        etc1text.setText(CatName);
+                        etc1color.setBackgroundColor(catColor);
+                        etc1text.setText(catName);
                         letc1.setVisibility(View.VISIBLE);
 
-                        etc1name.setText(CatName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,CatName);
+                        etc1name.setText(catName);
+                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
                         tvetc1.setText(Float.toString(roundf(round,2))+" €");
                         retc1.setVisibility(View.VISIBLE);
                         line7.setVisibility(View.VISIBLE);
                         break;
                     case 7:
-                        etc2color.setBackgroundColor(CatColor);
-                        etc2text.setText(CatName);
+                        etc2color.setBackgroundColor(catColor);
+                        etc2text.setText(catName);
                         letc2.setVisibility(View.VISIBLE);
 
-                        etc2name.setText(CatName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,CatName);
+                        etc2name.setText(catName);
+                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
                         tvetc2.setText(Float.toString(roundf(round,2))+" €");
                         retc2.setVisibility(View.VISIBLE);
                         line8.setVisibility(View.VISIBLE);
                         break;
                     case 8:
-                        etc3color.setBackgroundColor(CatColor);
-                        etc3text.setText(CatName);
+                        etc3color.setBackgroundColor(catColor);
+                        etc3text.setText(catName);
                         letc3.setVisibility(View.VISIBLE);
 
-                        etc3name.setText(CatName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,CatName);
+                        etc3name.setText(catName);
+                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
                         tvetc3.setText(Float.toString(roundf(round,2))+" €");
                         retc3.setVisibility(View.VISIBLE);
                         line9.setVisibility(View.VISIBLE);
@@ -302,24 +296,23 @@ public class DiagramViewActivity extends AppCompatActivity {
         }
 
         //Kreisdiagramm mit anzeige der vorhandenen Kategorien im Ausgewählten Monat
-        public void PieChartKat (ArrayList<Category> Categories){
-            int num=0;
-            int Catnum =Categories.size();
-            String CatName;
-            float Costs;
-            int CatColor;
+        public void pieChartKat (ArrayList<Category> categories){
+            int num = 0;
+            int catNum = categories.size();
+            String catName;
+            float costs;
+            int catColor;
 
-            while (num<Catnum)
-            {
-                CatName = Categories.get(num).getName_PK();
-                Costs = mySQLite.getCategorieOutgosMonth(day,month,year,CatName );
-                CatColor =Categories.get(num).getColor();
+            while (num< catNum) {
+                catName = categories.get(num).getName_PK();
+                costs = mySQLite.getCategorieOutgosMonth(day,month,year,catName );
+                catColor = categories.get(num).getColor();
 
                 pieChart.addPieSlice(
                         new PieModel(
-                                CatName,
-                                Costs,
-                                CatColor));
+                                catName,
+                                costs,
+                                catColor));
                 num++;
             }
 
@@ -329,36 +322,33 @@ public class DiagramViewActivity extends AppCompatActivity {
         }
 
         //Balkendiagramm mit Anzeige der vorhanden Kategorien im ausgewählten Monat
-        public void BarGraphKat(ArrayList<Category> Categories)
-        {
-            int num=0;
-            int Catnum =Categories.size();
-            String CatName;
-            float Costs;
-            int CatColor;
+        public void barGraphKat(ArrayList<Category> categories) {
+            int num = 0;
+            int catnum = categories.size();
+            String catName;
+            float costs;
+            int catColor;
 
-            while (num<Catnum)
-            {
-                CatName = Categories.get(num).getName_PK();
-                Costs = mySQLite.getCategorieOutgosMonth(day,month,year,CatName );
-                CatColor =Categories.get(num).getColor();
+            while (num < catnum) {
+                catName = categories.get(num).getName_PK();
+                costs = mySQLite.getCategorieOutgosMonth(day,month,year,catName );
+                catColor = categories.get(num).getColor();
 
-                BarChart.addBar(new BarModel(
-                        //CatName,      //Anzeige von Kategorie als Achsenbeschriftung
-                        Costs,
-                        CatColor
+                barChart.addBar(new BarModel(
+                        //catName,      //Anzeige von Kategorie als Achsenbeschriftung
+                        costs,
+                        catColor
                 ));
                 num++;
             }
 
-            BarChart.startAnimation();
-            BarChart.setShowValues(false);  //Beschriftung auf Balken
-            BarChart.setActivated(false);
+            barChart.startAnimation();
+            barChart.setShowValues(false);  //Beschriftung auf Balken
+            barChart.setActivated(false);
         }
 
         //Button zum Aktualisieren des Monats
-        public void changeMonth(View view)
-        {
+        public void changeMonth(View view) {
             setData();
         }
 
@@ -381,7 +371,6 @@ public class DiagramViewActivity extends AppCompatActivity {
 
                 @Override
                 public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
-
                     day = selectedDay;
                     month = selectedMonth+1;
                     year = selectedYear;
@@ -412,16 +401,12 @@ public class DiagramViewActivity extends AppCompatActivity {
 
         //Link zur Jahresansicht
         public void changeToAnnual(View view) {
-
-            Intent intent = getIntent();
-            Intent switchToAnnualView= new Intent(this, AnnualViewActivity.class);
+            Intent switchToAnnualView = new Intent(this, AnnualViewActivity.class);
             startActivity(switchToAnnualView);
         }
 
         //Link zum Monatsvergleich
         public void changeToMonthcomparison(View view) {
-
-            Intent intent = getIntent();
             Intent switchMonthcomparisonView= new Intent(this, MonthcomparisonViewActivity.class);
             startActivity(switchMonthcomparisonView);
         }

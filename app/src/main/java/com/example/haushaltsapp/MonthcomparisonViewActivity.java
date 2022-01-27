@@ -15,29 +15,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
-
-import com.example.haushaltsapp.database.Intake;
-import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
-
+import com.example.haushaltsapp.Database.MySQLite;
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.models.BarModel;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Calendar;
 
 public class MonthcomparisonViewActivity extends AppCompatActivity {
-    private int day, month, year;
-
-
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
     ///////////////////////////////
 
-    private BarChart BarChartInOutcomparison;
+    private BarChart barChartInOutComparison;
 
     private TextView tvM1o, tvM2o, tvM1i, tvM2i;
     private TextView tvM1out, tvM2out,tvM1in, tvM2in;
@@ -71,8 +61,7 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         setData();
     }
 
-    private void setData()
-    {
+    private void setData() {
         //Datum von Textfeld auslesen
         datesM1 = editTextDateM1.getText().toString();
         day1 = Integer.parseInt(datesM1.substring(0,2));
@@ -84,7 +73,7 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         month2 = Integer.parseInt(datesM2.substring(3,5));
         year2 = Integer.parseInt(datesM2.substring(6,10));
 
-        BarChartInOutcomparison= findViewById(R.id.barchartinout);
+        barChartInOutComparison = findViewById(R.id.barchartinout);
 
         tvM1o = findViewById(R.id.tvMonth1);
         tvM2o = findViewById(R.id.tvMonth2);
@@ -98,8 +87,8 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         tvM1in =findViewById(R.id.tvin_Month1);
         tvM2in =findViewById(R.id.tvin_Month2);
 
-        BarChartInOutcomparison.clearChart();
-        BarGraphComparision(month1,year1,month2,year2);
+        barChartInOutComparison.clearChart();
+        barGraphComparision(month1,year1,month2,year2);
         setTextInOut(month1,year1,month2,year2);
     }
 
@@ -153,7 +142,7 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
 
     //Kalender für auswahl des zweiten Monats der Anzeige
     public  void openCalenderM2(View dateview) {
-        java.util.Calendar calender = java.util.Calendar.getInstance();
+        Calendar calender = Calendar.getInstance();
         year2 = calender.get(Calendar.YEAR);
         month2 = calender.get(Calendar.MONTH);
         day2 = calender.get(Calendar.DAY_OF_MONTH);
@@ -200,111 +189,106 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     }
 
     //Runden auf zwei Nachkommazahlen
-    public float roundf(float zahl, int stellen) {
-        return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+    public float roundf(float number, int position) {
+        return (float) ((int)number + (Math.round(Math.pow(10,position)*(number-(int)number)))/(Math.pow(10,position)));
     }
 
     //Balkendiagramm, mit Anzeige von zwei ausgewählten Monaten mit Ausgaben und Einnahmen
-    public void BarGraphComparision(int month1, int year1, int month2, int year2)
-    {
-        String monthtext1 = monthtoSting(month1);
-        String monthtext2 =monthtoSting(month2);
+    public void barGraphComparision(int month1, int year1, int month2, int year2) {
+        String monthText1 = monthToString(month1);
+        String monthText2 = monthToString(month2);
 
         //Monat 1
-        float IntakeMonth1 = roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
-        BarChartInOutcomparison.addBar(new BarModel(
-                "           "+monthtext1 + " "+ year1,
-                IntakeMonth1,
+        float intakeMonth1 = roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
+        barChartInOutComparison.addBar(new BarModel(
+                "           "+ monthText1 + " "+ year1,
+                intakeMonth1,
                 Color.parseColor("#90BE6D")));
-        float OutgoMonth1 = roundf(mySQLite.getValueOutgosMonth(31,month1,year1),2);
-        BarChartInOutcomparison.addBar(new BarModel(
-                "",//"Aus. "+monthtext1,
-                OutgoMonth1,
+        float outgoMonth1 = roundf(mySQLite.getValueOutgosMonth(31,month1,year1),2);
+        barChartInOutComparison.addBar(new BarModel(
+                "",//"Aus. "+monthText1,
+                outgoMonth1,
                 Color.parseColor("#F94144")));
 
         //Monat 2
-        float IntakeMonth2 = roundf(mySQLite.getValueIntakesMonth(31,month2,year2),2);
-        BarChartInOutcomparison.addBar(new BarModel(
-                "           "+monthtext2 + " "+ year2,
-                IntakeMonth2,
+        float intakeMonth2 = roundf(mySQLite.getValueIntakesMonth(31,month2,year2),2);
+        barChartInOutComparison.addBar(new BarModel(
+                "           "+ monthText2 + " "+ year2,
+                intakeMonth2,
                 Color.parseColor("#90BE6D")));
-        float OutgoMonth2 = roundf(mySQLite.getValueOutgosMonth(31,month2,year2),2);
-        BarChartInOutcomparison.addBar(new BarModel(
-                "",//"Aus. "+monthtext2,
-                OutgoMonth2,
+        float outgoMonth2 = roundf(mySQLite.getValueOutgosMonth(31,month2,year2),2);
+         barChartInOutComparison.addBar(new BarModel(
+                "",//"Aus. "+monthText2,
+                outgoMonth2,
                 Color.parseColor("#F94144")));
     }
 
     //Monat in String umwandeln zur Anzeige in Textview
-    public String monthtoSting(int month)
-    {
-        String monthtext="";
+    public String monthToString(int month) {
+        String monthText ="";
 
         switch (month) {
             case 1:
-                monthtext = "Jan";
+                monthText = "Jan";
                 break;
             case 2:
-                monthtext = "Feb";
+                monthText = "Feb";
                 break;
             case 3:
-                monthtext= "Mar";
+                monthText = "Mar";
                 break;
             case 4:
-                monthtext = "Apr";
+                monthText = "Apr";
                 break;
             case 5:
-                monthtext = "Mai";
+                monthText = "Mai";
                 break;
             case 6:
-                monthtext = "Jun";
+                monthText = "Jun";
                 break;
             case 7:
-                monthtext = "Jul";
+                monthText = "Jul";
                 break;
             case 8:
-                monthtext = "Aug";
+                monthText = "Aug";
                 break;
             case 9:
-                monthtext = "Sep";
+                monthText = "Sep";
                 break;
             case 10:
-                monthtext = "Okt";
+                monthText = "Okt";
                 break;
             case 11:
-                monthtext = "Nov";
+                monthText = "Nov";
                 break;
             case 12:
-                monthtext = "Dez";
+                monthText = "Dez";
                 break;
         }
-        return  monthtext;
+        return monthText;
     }
 
     //Anzeige von beiden Monaten mit Werten zu Einnahmen und Ausgaben
-    public void setTextInOut(int month1, int year1, int month2, int year2)
-    {
-        String monthtext1= monthtoSting(month1);
-        String monthtext2 = monthtoSting(month2);
-        float round;
-        round= roundf(mySQLite.getValueOutgosMonth(31,month1,year1),2);
+    public void setTextInOut(int month1, int year1, int month2, int year2) {
+        String monthText1 = monthToString(month1);
+        String monthText2 = monthToString(month2);
+        float round = roundf(mySQLite.getValueOutgosMonth(31,month1,year1),2);
         tvM1out.setText(Float.toString(round)+" €");
-        tvM1o.setText(monthtext1+"."+year1);
-        round= roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
+        tvM1o.setText(monthText1 +"."+year1);
+        round = roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
         tvM1in.setText(Float.toString(round)+" €");
-        tvM1i.setText(monthtext1+"."+year1);
+        tvM1i.setText(monthText1 +"."+year1);
 
-        round= roundf(mySQLite.getValueOutgosMonth(31,month2,year2),2);
+        round = roundf(mySQLite.getValueOutgosMonth(31,month2,year2),2);
         tvM2out.setText(Float.toString(round)+" €");
-        tvM2o.setText(monthtext2+"."+year2);
-        round= roundf(mySQLite.getValueIntakesMonth(31,month2,year2),2);
+        tvM2o.setText(monthText2 +"."+year2);
+        round = roundf(mySQLite.getValueIntakesMonth(31,month2,year2),2);
         tvM2in.setText(Float.toString(round)+" €");
-        tvM2i.setText(monthtext2+"."+year2);
+        tvM2i.setText(monthText2 +"."+year2);
     }
 
     //Button zum setzen der Daten zu aktualisierung des Monats
-    public void changeMonth(View view)
-    {
+    public void changeMonth(View view) {
         setData();
     }
 
@@ -316,10 +300,8 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         switch (item.getItemId()){
             case R.id.itemMainPage:
                 Intent switchToMain = new Intent(this, MainActivity.class);

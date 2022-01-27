@@ -2,27 +2,24 @@ package com.example.haushaltsapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import android.graphics.Color;
 import android.widget.TextView;
-
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
-import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
+import com.example.haushaltsapp.Database.Category;
+import com.example.haushaltsapp.Database.Intake;
+import com.example.haushaltsapp.Database.MySQLite;
+import com.example.haushaltsapp.Database.Outgo;
 
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.PieChart;
-import org.eazegraph.lib.charts.ValueLineChart;
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.PieModel;
 
@@ -30,7 +27,7 @@ import org.eazegraph.lib.models.PieModel;
 public class MainActivity extends AppCompatActivity {
 
     //Textviews und Diagramme
-    private TextView tvOutgo, tvIntake, tvResidualbudget;
+    private TextView tvOutgo, tvIntake, tvResidualBudget;
     private PieChart pieChart;
     private BarChart mBarChart;
 
@@ -68,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Setzt die Variablen day, month, year
     private void getDate() {
-        Intent intent = getIntent();
-        java.util.Calendar calender = java.util.Calendar.getInstance();
+        Calendar calender = Calendar.getInstance();
         SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
         String dates = datumsformat.format(calender.getTime());
         day = Integer.parseInt(dates.substring(0, 2));
@@ -108,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
     //Übertrage das Budget des letzten Monats
     private void setLastBudget() {
-
         //Prüfen ob es einen solchen Eintrag gibt
         //Dazu erst den gewünschten Titel generieren
         String titel = "Übertrag vom ";
@@ -162,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     //runden auf zwei Nachkommazahlen
-    public float roundf(float zahl, int stellen) {
-        return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+    public float roundf(float number, int positions) {
+        return (float) ((int)number + (Math.round(Math.pow(10,positions)*(number-(int)number)))/(Math.pow(10,positions)));
     }
 
     //Werte aus der Datenbank
@@ -171,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         //Setzen der textview
         tvIntake = findViewById(R.id.tvEinnahmen);
         tvOutgo = findViewById(R.id.tvAusgaben);
-        tvResidualbudget = findViewById(R.id.tvRestbudget);
+        tvResidualBudget = findViewById(R.id.tvRestbudget);
 
         pieChart = findViewById(R.id.piechart);
         mBarChart = findViewById(R.id.barchart);
@@ -183,29 +178,29 @@ public class MainActivity extends AppCompatActivity {
         //Setzen der Werte in Textview
         tvIntake.setText(Float.toString(intake) + " €");
         tvOutgo.setText(Float.toString(outgo) + " €");
-        tvResidualbudget.setText(Float.toString(residualBudget) + " €");
+        tvResidualBudget.setText(Float.toString(residualBudget) + " €");
 
         //Diagramme zurücksetzten
         pieChart.clearChart();
         mBarChart.clearChart();
         //Diagramme aufrufen
-        PieChart(outgo, residualBudget);
-        BarGraph(intake, outgo);
+        pieChart(outgo, residualBudget);
+        barGraph(intake, outgo);
     }
 
 
     //Kreisdiagramm mit Ausgaben und Restbudget des aktuellen Monats
-    public void PieChart(float Ausgaben, float Restbudget) {
+    public void pieChart(float outgoValue, float budget) {
         pieChart.addPieSlice(new PieModel(
                 "Ausgaben",
-                Ausgaben,
+                outgoValue,
                 Color.parseColor("#F94144")));
 
         //Restbudget wird nur angezeigt, wenn es positiv ist, sonst wird es nicht dagestellt
-        if (Restbudget > 0) {
+        if (budget > 0) {
             pieChart.addPieSlice(new PieModel(
                     "Restbudget",
-                    Restbudget,
+                    budget,
                     Color.parseColor("#F9C74F")));
         }
         else {
@@ -222,12 +217,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Balkendiagramm mit EInnahmen und Ausgaben des aktuellen Monats
-    public void BarGraph(float Einnahmen, float Ausgaben) {
+    public void barGraph(float intakeValue, float outgoValue) {
         mBarChart.addBar(new BarModel(
-                Einnahmen,
+                intakeValue,
                 Color.parseColor("#90BE6D")));
         mBarChart.addBar(new BarModel(
-                Ausgaben,
+                outgoValue,
                 Color.parseColor("#F94144")));
         //Darstellungsoptionen
         mBarChart.startAnimation();

@@ -4,37 +4,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.haushaltsapp.R;
-import com.example.haushaltsapp.database.Intake;
-
+import com.example.haushaltsapp.Database.Intake;
 import java.util.ArrayList;
 
 public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.MyViewHolderIn> {
-    private ArrayList<Intake> IntakeList;
+    private ArrayList<Intake> intakeList;
     private RecyclerViewClickListenerIn listener;
 
-    public RecyclerAdapterIn(ArrayList<Intake> IntakeList, RecyclerViewClickListenerIn listener)
-    {
-        this.IntakeList = IntakeList;
+    public RecyclerAdapterIn(ArrayList<Intake> intakeList, RecyclerViewClickListenerIn listener) {
+        this.intakeList = intakeList;
         this.listener = listener;
     }
-    public class MyViewHolderIn extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
-        public TextView Inname;
-        private TextView InValue;
-        private TextView InDate;
-        private TextView Categorie;
+
+    public class MyViewHolderIn extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public TextView inName;
+        private TextView inValue;
+        private TextView inDate;
+        private TextView categorie;
 
         public MyViewHolderIn(final View view) {
             super(view);
-            Inname =view.findViewById(R.id.Chartname);
-            InValue = view.findViewById(R.id.ChartValue);
-            InDate =view.findViewById(R.id.ChartDate);
-            Categorie =view.findViewById(R.id.ChartCategorie);
+            inName = view.findViewById(R.id.Chartname);
+            inValue = view.findViewById(R.id.ChartValue);
+            inDate = view.findViewById(R.id.ChartDate);
+            categorie = view.findViewById(R.id.ChartCategorie);
 
             view.setOnClickListener(this);
         }
@@ -51,6 +47,7 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chart_item,parent,false);
         return new MyViewHolderIn(itemView);
     }
+
     //runden auf zwei Nachkommazahlen
     public double round(double zahl, int stellen) {
         return (double) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
@@ -60,27 +57,27 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
     public void onBindViewHolder(@NonNull MyViewHolderIn holder, int position) {
 
         //Setzen der Textview
-        String name = IntakeList.get(position).getName();
-        holder.Inname.setText(name);
+        String name = intakeList.get(position).getName();
+        holder.inName.setText(name);
 
-        double valuedouble = IntakeList.get(position).getValue();
+        double valuedouble = intakeList.get(position).getValue();
         String value = Double.toString(round(valuedouble,2));
-        holder.InValue.setText(value+" €");
+        holder.inValue.setText(value+" €");
 
-        String day = Integer.toString(IntakeList.get(position).getDay());
-        String month = Integer.toString(IntakeList.get(position).getMonth());
-        String year = Integer.toString(IntakeList.get(position).getYear());
+        String day = Integer.toString(intakeList.get(position).getDay());
+        String month = Integer.toString(intakeList.get(position).getMonth());
+        String year = Integer.toString(intakeList.get(position).getYear());
         String date = day+"."+month+"."+year;
-        holder.InDate.setText(date);
+        holder.inDate.setText(date);
 
         //bei Einnahme keine Kategorie vorhanden
-        String categorie = "Einnahmen";//IntakeList.get(position).getCategory();
-        holder.Categorie.setText(categorie);
+        String categorieString = "Einnahmen";//IntakeList.get(position).getCategory();
+        holder.categorie.setText(categorieString);
     }
 
     @Override
     public int getItemCount() {
-        return IntakeList.size();
+        return intakeList.size();
     }
 
 

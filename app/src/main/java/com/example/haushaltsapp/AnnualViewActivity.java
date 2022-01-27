@@ -15,16 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
-
-import com.example.haushaltsapp.database.Intake;
-import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
-
+import com.example.haushaltsapp.Database.MySQLite;
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.models.BarModel;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -35,7 +29,7 @@ public class AnnualViewActivity extends AppCompatActivity {
     ///////////////////////////////
 
     //private ValueLineChart LineChartyear;
-    private BarChart BarChartInOut;
+    private BarChart barChartInOut;
 
     private TextView tvM1o, tvM2o, tvM3o, tvM4o,tvM5o,tvM6o,tvM7o,tvM8o,tvM9o,tvM10o,tvM11o,tvM12o,tvM13o;
     private TextView tvM1out, tvM2out, tvM3out, tvM4out,tvM5out,tvM6out,tvM7out,tvM8out,tvM9out,tvM10out,tvM11out,tvM12out,tvM13out;
@@ -67,15 +61,14 @@ public class AnnualViewActivity extends AppCompatActivity {
         setData();
     }
 
-    private void setData()
-    {
+    private void setData() {
         //Datum von Textfeld auslesen
         dates = editTextDate.getText().toString();
         day = Integer.parseInt(dates.substring(0,2));
         month = Integer.parseInt(dates.substring(3,5));
         year = Integer.parseInt(dates.substring(6,10));
 
-        BarChartInOut= findViewById(R.id.barchartinout);
+        barChartInOut = findViewById(R.id.barchartinout);
 
         //Anzeige Monat Ausgaben
         tvM1o = findViewById(R.id.tvMonth1);
@@ -134,16 +127,16 @@ public class AnnualViewActivity extends AppCompatActivity {
         tvM12in =findViewById(R.id.tvin_Month12);
         tvM13in =findViewById(R.id.tvin_Month13);
 
-        BarChartInOut.clearChart();
-        BarGraphMonthInOut();
+        barChartInOut.clearChart();
+        barGraphMonthInOut();
     }
 
     //Balkendiagramm mit Einnahmen und Ausgaben der letzten 12 Monate
-    public void BarGraphMonthInOut() {
+    public void barGraphMonthInOut() {
 
-        int mtextout=1; //für Textausgabe
+        int mtextout = 1; //für Textausgabe
         int mo = 1; //monate hochzählen
-        int monthr=month;
+        int monthr = month;
 
         //erster Monat wird in Balkendiagramm nicht beschriftet
 
@@ -191,97 +184,98 @@ public class AnnualViewActivity extends AppCompatActivity {
                     monthname = "Dez";
                     break;
             }
+
             //Balkendiagramm füllen mit Einnahmen des Monats
-            float IntakeMonthX = roundf(mySQLite.getValueIntakesMonth(31,monthr,preYear),2);
-            BarChartInOut.addBar(new BarModel(
+            float intakeMonthX = roundf(mySQLite.getValueIntakesMonth(31,monthr,preYear),2);
+            barChartInOut.addBar(new BarModel(
                     "     "+monthname+"."+ preYear,
-                    IntakeMonthX,
+                    intakeMonthX,
                     Color.parseColor("#90BE6D")));
             //Balkendiagramm füllen mit Ausgaben des Monats
-            float OutgosMonthX = roundf( mySQLite.getValueOutgosMonth(31,monthr,preYear),2);
-            BarChartInOut.addBar(new BarModel(
+            float outgosMonthX = roundf( mySQLite.getValueOutgosMonth(31,monthr,preYear),2);
+            barChartInOut.addBar(new BarModel(
                     "",
-                    OutgosMonthX,
+                    outgosMonthX,
                     Color.parseColor("#F94144")));
 
             //Anzeige von Werten in Text unter Diagramm
             switch (mtextout) {
                 case 1:
-                    tvM1out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM1out.setText(Float.toString(outgosMonthX)+" €");
                     tvM1o.setText(monthname+"."+preYear);
-                    tvM1in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM1in.setText(Float.toString(intakeMonthX)+" €");
                     tvM1i.setText(monthname+"."+preYear);
                     break;
                 case 2:
-                    tvM2out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM2out.setText(Float.toString(outgosMonthX)+" €");
                     tvM2o.setText(monthname+"."+preYear);
-                    tvM2in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM2in.setText(Float.toString(intakeMonthX)+" €");
                     tvM2i.setText(monthname+"."+preYear);
                     break;
                 case 3:
-                    tvM3out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM3out.setText(Float.toString(outgosMonthX)+" €");
                     tvM3o.setText(monthname+"."+preYear);
-                    tvM3in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM3in.setText(Float.toString(intakeMonthX)+" €");
                     tvM3i.setText(monthname+"."+preYear);
                     break;
                 case 4:
-                    tvM4out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM4out.setText(Float.toString(outgosMonthX)+" €");
                     tvM4o.setText(monthname+"."+preYear);
-                    tvM4in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM4in.setText(Float.toString(intakeMonthX)+" €");
                     tvM4i.setText(monthname+"."+preYear);
                     break;
                 case 5:
-                    tvM5out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM5out.setText(Float.toString(outgosMonthX)+" €");
                     tvM5o.setText(monthname+"."+preYear);
-                    tvM5in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM5in.setText(Float.toString(intakeMonthX)+" €");
                     tvM5i.setText(monthname+"."+preYear);
                     break;
                 case 6:
-                    tvM6out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM6out.setText(Float.toString(outgosMonthX)+" €");
                     tvM6o.setText(monthname+"."+preYear);
-                    tvM6in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM6in.setText(Float.toString(intakeMonthX)+" €");
                     tvM6i.setText(monthname+"."+preYear);
                     break;
                 case 7:
-                    tvM7out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM7out.setText(Float.toString(outgosMonthX)+" €");
                     tvM7o.setText(monthname+"."+preYear);
-                    tvM7in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM7in.setText(Float.toString(intakeMonthX)+" €");
                     tvM7i.setText(monthname+"."+preYear);
                     break;
                 case 8:
-                    tvM8out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM8out.setText(Float.toString(outgosMonthX)+" €");
                     tvM8o.setText(monthname+"."+preYear);
-                    tvM8in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM8in.setText(Float.toString(intakeMonthX)+" €");
                     tvM8i.setText(monthname+"."+preYear);
                     break;
                 case 9:
-                    tvM9out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM9out.setText(Float.toString(outgosMonthX)+" €");
                     tvM9o.setText(monthname+"."+preYear);
-                    tvM9in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM9in.setText(Float.toString(intakeMonthX)+" €");
                     tvM9i.setText(monthname+"."+preYear);
                     break;
                 case 10:
-                    tvM10out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM10out.setText(Float.toString(outgosMonthX)+" €");
                     tvM10o.setText(monthname+"."+preYear);
-                    tvM10in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM10in.setText(Float.toString(intakeMonthX)+" €");
                     tvM10i.setText(monthname+"."+preYear);
                     break;
                 case 11:
-                    tvM11out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM11out.setText(Float.toString(outgosMonthX)+" €");
                     tvM11o.setText(monthname+"."+preYear);
-                    tvM11in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM11in.setText(Float.toString(intakeMonthX)+" €");
                     tvM11i.setText(monthname+"."+preYear);
                     break;
                 case 12:
-                    tvM12out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM12out.setText(Float.toString(outgosMonthX)+" €");
                     tvM12o.setText(monthname+"."+preYear);
-                    tvM12in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM12in.setText(Float.toString(intakeMonthX)+" €");
                     tvM12i.setText(monthname+"."+preYear);
                     break;
                 case 13:
-                    tvM13out.setText(Float.toString(OutgosMonthX)+" €");
+                    tvM13out.setText(Float.toString(outgosMonthX)+" €");
                     tvM13o.setText(monthname+"."+preYear);
-                    tvM13in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM13in.setText(Float.toString(intakeMonthX)+" €");
                     tvM13i.setText(monthname+"."+preYear);
                     break;
             }
@@ -330,98 +324,99 @@ public class AnnualViewActivity extends AppCompatActivity {
                     monthname = "Dez";
                     break;
             }
+
             //Balkendiagramm füllen mit Einnahmen des Monats
-            float IntakeMonthX = roundf( mySQLite.getValueIntakesMonth(31,mo,year),2);
-            BarChartInOut.addBar(new BarModel(
+            float intakeMonthX = roundf( mySQLite.getValueIntakesMonth(31,mo,year),2);
+            barChartInOut.addBar(new BarModel(
                     "     "+ monthname +"."+ year,
-                    IntakeMonthX,
+                    intakeMonthX,
                     Color.parseColor("#90BE6D")));
             //Balkendiagramm füllen mit Ausgaben des Monats
-            float OutgoMonthX = roundf( mySQLite.getValueOutgosMonth(31,mo,year),2);
-            BarChartInOut.addBar(new BarModel(
+            float outgoMonthX = roundf( mySQLite.getValueOutgosMonth(31,mo,year),2);
+            barChartInOut.addBar(new BarModel(
                     "",
-                    OutgoMonthX,
+                    outgoMonthX,
                     Color.parseColor("#F94144")));
 
             //Anzeige von Werten in Text unter Diagramm
             switch (mtextout) {
                 case 1:
-                    tvM1out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM1out.setText(Float.toString(outgoMonthX)+" €");
                     tvM1o.setText(monthname+"."+year);
-                    tvM1in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM1in.setText(Float.toString(intakeMonthX)+" €");
                     tvM1i.setText(monthname+"."+year);
                     break;
                 case 2:
-                    tvM2out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM2out.setText(Float.toString(outgoMonthX)+" €");
                     tvM2o.setText(monthname+"."+year);
-                    tvM2in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM2in.setText(Float.toString(intakeMonthX)+" €");
                     tvM2i.setText(monthname+"."+year);
                     break;
                 case 3:
-                    tvM3out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM3out.setText(Float.toString(outgoMonthX)+" €");
                     tvM3o.setText(monthname+"."+year);
-                    tvM3in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM3in.setText(Float.toString(intakeMonthX)+" €");
                     tvM3i.setText(monthname+"."+year);
                     break;
                 case 4:
-                    tvM4out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM4out.setText(Float.toString(outgoMonthX)+" €");
                     tvM4o.setText(monthname+"."+year);
-                    tvM4in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM4in.setText(Float.toString(intakeMonthX)+" €");
                     tvM4i.setText(monthname+"."+year);
                     break;
                 case 5:
-                    tvM5out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM5out.setText(Float.toString(outgoMonthX)+" €");
                     tvM5o.setText(monthname+"."+year);
-                    tvM5in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM5in.setText(Float.toString(intakeMonthX)+" €");
                     tvM5i.setText(monthname+"."+year);
                     break;
                 case 6:
-                    tvM6out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM6out.setText(Float.toString(outgoMonthX)+" €");
                     tvM6o.setText(monthname+"."+year);
-                    tvM6in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM6in.setText(Float.toString(intakeMonthX)+" €");
                     tvM6i.setText(monthname+"."+year);
                     break;
                 case 7:
-                    tvM7out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM7out.setText(Float.toString(outgoMonthX)+" €");
                     tvM7o.setText(monthname+"."+year);
-                    tvM7in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM7in.setText(Float.toString(intakeMonthX)+" €");
                     tvM7i.setText(monthname+"."+year);
                     break;
                 case 8:
-                    tvM8out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM8out.setText(Float.toString(outgoMonthX)+" €");
                     tvM8o.setText(monthname+"."+year);
-                    tvM8in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM8in.setText(Float.toString(intakeMonthX)+" €");
                     tvM8i.setText(monthname+"."+year);
                     break;
                 case 9:
-                    tvM9out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM9out.setText(Float.toString(outgoMonthX)+" €");
                     tvM9o.setText(monthname+"."+year);
-                    tvM9in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM9in.setText(Float.toString(intakeMonthX)+" €");
                     tvM9i.setText(monthname+"."+year);
                     break;
                 case 10:
-                    tvM10out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM10out.setText(Float.toString(outgoMonthX)+" €");
                     tvM10o.setText(monthname+"."+year);
-                    tvM10in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM10in.setText(Float.toString(intakeMonthX)+" €");
                     tvM10i.setText(monthname+"."+year);
                     break;
                 case 11:
-                    tvM11out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM11out.setText(Float.toString(outgoMonthX)+" €");
                     tvM11o.setText(monthname+"."+year);
-                    tvM11in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM11in.setText(Float.toString(intakeMonthX)+" €");
                     tvM11i.setText(monthname+"."+year);
                     break;
                 case 12:
-                    tvM12out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM12out.setText(Float.toString(outgoMonthX)+" €");
                     tvM12o.setText(monthname+"."+year);
-                    tvM12in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM12in.setText(Float.toString(intakeMonthX)+" €");
                     tvM12i.setText(monthname+"."+year);
 
                     break;
                 case 13:
-                    tvM13out.setText(Float.toString(OutgoMonthX)+" €");
+                    tvM13out.setText(Float.toString(outgoMonthX)+" €");
                     tvM13o.setText(monthname+"."+year);
-                    tvM13in.setText(Float.toString(IntakeMonthX)+" €");
+                    tvM13in.setText(Float.toString(intakeMonthX)+" €");
                     tvM13i.setText(monthname+"."+year);
                     break;
             }
@@ -429,19 +424,18 @@ public class AnnualViewActivity extends AppCompatActivity {
             mo++;
         }
         //Darstellungsoptionen
-        BarChartInOut.startAnimation();
-        BarChartInOut.setShowValues(true);
-        BarChartInOut.setActivated(false);
+        barChartInOut.startAnimation();
+        barChartInOut.setShowValues(true);
+        barChartInOut.setActivated(false);
     }
 
     //runden auf zwei Nachkommazahlen
-    public float roundf(float zahl, int stellen) {
-        return (float) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+    public float roundf(float number, int positions) {
+        return (float) ((int)number + (Math.round(Math.pow(10,positions)*(number-(int)number)))/(Math.pow(10,positions)));
     }
 
     //Ändern des letzen Anzuzeigenden Monats
-    public void changelastMonth(View view)
-    {
+    public void changelastMonth(View view) {
         setData();
     }
 

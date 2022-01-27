@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -17,14 +16,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
-import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
-
-
+import com.example.haushaltsapp.Database.Category;
+import com.example.haushaltsapp.Database.Intake;
+import com.example.haushaltsapp.Database.MySQLite;
+import com.example.haushaltsapp.Database.Outgo;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,37 +34,36 @@ Activity um eine Einnahme oder Ausgabe zu ändern oder zu löschen
  */
 public class EditEntryActivity extends AppCompatActivity {
 
-        private MySQLite mySQLite;
+    private MySQLite mySQLite;
 
-        private Spinner spinnerCyclus;
-        private Spinner spinnerCategory;
-        private EditText editTextName;
-        private EditText editTextValue;
-        private TextView editTextDate;
-        private ImageView calenderView; //Kalender
+    private Spinner spinnerCycle;
+    private Spinner spinnerCategory;
+    private EditText editTextName;
+    private EditText editTextValue;
+    private TextView editTextDate;
+    private ImageView calenderView; //Kalender
 
-        private String entry;
-        private int id;
-        private String name;
-        private double value;
-        private String dates;
-        private int day;
-        private int month;
-        private int year;
-        private String cyclus;
-        private String category = " ";
+    private String entry;
+    private int id;
+    private String name;
+    private double value;
+    private String dates;
+    private int day;
+    private int month;
+    private int year;
+    private String cycle;
+    private String category = " ";
 
-        //Aktuelles Datum. Notwendig um Budget-Eintrag anzupassen
-        private int dayCurrent, monthCurrent, yearCurrent;
+    //Aktuelles Datum. Notwendig um Budget-Eintrag anzupassen
+    private int dayCurrent, monthCurrent, yearCurrent;
 
-        /*
+    /*
     1: gewähltes Datum liegt in der Zukunft
     2: der Titel wurde nicht gesetzt
     3: es wurde kein Wert gesetzt
     4: Wert ist nicht sinnvoll
     */
-     private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
-
+    private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
 
 
     @Override
@@ -97,7 +92,7 @@ public class EditEntryActivity extends AppCompatActivity {
             day = intake.getDay();
             month = intake.getMonth();
             year = intake.getYear();
-            cyclus = intake.getCycle();
+            cycle = intake.getCycle();
         } else { //Outgo Ausgabe
             Outgo outgo = mySQLite.getOutgoById(id);
             name = outgo.getName();
@@ -105,7 +100,7 @@ public class EditEntryActivity extends AppCompatActivity {
             day = outgo.getDay();
             month = outgo.getMonth();
             year = outgo.getYear();
-            cyclus = outgo.getCycle();
+            cycle = outgo.getCycle();
             category = outgo.getCategory();
         }
 
@@ -154,9 +149,9 @@ public class EditEntryActivity extends AppCompatActivity {
 
         // Setzt die Variablen monthCurrent und yearCurrent mit dem aktuellen datum
         private void getDate() {
-            java.util.Calendar calender = java.util.Calendar.getInstance();
-            SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
-            String dates = datumsformat.format(calender.getTime());
+            Calendar calender =Calendar.getInstance();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            String dates = dateFormat.format(calender.getTime());
             dayCurrent = Integer.parseInt(dates.substring(0, 2));
             monthCurrent = Integer.parseInt(dates.substring(3, 5));
             yearCurrent = Integer.parseInt(dates.substring(6, 10));
@@ -199,12 +194,12 @@ public class EditEntryActivity extends AppCompatActivity {
 
 
             //Spinner Zyklus
-            spinnerCyclus = (Spinner) findViewById(R.id.spinnerCyclus);
+            spinnerCycle = (Spinner) findViewById(R.id.spinnerCyclus);
             ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerCyclus.setAdapter(adapter2);
-            int index = adapter2.getPosition(cyclus);
-            spinnerCyclus.setSelection(index);
+            spinnerCycle.setAdapter(adapter2);
+            int index = adapter2.getPosition(cycle);
+            spinnerCycle.setSelection(index);
 
             //name setzen
             editTextName = (EditText) findViewById(R.id.Bezeichnung);
@@ -244,10 +239,10 @@ public class EditEntryActivity extends AppCompatActivity {
 
             if (valide) {
                 if (entry.equals("Intake")) {
-                    Intake intake = new Intake(name, value, day, month, year, cyclus);
+                    Intake intake = new Intake(name, value, day, month, year, cycle);
                     mySQLite.updateIntake(intake, id);
                 } else {
-                    Outgo outgo = new Outgo(name, value, day, month, year, cyclus, category);
+                    Outgo outgo = new Outgo(name, value, day, month, year, cycle, category);
                     mySQLite.updateOutgo(outgo, id);
                 }
                 if ((month < monthCurrent) || (year < yearCurrent)) {//Wenn der Eintrag in der Vergangenheit liegt muss das Budget angepasst werden
@@ -257,6 +252,7 @@ public class EditEntryActivity extends AppCompatActivity {
                 startActivity(switchToChartActivity);
             }else{
                 informUser();
+                errorValue = 0; //danach zurücksetzen
             }
         }
 
@@ -312,7 +308,7 @@ public class EditEntryActivity extends AppCompatActivity {
             }
 
             //Zyklus
-            cyclus = spinnerCyclus.getSelectedItem().toString();
+            cycle = spinnerCycle.getSelectedItem().toString();
 
             //Kategorie, wenn Outgo
             if (entry.equals("Outgo")) {
@@ -332,30 +328,28 @@ Abbrechen
 
     //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
     private void informUser(){
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setTitle("Hinweis");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Hinweis");
 
         if(errorValue == 1){
-            builder1.setMessage("Das gewählte Datum liegt in der Zukunft.");
+            builder.setMessage("Das gewählte Datum liegt in der Zukunft.");
         }else if(errorValue == 2){
-            builder1.setMessage("Bitte setzen Sie einen Titel..");
+            builder.setMessage("Bitte setzen Sie einen Titel..");
         }else if(errorValue == 3){
-            builder1.setMessage("Bitte geben Sie einen Wert an.");
+            builder.setMessage("Bitte geben Sie einen Wert an.");
         }else{ // errorValue 4
-            builder1.setMessage("Ihre Eingabe bezüglich des Werts ist nicht valide.");
+            builder.setMessage("Ihre Eingabe bezüglich des Werts ist nicht valide.");
         }
 
-        builder1.setCancelable(true);
-        builder1.setNeutralButton(android.R.string.ok,
+        builder.setCancelable(true);
+        builder.setNeutralButton(android.R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
                 });
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
-
-        errorValue = 0; //danach zurücksetzen
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
         month--; //damit im Kalender der aktuelle Monat angezeigt wird.
     }
 

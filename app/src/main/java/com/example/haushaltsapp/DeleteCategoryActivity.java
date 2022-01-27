@@ -13,31 +13,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.haushaltsapp.ChartPackage.RecyclerAdapter;
 import com.example.haushaltsapp.DeleteCategoryPackage.deleteCategorieAdapter;
-import com.example.haushaltsapp.ToDoListPackage.SwipeHandler;
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
-import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.io.Serializable;
+import com.example.haushaltsapp.Database.Category;
+import com.example.haushaltsapp.Database.MySQLite;
 import java.util.ArrayList;
+
 
 public class DeleteCategoryActivity extends AppCompatActivity {
 
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
-
     ///////////////////////////////
 
     private RecyclerView recyclerView;
-    private ArrayList<Category> CategorieList;
+    private ArrayList<Category> categoryList;
     private deleteCategorieAdapter.deleteCategorieClickListener listener;
     private deleteCategorieAdapter deleteAdapter;
 
@@ -47,40 +38,38 @@ public class DeleteCategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delete_categorie);
         mySQLite = new MySQLite(this);
-        CategorieList = mySQLite.getAllCategory();
+        categoryList = mySQLite.getAllCategory();
         recyclerView = findViewById(R.id.deleteCategorieRecyclerView);
-
         setAdapter();
     }
 
     //Anzeige der Kategorien
-    private void setAdapter()
-    {
-        setOnClickListner();
-        deleteCategorieAdapter adapter = new deleteCategorieAdapter(CategorieList,listener);
+    private void setAdapter() {
+        setOnClickListener();
+        deleteCategorieAdapter adapter = new deleteCategorieAdapter(categoryList,listener);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator( new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        deleteAdapter = new deleteCategorieAdapter(CategorieList,listener);
+        deleteAdapter = new deleteCategorieAdapter(categoryList,listener);
         recyclerView.setAdapter(deleteAdapter);
 
     }
 
+
     //Auswahl einer Kategorie um diese zu löschen
-    private void setOnClickListner(){
+    private void setOnClickListener(){
 
         listener = new deleteCategorieAdapter.deleteCategorieClickListener() {
             @Override
             public void onClick(View v, int position) {
 
-                String Categorie = CategorieList.get(position).getName_PK();
+                String category = categoryList.get(position).getName_PK();
 
                 //Sonstiges kann nicht gelöscht werden
                 //Meldung bringen über AlertDialog
-                if (Categorie.equals("Sonstiges"))
-                {
+                if (category.equals("Sonstiges")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(DeleteCategoryActivity.this );
                     builder.setTitle("Kategorie löschen");
                     builder.setMessage("Sonstiges kann nicht gelöscht werden");
@@ -96,22 +85,21 @@ public class DeleteCategoryActivity extends AppCompatActivity {
 
                 //Kategorie löschen
                 //Meldung bringen über AlertDiagog
-                else
-                {
+                else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(DeleteCategoryActivity.this );
                     builder.setTitle("Kategorie löschen");
-                    builder.setMessage("Möchten Sie die Kategorie " +Categorie+ " löschen?");
+                    builder.setMessage("Möchten Sie die Kategorie " + category + " löschen?");
                     builder.setPositiveButton("Ja",
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
                                     //suchen nach allen Einträgen mit Categorie und änderen der Categorie zu Sonstiges
-                                    mySQLite.ChangeCategorietoSonstiges(Categorie);
+                                    mySQLite.ChangeCategorietoSonstiges(category);
                                     //Löschen der Kategorie
-                                    mySQLite.deleteCategoryByName(Categorie);
+                                    mySQLite.deleteCategoryByName(category);
                                     deleteAdapter.deleteCategorie(position);
-                                    Toast toast = Toast.makeText(getApplicationContext(),Categorie+" wird gelöscht",Toast.LENGTH_SHORT);
+                                    Toast toast = Toast.makeText(getApplicationContext(), category +" wird gelöscht",Toast.LENGTH_SHORT);
                                     toast.show();
                                 }
                             });
@@ -119,7 +107,7 @@ public class DeleteCategoryActivity extends AppCompatActivity {
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast toast = Toast.makeText(getApplicationContext(),Categorie+" wird nicht gelöscht",Toast.LENGTH_SHORT);
+                                    Toast toast = Toast.makeText(getApplicationContext(), category +" wird nicht gelöscht",Toast.LENGTH_SHORT);
                                     toast.show();
                                 }
                             });

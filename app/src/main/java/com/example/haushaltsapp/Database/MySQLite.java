@@ -1,4 +1,4 @@
-package com.example.haushaltsapp.database;
+package com.example.haushaltsapp.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.example.haushaltsapp.ToDoListPackage.TaskModel;
-
 import java.util.ArrayList;
 import java.util.List;
 

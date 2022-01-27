@@ -2,7 +2,6 @@ package com.example.haushaltsapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,25 +13,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import java.util.ArrayList;
-
 import top.defaults.colorpicker.ColorPickerPopup;
-
-import com.example.haushaltsapp.database.Category;
-import com.example.haushaltsapp.database.Intake;
-import com.example.haushaltsapp.database.MySQLite;
-import com.example.haushaltsapp.database.Outgo;
-
+import com.example.haushaltsapp.Database.Category;
+import com.example.haushaltsapp.Database.MySQLite;
 
 
 public class AddCategoryActivity extends AppCompatActivity {
 
     //Wie viele Kategorien kann man maximal in Summe anlegen?
-    private final int maxLimit = 9;
+    private final int MAX_LIMIT = 9;
 
     private MySQLite mySQLite;
     private View mColorPreview; //Feld, welches gewählte Farbe anzeigt
 
-    private int mDefaultColor; //gewählte Farbe
+    private int mDefaultColor = R.color.defaultCategory; //gewählte Farbe
     private String name = " "; // Name der Kategorie
     private double border = 0.0; //Limit der Kategorie
 
@@ -83,24 +77,24 @@ public class AddCategoryActivity extends AppCompatActivity {
     }
 
 
+    //Kategorie soll angelegt werden
     public void onClickOk(View view){
         ArrayList<Category> categories = mySQLite.getAllCategory();
-        if(categories.size() < maxLimit){ //können Kategorien noch angelegt werden?
+        if(categories.size() < MAX_LIMIT){ //können Kategorien noch angelegt werden?
             boolean valide = getValues(); //Achtung, wenn valide = false ist errorValue != 0
             if(valide){ //sind die Eingaben sinnvoll?
                 Category category = new Category(name, mDefaultColor, border); //Kategorie hinzufügen
                 mySQLite.addCategory(category);
-            }
-        }else{
+                Intent switchToMain = new Intent(this, MainActivity.class); //zurück zur Startseite. Kategorie wurde hierbei bereits angelegt
+                startActivity(switchToMain);
+            } // else -> weiter unten wird der Benutzer auf den Fehler hingewiesen
+        }else{ // Limit von 9 bereits erreicht
             errorValue = 3; //Es gibt bereits "maxLimit" Kategorien
         }
 
         if(errorValue > 0){ //Fehler ist aufgetreten. Benutzer hinweisen
-            informUser();
-            errorValue = 0; //muss zurückgesetzt werdenmaxLimit
-        }else{ //zurück zur Startseite. Kategorie wurde hierbei bereits angelegt
-            Intent switchToMain = new Intent(this, MainActivity.class);
-            startActivity(switchToMain);
+            informUser(); //öffnet einen Dialog mit Fehlerhinweis
+            errorValue = 0; //muss zurückgesetzt werden
         }
     }
 
@@ -145,29 +139,30 @@ public class AddCategoryActivity extends AppCompatActivity {
 
     //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
     private void informUser(){
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setTitle("Hinweis");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Hinweis");
         if(errorValue == 1){
-            builder1.setMessage("Bitte setzen Sie einen Titel.");
+            builder.setMessage("Bitte setzen Sie einen Titel.");
         }else if(errorValue == 2){
-            builder1.setMessage("Diese Kategorie gibt es bereits.");
+            builder.setMessage("Diese Kategorie gibt es bereits.");
         }else{ // errorValue == 3
-            builder1.setMessage("Es können leider keine weiteren Kategorien angelegt werden.");
+            builder.setMessage("Es können leider keine weiteren Kategorien angelegt werden.");
         }
 
-        builder1.setCancelable(true);
-        builder1.setNeutralButton(android.R.string.ok,
+        builder.setCancelable(true);
+        builder.setNeutralButton(android.R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
                 });
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 
 
+    //Menü
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -180,7 +175,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         return true;
     }
 
-
+    //Menü
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
