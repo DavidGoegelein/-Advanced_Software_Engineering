@@ -10,23 +10,23 @@ import com.example.haushaltsapp.R;
 import com.example.haushaltsapp.Database.Outgo;
 import java.util.ArrayList;
 
-public class RecyclerAdapterOut extends RecyclerView.Adapter<RecyclerAdapterOut.MyViewHolder> {
+public class RecyclerAdapterOut extends RecyclerView.Adapter<RecyclerAdapterOut.MyViewHolderOut> {
 
     private ArrayList<Outgo> outgoList;
-    private RecyclerViewClickListener listener;
+    private RecyclerViewClickListenerOut listener;
 
-    public RecyclerAdapterOut(ArrayList<Outgo> outgoList, RecyclerViewClickListener listener) {
+    public RecyclerAdapterOut(ArrayList<Outgo> outgoList, RecyclerViewClickListenerOut listener) {
         this.outgoList = outgoList;
         this.listener = listener;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyViewHolderOut extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView outName;
         private TextView outValue;
         private TextView outDate;
         private TextView outCategory;
 
-        public MyViewHolder(final View view) {
+        public MyViewHolderOut(final View view) {
             super(view);
             outName = view.findViewById(R.id.Chartname);
             outValue = view.findViewById(R.id.ChartValue);
@@ -43,9 +43,9 @@ public class RecyclerAdapterOut extends RecyclerView.Adapter<RecyclerAdapterOut.
     }
     @NonNull
     @Override
-    public RecyclerAdapterOut.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolderOut onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.chart_item,parent,false);
-        return new MyViewHolder(itemView);
+        return new MyViewHolderOut(itemView);
     }
 
     //runden auf zwei Nachkommazahlen
@@ -54,7 +54,7 @@ public class RecyclerAdapterOut extends RecyclerView.Adapter<RecyclerAdapterOut.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerAdapterOut.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolderOut holder, int position) {
 
         //Setzen der Textview
         String name = outgoList.get(position).getName();
@@ -79,7 +79,7 @@ public class RecyclerAdapterOut extends RecyclerView.Adapter<RecyclerAdapterOut.
         return outgoList.size();
     }
 
-    public  interface RecyclerViewClickListener{
+    public  interface RecyclerViewClickListenerOut {
         void onClick(View v, int position);
     }
 

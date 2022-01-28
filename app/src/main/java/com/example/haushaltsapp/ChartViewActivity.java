@@ -46,7 +46,7 @@ public class ChartViewActivity extends  AppCompatActivity {
     private ArrayList<Outgo> outgoList;
     private ArrayList<Intake> intakeList;
     private RecyclerView recyclerView;
-    private RecyclerAdapterOut.RecyclerViewClickListener listenerOut;
+    private RecyclerAdapterOut.RecyclerViewClickListenerOut listenerOut;
     private RecyclerAdapterIn.RecyclerViewClickListenerIn listenerIn;
     private String inOutSpinner;
 
@@ -197,7 +197,7 @@ public class ChartViewActivity extends  AppCompatActivity {
         };
 
         //Ausgaben
-        listenerOut = new RecyclerAdapterOut.RecyclerViewClickListener() {
+        listenerOut = new RecyclerAdapterOut.RecyclerViewClickListenerOut() {
             @Override
             public void onClick(View v, int position) {
 
