@@ -10,24 +10,24 @@ import com.example.haushaltsapp.R;
 import com.example.haushaltsapp.Database.Category;
 import java.util.ArrayList;
 
-public class deleteCategorieAdapter extends RecyclerView.Adapter<deleteCategorieAdapter.MyViewHolderCat> {
+public class deleteCategoryAdapter extends RecyclerView.Adapter<deleteCategoryAdapter.MyViewHolderCat> {
 
     private ArrayList<Category> categoryList;
-    private deleteCategorieClickListener listener;
+    private deleteCategoryClickListener listener;
 
-    public deleteCategorieAdapter(ArrayList<Category> categoryList, deleteCategorieClickListener listener) {
+    public deleteCategoryAdapter(ArrayList<Category> categoryList, deleteCategoryClickListener listener) {
         this.categoryList = categoryList;
         this.listener = listener;
     }
 
 
     public class MyViewHolderCat extends  RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView catname;
+        private TextView catName;
 
         public MyViewHolderCat(final View view)
         {
             super(view);
-            catname = view.findViewById(R.id.CategorieDeleteBox);
+            catName = view.findViewById(R.id.CategoryDeleteBox);
             view.setOnClickListener(this);
         }
 
@@ -40,17 +40,17 @@ public class deleteCategorieAdapter extends RecyclerView.Adapter<deleteCategorie
 
     @NonNull
     @Override
-    public deleteCategorieAdapter.MyViewHolderCat onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public deleteCategoryAdapter.MyViewHolderCat onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_category,parent,false);
         return new MyViewHolderCat(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull deleteCategorieAdapter.MyViewHolderCat holder, int position) {
+    public void onBindViewHolder(@NonNull deleteCategoryAdapter.MyViewHolderCat holder, int position) {
         String nameCat = categoryList.get(position).getName_PK();
         int colorCat = categoryList.get(position).getColor();
-        holder.catname.setText(nameCat);
-        holder.catname.setTextColor(colorCat);
+        holder.catName.setText(nameCat);
+        holder.catName.setTextColor(colorCat);
     }
 
     @Override
@@ -58,11 +58,11 @@ public class deleteCategorieAdapter extends RecyclerView.Adapter<deleteCategorie
         return categoryList.size();
     }
 
-    public interface deleteCategorieClickListener{
+    public interface deleteCategoryClickListener {
         void  onClick(View v, int position);
     }
 
-    public void deleteCategorie (int position) {
+    public void deleteCategory(int position) {
         categoryList.remove(position);
         notifyItemRemoved(position);
     }

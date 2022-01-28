@@ -74,7 +74,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
         //Ggf Hacken setzen
         if(mySQLite.getStateLimitState("Gesamtlimit").equals("true")){
             checkBoxTotal.setChecked(true);
-            //Möglichkiet, um den Wert für das Gesamtlimit zu setzen
+            //Möglichkeit, um den Wert für das Gesamtlimit zu setzen
             showTotalBudget();
         }
 
@@ -119,8 +119,8 @@ public class BudgetLimitActivity extends AppCompatActivity {
         //Kategorien in der View darstellen
         linearLayout = findViewById(R.id.container);
         //Gesamtlimit
-        ArrayList<Category> list = mySQLite.getAllCategory();
-        totalLimit = mySQLite.getSateLimitValue("Gesamtlimit");
+        ArrayList<Category> list = mySQLite.getAllCategories();
+        totalLimit = mySQLite.getStateLimitValue("Gesamtlimit");
         addCategory(totalString, totalLimit, totalColor);
         //Darstellen der Kategorien
         for(int i = 0; i < list.size(); i++){
@@ -129,12 +129,9 @@ public class BudgetLimitActivity extends AppCompatActivity {
         }
     }
 
-
-
-
     // Setzt die Variablen day, month, year
     private void getDate() {
-        java.util.Calendar calender = java.util.Calendar.getInstance();
+        Calendar calender = Calendar.getInstance();
         year = calender.get(Calendar.YEAR);
         month = calender.get(Calendar.MONTH)+1;//Fängt bei mit 0 an
         day = calender.get(Calendar.DAY_OF_MONTH);
@@ -216,8 +213,8 @@ public class BudgetLimitActivity extends AppCompatActivity {
     public void clickOk(View view){
         //Prüfen, ob die eingabe sinnvoll ist. -> sind alle werte zwischen 0 und 100?
         //und in Summe nur zwischen 0 und 100%
-        boolean valideValues = checkValues();
-        if(valideValues){
+        boolean validValues = checkValues();
+        if(validValues){
             writeValues(); //Werte in die Datenbank schreiben
             //Zurück zur Main
             Intent switchToMainActivity= new Intent(this, MainActivity.class);
@@ -230,7 +227,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
     //Prüfe ob die Eingaben Sinn machen. Setzt ggf errorValue
     private boolean checkValues(){
-        double summe = 0;
+        double sum = 0;
 
         int childCount = linearLayout.getChildCount();
         for (int i = 1; i < childCount; i++) {
@@ -247,7 +244,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
             }
 
             if(i > 0) { //Erster Eintrag ist Gesamtbudget
-                summe = summe + valueInt;
+                sum = sum + valueInt;
             }else if(valueInt > 100 || valueInt < 0){
                 TextView name = v.findViewById(R.id.name);
                 errorValue = 1;
@@ -255,8 +252,8 @@ public class BudgetLimitActivity extends AppCompatActivity {
             }
         }
 
-        double gesamtbudget = mySQLite.getValueIntakesMonth(day,month,year);
-        if(summe > gesamtbudget){
+        double totalBudget = mySQLite.getValueIntakesMonth(day,month,year);
+        if(sum > totalBudget){
             errorValue = 2;
             return false;
         }

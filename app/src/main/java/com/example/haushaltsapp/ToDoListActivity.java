@@ -34,7 +34,7 @@ import androidx.appcompat.app.AlertDialog;
 
 public class ToDoListActivity extends AppCompatActivity implements ToDoInterface, AdapterView.OnItemSelectedListener {
 
-    ////Variabeln zur Menünavigation
+    ///////////////////////////////
     private MySQLite mySQLite;
     ///////////////////////////////
 
@@ -52,7 +52,7 @@ public class ToDoListActivity extends AppCompatActivity implements ToDoInterface
         setContentView(R.layout.activity_to_do_list);
         mySQLite = new MySQLite(this);
 
-        ArrayList<Category> list = mySQLite.getAllCategory();
+        ArrayList<Category> list = mySQLite.getAllCategories();
         spinner = findViewById(R.id.ToDoListSpinner);
         ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);

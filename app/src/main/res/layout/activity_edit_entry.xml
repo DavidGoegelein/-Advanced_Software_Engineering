@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Hintergrunddunkel"
+    android:background="@color/colorBackgroundGray"
     tools:context=".EditEntryActivity">
 
     <ScrollView
@@ -21,7 +21,7 @@
             android:layout_marginBottom="10dp"
             android:elevation="10dp"
             app:cardCornerRadius="10dp"
-            app:cardBackgroundColor="@color/Hintergrund">
+            app:cardBackgroundColor="@color/colorBackgroundWhite">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                 android:textSize="35dp"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textColor="@color/Textcolorbright1"/>
+                android:textColor="@color/colorTextGray"/>
 
                 <LinearLayout
                     android:id="@+id/linearLayout1"
@@ -62,7 +62,7 @@
                         android:text="Bezeichnung:"
                         android:textSize="20dp"
                         android:layout_marginStart="20dp"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:textColor="@color/colorTextGray"/>
 
                     <EditText
                         android:id="@+id/Bezeichnung"
@@ -71,7 +71,7 @@
                         android:layout_marginStart="20dp"
                         android:ems="10"
                         android:text="Titel"
-                        android:textColor="@color/Textcolorbright0" />
+                        android:textColor="@color/colorTextLightGray" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -90,7 +90,7 @@
                         android:text="Wert:"
                         android:textSize="20dp"
                         android:layout_marginStart="20dp"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:textColor="@color/colorTextGray"/>
 
                     <EditText
                         android:id="@+id/editTextNumberDecimal"
@@ -100,7 +100,7 @@
                         android:ems="3"
                         android:text="00,00"
                         android:inputType="numberDecimal"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:textColor="@color/colorTextGray"/>
 
                     <TextView
                         android:id="@+id/textView6"
@@ -129,7 +129,7 @@
                         android:text="Datum:"
                         android:textSize="20dp"
                         android:layout_marginStart="20dp"
-                        android:textColor="@color/Textcolorbright1"
+                        android:textColor="@color/colorTextGray"
                         />
 
                     <TextView
@@ -141,7 +141,7 @@
                         android:textSize="20dp"
                         android:text="01.01.2000"
                         android:inputType="date"
-                        android:textColor="@color/Textcolorbright0"/>
+                        android:textColor="@color/colorTextLightGray"/>
 
                     <ImageView
                         android:id="@+id/calenderView"
@@ -167,7 +167,7 @@
                         android:textSize="20dp"
                         android:text="Wiederholung :"
                         android:layout_marginStart="20dp"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:textColor="@color/colorTextGray"/>
 
 
                     <Spinner
@@ -175,7 +175,7 @@
                         android:layout_width="match_parent"
                         android:textSize="20dp"
                         android:layout_height="match_parent"
-                        android:textColor="@color/Textcolorbright0"/>
+                        android:textColor="@color/colorTextLightGray"/>
 
                 </LinearLayout>
 
@@ -194,14 +194,14 @@
                         android:textSize="20dp"
                         android:text="Kategorie :"
                         android:layout_marginStart="20dp"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:textColor="@color/colorTextGray"/>
 
 
                     <Spinner
                         android:id="@+id/spinnerCategory"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textColor="@color/Textcolorbright0"/>
+                        android:textColor="@color/colorTextLightGray"/>
 
 
                 </LinearLayout>
@@ -220,22 +220,22 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="20dp"
-                        android:backgroundTint="@color/Button"
-                        android:onClick="onClickchange"
+                        android:backgroundTint="@color/colorButton"
+                        android:onClick="onClickChange"
                         android:text="Ändern"
-                        android:textColor="@color/Textcolorbright1"
+                        android:textColor="@color/colorTextGray"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/button3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:onClick="onClickdeli"
+                        android:onClick="onClickDelete"
                         android:layout_marginStart="10dp"
                         android:text="Löschen"
-                        android:backgroundTint="@color/Ausgaben"
+                        android:backgroundTint="@color/colorAusgaben"
                         android:layout_gravity="center"
-                        android:textColor="@color/Textcolorbright1"
+                        android:textColor="@color/colorTextGray"
                         android:textStyle="bold"/>
 
                     <Button
@@ -245,16 +245,13 @@
                         android:onClick="onClickCancel"
                         android:layout_marginStart="10dp"
                         android:text="Abbrechen"
-                        android:backgroundTint="@color/Sonstiges"
+                        android:backgroundTint="@color/colorSonstiges"
                         android:layout_gravity="center"
-                        android:textColor="@color/Textcolorbright1"
+                        android:textColor="@color/colorTextGray"
                         android:textStyle="bold"/>
                 </LinearLayout>
 
             </LinearLayout>
-
-
         </androidx.cardview.widget.CardView>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

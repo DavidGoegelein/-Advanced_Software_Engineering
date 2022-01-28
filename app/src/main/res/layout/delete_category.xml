@@ -14,15 +14,15 @@
         android:padding="8dp">
 
         <TextView
-            android:id="@+id/CategorieDeleteBox"
+            android:id="@+id/CategoryDeleteBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="Categorie"
+            android:text="Category"
+            android:textColor="@color/colorTextLightGray"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/Textcolorbright0"/>
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

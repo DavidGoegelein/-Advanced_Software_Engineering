@@ -42,7 +42,7 @@ public class AnnualViewActivity extends AppCompatActivity {
     private int year;
 
     private TextView editTextDate; //Datum
-    private String dates;
+    private String date;
 
 
     @Override
@@ -54,19 +54,19 @@ public class AnnualViewActivity extends AppCompatActivity {
 
         //Aktuelles Datum anzeigen
         editTextDate = (TextView) findViewById(R.id.editTextDate);
-        java.util.Calendar calender = Calendar.getInstance();
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
-        editTextDate.setText(datumsformat.format(calender.getTime()));
+        java.util.Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        editTextDate.setText(dateFormat.format(calendar.getTime()));
 
         setData();
     }
 
     private void setData() {
         //Datum von Textfeld auslesen
-        dates = editTextDate.getText().toString();
-        day = Integer.parseInt(dates.substring(0,2));
-        month = Integer.parseInt(dates.substring(3,5));
-        year = Integer.parseInt(dates.substring(6,10));
+        date = editTextDate.getText().toString();
+        day = Integer.parseInt(date.substring(0,2));
+        month = Integer.parseInt(date.substring(3,5));
+        year = Integer.parseInt(date.substring(6,10));
 
         barChartInOut = findViewById(R.id.barchartinout);
 
@@ -127,6 +127,7 @@ public class AnnualViewActivity extends AppCompatActivity {
         tvM12in =findViewById(R.id.tvin_Month12);
         tvM13in =findViewById(R.id.tvin_Month13);
 
+        //Diagramm zurücksetzen und aufrufen
         barChartInOut.clearChart();
         barGraphMonthInOut();
     }
@@ -135,18 +136,18 @@ public class AnnualViewActivity extends AppCompatActivity {
     public void barGraphMonthInOut() {
 
         int mtextout = 1; //für Textausgabe
-        int mo = 1; //monate hochzählen
-        int monthr = month;
-
-        //erster Monat wird in Balkendiagramm nicht beschriftet
-
+        int monthThisYear = 1; //monate hochzählen
+        int monthPreYear = month;
         int preYear = year-1; //Vorjahr
 
+        //erster Monat wird in Balkendiagramm nicht beschriftet, wenn Fensterbreite zu klein ist
+        //Fensterbreite angepasst
+
         //vorjahresanzeige
-        while (monthr <= 12) {
+        while (monthPreYear <= 12) {
             String monthname = "leer";
 
-            switch (monthr) {
+            switch (monthPreYear) {
                 case 1:
                     monthname = "Jan";
                     break;
@@ -186,13 +187,13 @@ public class AnnualViewActivity extends AppCompatActivity {
             }
 
             //Balkendiagramm füllen mit Einnahmen des Monats
-            float intakeMonthX = roundf(mySQLite.getValueIntakesMonth(31,monthr,preYear),2);
+            float intakeMonthX = roundF(mySQLite.getValueIntakesMonth(31,monthPreYear,preYear),2);
             barChartInOut.addBar(new BarModel(
                     "     "+monthname+"."+ preYear,
                     intakeMonthX,
                     Color.parseColor("#90BE6D")));
             //Balkendiagramm füllen mit Ausgaben des Monats
-            float outgosMonthX = roundf( mySQLite.getValueOutgosMonth(31,monthr,preYear),2);
+            float outgosMonthX = roundF( mySQLite.getValueOutgoesMonth(31,monthPreYear,preYear),2);
             barChartInOut.addBar(new BarModel(
                     "",
                     outgosMonthX,
@@ -280,13 +281,13 @@ public class AnnualViewActivity extends AppCompatActivity {
                     break;
             }
             mtextout++;
-            monthr++;
+            monthPreYear++;
         }
 
         //aktuelles Jahr anzeigen
-        while (mo <= (month)) {
+        while (monthThisYear <= (month)) {
             String monthname = "leer";
-            switch (mo) {
+            switch (monthThisYear) {
                 case 1:
                     monthname = "Jan";
                     break;
@@ -326,13 +327,13 @@ public class AnnualViewActivity extends AppCompatActivity {
             }
 
             //Balkendiagramm füllen mit Einnahmen des Monats
-            float intakeMonthX = roundf( mySQLite.getValueIntakesMonth(31,mo,year),2);
+            float intakeMonthX = roundF( mySQLite.getValueIntakesMonth(31,monthThisYear,year),2);
             barChartInOut.addBar(new BarModel(
                     "     "+ monthname +"."+ year,
                     intakeMonthX,
                     Color.parseColor("#90BE6D")));
             //Balkendiagramm füllen mit Ausgaben des Monats
-            float outgoMonthX = roundf( mySQLite.getValueOutgosMonth(31,mo,year),2);
+            float outgoMonthX = roundF( mySQLite.getValueOutgoesMonth(31,monthThisYear,year),2);
             barChartInOut.addBar(new BarModel(
                     "",
                     outgoMonthX,
@@ -411,7 +412,6 @@ public class AnnualViewActivity extends AppCompatActivity {
                     tvM12o.setText(monthname+"."+year);
                     tvM12in.setText(Float.toString(intakeMonthX)+" €");
                     tvM12i.setText(monthname+"."+year);
-
                     break;
                 case 13:
                     tvM13out.setText(Float.toString(outgoMonthX)+" €");
@@ -421,7 +421,7 @@ public class AnnualViewActivity extends AppCompatActivity {
                     break;
             }
             mtextout++;
-            mo++;
+            monthThisYear++;
         }
         //Darstellungsoptionen
         barChartInOut.startAnimation();
@@ -430,18 +430,18 @@ public class AnnualViewActivity extends AppCompatActivity {
     }
 
     //runden auf zwei Nachkommazahlen
-    public float roundf(float number, int positions) {
+    public float roundF(float number, int positions) {
         return (float) ((int)number + (Math.round(Math.pow(10,positions)*(number-(int)number)))/(Math.pow(10,positions)));
     }
 
     //Ändern des letzen Anzuzeigenden Monats
-    public void changelastMonth(View view) {
+    public void changeLastMonth(View view) {
         setData();
     }
 
-    //Kalender zu auswahl des Monats
+    //Kalender zu Auswahl des Monats
     public  void openCalender(View dateview) {
-        java.util.Calendar calender = java.util.Calendar.getInstance();
+        Calendar calender = Calendar.getInstance();
         year = calender.get(Calendar.YEAR);
         month = calender.get(Calendar.MONTH);
         day = calender.get(Calendar.DAY_OF_MONTH);

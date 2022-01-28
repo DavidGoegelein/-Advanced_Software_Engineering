@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Hintergrunddunkel"
+    android:background="@color/colorBackgroundGray"
     tools:context=".AddCategoryActivity">
 
     <ScrollView
@@ -21,7 +21,7 @@
             android:layout_marginBottom="10dp"
             android:elevation="10dp"
             app:cardCornerRadius="10dp"
-            app:cardBackgroundColor="@color/Hintergrund">
+            app:cardBackgroundColor="@color/colorBackgroundWhite">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="15dp"
                     android:text="Neue Kategorie"
-                    android:textColor="@color/Textcolorbright1"
+                    android:textColor="@color/colorTextGray"
                     android:textSize="35sp"
                     android:textStyle="bold" />
 
@@ -49,7 +49,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="56dp"
                     android:text="Bezeichnung:"
-                    android:textColor="@color/Textcolorbright1"
+                    android:textColor="@color/colorTextGray"
                     android:textSize="20sp"
                     android:textStyle="bold"/>
 
@@ -61,7 +61,7 @@
                     android:layout_marginTop="10dp"
                     android:ems="10"
                     android:hint="Titel"
-                    android:textColor="@color/Textcolorbright0"
+                    android:textColor="@color/colorTextLightGray"
                     android:textSize="20sp"
                     android:textStyle="bold"/>
 
@@ -75,10 +75,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
-                        android:backgroundTint="@color/Button"
+                        android:backgroundTint="@color/colorButton"
                         android:onClick="pickColor"
                         android:text="Farbe"
-                        android:textColor="@color/Textcolorbright1"
+                        android:textColor="@color/colorTextGray"
                         android:textStyle="bold"
                         android:layout_gravity="center"/>
 
@@ -99,7 +99,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="30dp"
                     android:text="Limit: "
-                    android:textColor="@color/Textcolorbright1"
+                    android:textColor="@color/colorTextGray"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -109,7 +109,7 @@
 
                     <EditText
                         android:id="@+id/editTextLimit"
-                        android:textColor="@color/Textcolorbright0"
+                        android:textColor="@color/colorTextLightGray"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -127,7 +127,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="20dp"
                         android:text="€"
-                        android:textColor="@color/Textcolorbright1"
+                        android:textColor="@color/colorTextGray"
                         android:textSize="22sp"
                         android:textStyle="bold" />
 
@@ -146,10 +146,10 @@
                         android:layout_marginStart="45dp"
                         android:layout_marginTop="10dp"
                         android:layout_gravity="center"
-                        android:backgroundTint="@color/Button"
+                        android:backgroundTint="@color/colorButton"
                         android:onClick="onClickOk"
                         android:text="Ok"
-                        android:textColor="@color/Textcolorbright1"
+                        android:textColor="@color/colorTextGray"
                         android:textStyle="bold"/>
 
                     <Button
@@ -159,12 +159,12 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginStart="40dp"
                         android:layout_gravity="center"
-                        android:backgroundTint="@color/Sonstiges"
+                        android:backgroundTint="@color/colorSonstiges"
                         android:bottomLeftRadius="20dp"
                         android:bottomRightRadius="20dp"
                         android:onClick="onClickBreak"
                         android:text="Abbrechen"
-                        android:textColor="@color/Textcolorbright1"
+                        android:textColor="@color/colorTextGray"
                         android:textStyle="bold"
                         />
                 </LinearLayout>

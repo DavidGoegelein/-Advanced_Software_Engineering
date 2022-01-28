@@ -15,10 +15,10 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="hallo"
-        android:textFontWeight="1000"
         android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
+        android:text="category"
+        android:textFontWeight="1000"
         android:textSize="20dp" />
 
     <EditText

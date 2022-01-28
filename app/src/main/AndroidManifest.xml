@@ -38,7 +38,7 @@
             android:name=".AnnualViewActivity"
             android:exported="true" />
         <activity
-            android:name=".MonthcomparisonViewActivity"
+            android:name=".MonthComparisonViewActivity"
             android:exported="true" />
         <activity
             android:name=".ToDoListActivity"

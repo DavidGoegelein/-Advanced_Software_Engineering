@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Hintergrunddunkel"
+    android:background="@color/colorBackgroundGray"
     tools:context=".ToDoListActivity">
 
     <ScrollView
@@ -21,7 +21,7 @@
         android:layout_marginBottom="10dp"
         android:elevation="10dp"
         app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="@color/Hintergrund">
+        app:cardBackgroundColor="@color/colorBackgroundWhite">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                 android:textSize="35sp"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textColor="@color/Textcolorbright1"/>
+                android:textColor="@color/colorTextGray"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -73,9 +73,9 @@
                 android:id="@+id/fab"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/Button"
+                android:backgroundTint="@color/colorButton"
                 android:src="@drawable/ic_baseline_add"
-                app:backgroundTint="@color/Button"
+                app:backgroundTint="@color/colorButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.9"

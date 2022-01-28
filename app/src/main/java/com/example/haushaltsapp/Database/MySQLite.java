@@ -78,7 +78,7 @@ public class MySQLite extends SQLiteOpenHelper {
     private static final String KEY_STATUS = "status";
     private static final String KEY_TYPE = "type";
     //////////////////////////////////////////////////////////////////////////////////////////
-    private static final String TABLE_LIMITSTATE = "limitState";
+    private static final String TABLE_LIMIT_STATE = "limitState";
     private static final String KEY_STATE = "state";
 
 
@@ -167,7 +167,7 @@ public class MySQLite extends SQLiteOpenHelper {
     Funktion liefert eine Id einer Einname, welche den übergebenen Namen aufweist
     Wenn es eine solche Id nicht gibt, wird -1 zurück gegeben
      */
-    public int getIntakeIdbyName(String name){
+    public int getIntakeIdByName(String name){
         int result = -1;
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_NAME+" = \""+name+"\"";
@@ -313,7 +313,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     Funktion gibt eine ArrayList zurück, welche alle Ausgaben der Datenbank
     beinhaltet
      */
-    public ArrayList<Outgo> getAllOutgo(){
+    public ArrayList<Outgo> getAllOutgoes(){
         ArrayList<Outgo> outgoes = new ArrayList<Outgo>();
 
         String query = "SELECT * FROM "+TABLE_OUTGO+" ORDER BY "+KEY_YEAR+", "+KEY_MONTH+", "+KEY_DAY;
@@ -412,7 +412,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
    beinhaltet, welche vom 1.month.year bis day.month.year getätigt wurden.
    Periodische Ausgaben wurden dabei berücksichtigt.
     */
-    public ArrayList<Outgo> getMonthOutgos(int day, int month, int year) {
+    public ArrayList<Outgo> getMonthOutgoes(int day, int month, int year) {
         ArrayList<Outgo> outgos = new ArrayList<Outgo>();
 
         // Einträge der vergangenen Monate mit dem zyklus monatlich
@@ -456,7 +456,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
    berücksichtigt, welche vom 1.month.year bis day.month.year getätigt wurden.
    Periodische Ausgaben wurden dabei berücksichtigt.
     */
-    public float getValueOutgosMonth(int day, int month, int year) {
+    public float getValueOutgoesMonth(int day, int month, int year) {
         float value = 0;
         // Einträge der vergangenen Monate mit dem zyklus monatlich
         String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" )";
@@ -481,7 +481,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     berücksichtigt, welche in einem bestimmtem Monat in einer bestimmten Kategorie getätigt wurden.
     Periodische Ausgaben wurden babei berücksichtigt
      */
-    public  float getCategorieOutgosMonth(int day,int month,int year, String categorie)
+    public  float getCategoryOutgoesMonth(int day, int month, int year, String categorie)
     {
         float value = 0;
 
@@ -508,7 +508,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     Funktion gibt die Id mit der Ausgabe zurück, welche den übergebnenen Namen hat
     gibt es einen solchen Eintrag nicht, wird -1 zurück gegeben
      */
-    public int getOutgoIdbyName(String name){
+    public int getOutgoIdByName(String name){
         int result = -1;
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_NAME+" = \""+name+"\"";
@@ -576,7 +576,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     /*
     Alle Categorien bekommen
      */
-    public ArrayList<Category> getAllCategory(){
+    public ArrayList<Category> getAllCategories(){
         ArrayList<Category> categories = new ArrayList<Category>();
 
         String query = "SELECT * FROM "+TABLE_CATEGORY;
@@ -640,11 +640,11 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
     //Suche Alle einträge mit bestimmter Categorie
     //und ändere die Categorie in den Einträgen zu Sonstiges ab
-    public void ChangeCategorietoSonstiges(String categoryname){
+    public void changeCategoryToSonstiges(String categoryName){
         SQLiteDatabase db = this.getWritableDatabase();
         int ID;
         //alle Einträge mit gesuchter Categorie
-        String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_CATEGORY+" = \""+categoryname+"\"";
+        String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_CATEGORY+" = \""+ categoryName +"\"";
         Cursor cursor = db.rawQuery(query, null);
         int countCursor = cursor.getCount();
         cursor.moveToFirst();
@@ -709,7 +709,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
 
     //Auffrischen des Task Status
-    public void updateStatus(int id, int status){
+    public void updateTaskStatus(int id, int status){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(KEY_STATUS, status);
@@ -795,7 +795,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return isLimitReached;
     }
 
-    //LimitSate hinzufügen
+    //LimitState hinzufügen
     //value ist default 0.0
     public void addLimitState(String name, String state){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -803,11 +803,11 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         value.put(KEY_NAME, name);
         value.put(KEY_STATE, state);
         value.put(KEY_VALUE, 0);
-        db.insert(TABLE_LIMITSTATE, null, value);
+        db.insert(TABLE_LIMIT_STATE, null, value);
         db.close();
     }
 
-    //Update LimitSate
+    //Update LimitState
     public int updateLimitState(String name, String state){
         int id = -1;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -816,13 +816,13 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         value.put(KEY_STATE, state);
 
         //id ermitteln
-        String query = "SELECT * FROM "+ TABLE_LIMITSTATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
+        String query = "SELECT * FROM "+ TABLE_LIMIT_STATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
             id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
         }
 
-        int i = db.update(TABLE_LIMITSTATE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
+        int i = db.update(TABLE_LIMIT_STATE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
         db.close();
         return i;
     }
@@ -837,13 +837,13 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         value.put(KEY_STATE, state);
 
         //id ermitteln
-        String query = "SELECT * FROM "+ TABLE_LIMITSTATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
+        String query = "SELECT * FROM "+ TABLE_LIMIT_STATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
             id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
         }
 
-        int i = db.update(TABLE_LIMITSTATE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
+        int i = db.update(TABLE_LIMIT_STATE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
         db.close();
         return i;
     }
@@ -852,7 +852,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     public String getStateLimitState(String name){
         String state = "";
 
-        String query = "SELECT * FROM "+ TABLE_LIMITSTATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
+        String query = "SELECT * FROM "+ TABLE_LIMIT_STATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor != null) {
@@ -866,11 +866,11 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     }
 
     //Wert ermitteln
-    public double getSateLimitValue(String name){
+    public double getStateLimitValue(String name){
         double value = 0.0;
 
 
-        String query = "SELECT * FROM "+ TABLE_LIMITSTATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
+        String query = "SELECT * FROM "+ TABLE_LIMIT_STATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor != null) {

@@ -2,12 +2,12 @@
     <!-- Base application theme. -->
     <style name="Theme.Haushaltsapp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/Button</item>
-        <item name="colorPrimaryVariant">@color/Textcolordark</item>
-        <item name="colorOnPrimary">@color/Textcolorbright1</item>
+        <item name="colorPrimary">@color/colorButton</item>
+        <item name="colorPrimaryVariant">@color/colorTextDark</item>
+        <item name="colorOnPrimary">@color/colorTextGray</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/Textcolorbright</item>
-        <item name="colorSecondaryVariant">@color/Textcolordark</item>
+        <item name="colorSecondary">@color/colorTextDarkGray</item>
+        <item name="colorSecondaryVariant">@color/colorTextDark</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>

@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Hintergrunddunkel"
+    android:background="@color/colorBackgroundGray"
     tools:context=".AnnualViewActivity">
 
     <ScrollView
@@ -38,7 +38,7 @@
                     android:textSize="35sp"
                     android:gravity="center"
                     android:textStyle="bold"
-                    android:textColor="@color/Textcolorbright1"/>
+                    android:textColor="@color/colorTextGray"/>
 
                 <LinearLayout
                     android:id="@+id/linearLayout2"
@@ -59,7 +59,7 @@
                         tools:layout_editor_absoluteX="55dp"
                         android:layout_marginStart="5dp"
                         android:textStyle="bold"
-                        android:textColor="@color/Textcolorbright0"/>
+                        android:textColor="@color/colorTextLightGray"/>
 
                     <TextView
                         android:id="@+id/editTextDate"
@@ -71,7 +71,7 @@
                         android:inputType="date"
                         android:text="01.01.2000"
                         android:textStyle="bold"
-                        android:textColor="@color/Textcolorbright0"/>
+                        android:textColor="@color/colorTextLightGray"/>
 
 
                     <ImageView
@@ -93,10 +93,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
                         android:layout_marginStart="10dp"
-                        android:onClick="changelastMonth"
+                        android:onClick="changeLastMonth"
                         android:text="Laden"
-                        android:backgroundTint="@color/Button"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:backgroundTint="@color/colorButton"
+                        android:textColor="@color/colorTextGray"/>
                 </LinearLayout>
 
 
@@ -136,7 +136,7 @@
                         <View
                             android:layout_width="25dp"
                             android:layout_height="match_parent"
-                            android:background="@color/Einnahmen" />
+                            android:background="@color/colorEinnahmen" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -144,7 +144,7 @@
                             android:paddingLeft="10dp"
                             android:text="@string/Kat_Einnahmen"
                             android:textSize="18sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                     </LinearLayout>
 
@@ -157,7 +157,7 @@
                         <View
                             android:layout_width="25dp"
                             android:layout_height="match_parent"
-                            android:background="@color/Ausgaben" />
+                            android:background="@color/colorAusgaben" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -165,44 +165,11 @@
                             android:paddingLeft="10dp"
                             android:text="@string/Kat_Ausgaben"
                             android:textSize="18sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                     </LinearLayout>
 
                 </LinearLayout>
-                <!--
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:text="Ausgaben der letzen 12 Monate"
-                                    android:paddingStart="30dp"
-                                    android:textSize="25dp"></TextView>
-
-                                <HorizontalScrollView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:orientation="horizontal"
-                                        >
-
-
-                                        <org.eazegraph.lib.charts.BarChart
-                                            android:id="@+id/barchart"
-                                            android:layout_width="550dp"
-                                            android:layout_height="300dp"
-                                            android:layout_marginStart="15dp"
-                                            android:layout_marginTop="15dp"
-                                            android:padding="6dp" />
-
-                                    </LinearLayout>
-                                </HorizontalScrollView>
-                                -->
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -217,7 +184,7 @@
                         android:text="Monatsvergleich Einnahmen"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:textColor="@color/colorTextGray"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -225,7 +192,7 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -242,7 +209,7 @@
                             android:id="@+id/tvMonth1in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month1"
@@ -252,7 +219,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
@@ -262,7 +229,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -279,7 +246,7 @@
                             android:id="@+id/tvMonth2in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month2"
@@ -289,7 +256,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -300,7 +267,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -317,7 +284,7 @@
                             android:id="@+id/tvMonth3in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month3"
@@ -327,7 +294,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -338,7 +305,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -355,7 +322,7 @@
                             android:id="@+id/tvMonth4in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month4"
@@ -365,7 +332,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -376,7 +343,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -393,7 +360,7 @@
                             android:id="@+id/tvMonth5in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month5"
@@ -403,7 +370,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -413,7 +380,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -430,7 +397,7 @@
                             android:id="@+id/tvMonth6in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month6"
@@ -440,7 +407,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -450,7 +417,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -467,7 +434,7 @@
                             android:id="@+id/tvMonth7in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month7"
@@ -477,7 +444,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -487,7 +454,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -504,7 +471,7 @@
                             android:id="@+id/tvMonth8in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month8"
@@ -514,7 +481,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -524,7 +491,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -541,7 +508,7 @@
                             android:id="@+id/tvMonth9in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month9"
@@ -551,7 +518,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -561,7 +528,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -578,7 +545,7 @@
                             android:id="@+id/tvMonth10in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month10"
@@ -588,7 +555,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -598,7 +565,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -615,7 +582,7 @@
                             android:id="@+id/tvMonth11in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month11"
@@ -625,7 +592,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -635,7 +602,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -652,7 +619,7 @@
                             android:id="@+id/tvMonth12in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month12"
@@ -662,7 +629,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -673,7 +640,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -690,7 +657,7 @@
                             android:id="@+id/tvMonth13in"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvin_Month13"
@@ -700,7 +667,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -710,7 +677,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
 
                 </LinearLayout>
@@ -730,7 +697,7 @@
                         android:text="Monatsvergleich Ausgaben"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="@color/Textcolorbright0"/>
+                        android:textColor="@color/colorTextLightGray"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -738,7 +705,7 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -755,7 +722,7 @@
                             android:id="@+id/tvMonth1"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month1"
@@ -765,7 +732,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
@@ -775,7 +742,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -792,7 +759,7 @@
                             android:id="@+id/tvMonth2"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month2"
@@ -802,7 +769,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -813,7 +780,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -830,7 +797,7 @@
                             android:id="@+id/tvMonth3"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month3"
@@ -840,7 +807,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -851,7 +818,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -868,7 +835,7 @@
                             android:id="@+id/tvMonth4"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month4"
@@ -878,7 +845,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -889,7 +856,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -906,7 +873,7 @@
                             android:id="@+id/tvMonth5"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month5"
@@ -916,7 +883,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -926,7 +893,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -943,7 +910,7 @@
                             android:id="@+id/tvMonth6"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month6"
@@ -953,7 +920,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -963,7 +930,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -980,7 +947,7 @@
                             android:id="@+id/tvMonth7"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month7"
@@ -990,7 +957,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -1000,7 +967,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -1017,7 +984,7 @@
                             android:id="@+id/tvMonth8"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month8"
@@ -1027,7 +994,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -1037,7 +1004,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -1054,7 +1021,7 @@
                             android:id="@+id/tvMonth9"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month9"
@@ -1064,7 +1031,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -1074,7 +1041,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -1091,7 +1058,7 @@
                             android:id="@+id/tvMonth10"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month10"
@@ -1101,7 +1068,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -1111,7 +1078,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -1128,7 +1095,7 @@
                             android:id="@+id/tvMonth11"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month11"
@@ -1138,7 +1105,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -1148,7 +1115,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -1165,7 +1132,7 @@
                             android:id="@+id/tvMonth12"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month12"
@@ -1175,7 +1142,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -1186,7 +1153,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -1203,7 +1170,7 @@
                             android:id="@+id/tvMonth13"
                             android:text="0"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright0"/>
+                            android:textColor="@color/colorTextLightGray"/>
 
                         <TextView
                             android:id="@+id/tvout_Month13"
@@ -1213,7 +1180,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -1223,16 +1190,10 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
-
+                        android:background="@color/colorEggshell" />
 
                 </LinearLayout>
-
-
             </LinearLayout>
-
-
-
         </androidx.cardview.widget.CardView>
     </ScrollView>
 </RelativeLayout>

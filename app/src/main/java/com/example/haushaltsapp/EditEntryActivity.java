@@ -47,7 +47,7 @@ public class EditEntryActivity extends AppCompatActivity {
     private int id;
     private String name;
     private double value;
-    private String dates;
+    private String date;
     private int day;
     private int month;
     private int year;
@@ -172,7 +172,7 @@ public class EditEntryActivity extends AppCompatActivity {
             //Spinner Kategorie
             spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
             if (entry.equals("Outgo")) {
-                ArrayList<Category> list = mySQLite.getAllCategory();
+                ArrayList<Category> list = mySQLite.getAllCategories();
                 ArrayList<String> listCategory = new ArrayList<String>();
                 for (int i = 0; i < list.size(); i++) {
                     listCategory.add(list.get(i).getName_PK());
@@ -233,11 +233,11 @@ public class EditEntryActivity extends AppCompatActivity {
         }
 
         //ändern
-        public void onClickchange(View view) {
+        public void onClickChange(View view) {
 
-            boolean valide = getValues(); //erhalte die gewünschten Werte
+            boolean valid = getValues(); //erhalte die gewünschten Werte
 
-            if (valide) {
+            if (valid) {
                 if (entry.equals("Intake")) {
                     Intake intake = new Intake(name, value, day, month, year, cycle);
                     mySQLite.updateIntake(intake, id);
@@ -257,7 +257,7 @@ public class EditEntryActivity extends AppCompatActivity {
         }
 
         //Löschen
-        public void onClickdeli(View view) {
+        public void onClickDelete(View view) {
             if (entry.equals("Outgo")) {
                 mySQLite.deleteOutgoById(id);
             } else {
@@ -274,10 +274,10 @@ public class EditEntryActivity extends AppCompatActivity {
             boolean retValue = true;
 
             //Datum:
-            dates = editTextDate.getText().toString();
-            day = Integer.parseInt(dates.substring(0, 2));
-            month = Integer.parseInt(dates.substring(3, 5));
-            year = Integer.parseInt(dates.substring(6, 10));
+            date = editTextDate.getText().toString();
+            day = Integer.parseInt(date.substring(0, 2));
+            month = Integer.parseInt(date.substring(3, 5));
+            year = Integer.parseInt(date.substring(6, 10));
 
             if((month > monthCurrent && year >= yearCurrent) || (year > yearCurrent) ||(day > dayCurrent && month == monthCurrent && year == yearCurrent)){ //Eintrag liegt in der Zukunft
                 errorValue = 1;
@@ -371,16 +371,16 @@ Abbrechen
 
                 //Eintrag muss aus der Datenbank enfernt werden
                 //Wie der Eintrag lautet
-                String titel = "Übertrag vom ";
+                String title = "Übertrag vom ";
                 if(monthEntry > 1){
-                    titel = titel+(monthEntry-1)+"."+yearEntry;
+                    title = title +(monthEntry-1)+"."+yearEntry;
                 }else{
-                    titel = titel+12+"."+(yearEntry-1);
+                    title = title +12+"."+(yearEntry-1);
                 }
 
                 //id des Eintrags ermitteln
-                int idIntake = mySQLite.getIntakeIdbyName(titel);
-                int idOutgo = mySQLite.getOutgoIdbyName(titel);
+                int idIntake = mySQLite.getIntakeIdByName(title);
+                int idOutgo = mySQLite.getOutgoIdByName(title);
                 if(idIntake > -1){
                     mySQLite.deleteIntakeById(idIntake); //Eintrag löschen
                 }else if(idOutgo > -1){
@@ -390,16 +390,16 @@ Abbrechen
                 //Neuer Eintrag erstellen
                 double value = 0.0;
                 if (monthEntry > 1) {
-                    value = mySQLite.getValueIntakesMonth(31, monthEntry - 1, yearEntry) - mySQLite.getValueOutgosMonth(31, monthEntry - 1, yearEntry);
+                    value = mySQLite.getValueIntakesMonth(31, monthEntry - 1, yearEntry) - mySQLite.getValueOutgoesMonth(31, monthEntry - 1, yearEntry);
                 } else { //1
-                    value = mySQLite.getValueIntakesMonth(31, 12, yearEntry - 1) - mySQLite.getValueOutgosMonth(31, 12, yearEntry - 1);
+                    value = mySQLite.getValueIntakesMonth(31, 12, yearEntry - 1) - mySQLite.getValueOutgoesMonth(31, 12, yearEntry - 1);
                 }
                 if(value >= 0) { //Einnahme
-                    Intake intake = new Intake(titel, value, 1, monthEntry, yearEntry, "einmalig");
+                    Intake intake = new Intake(title, value, 1, monthEntry, yearEntry, "einmalig");
                     mySQLite.addIntake(intake);
                 }else{ //Ausgabe
                     value = value * (-1);
-                    Outgo outgo = new Outgo(titel, value, 1, monthEntry, yearEntry, "einmalig","Sonstiges");
+                    Outgo outgo = new Outgo(title, value, 1, monthEntry, yearEntry, "einmalig","Sonstiges");
                     mySQLite.addOutgo(outgo);
                 }
             }while (!((monthEntry == monthCurrent) && (yearEntry == yearCurrent)));

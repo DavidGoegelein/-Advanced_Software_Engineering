@@ -15,19 +15,19 @@
 
     //Style vom Kalender
     <style name="datePickerStyle" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorPrimary">@color/LeafGreen</item>
-        <item name="colorPrimaryDark">@color/LeafGreen</item>
-        <item name="colorAccent">@color/LeafGreen</item>
-        <item name="android:textColorPrimary">@color/LeafGreen</item>
+        <item name="colorPrimary">@color/colorLeafGreen</item>
+        <item name="colorPrimaryDark">@color/colorLeafGreen</item>
+        <item name="colorAccent">@color/colorLeafGreen</item>
+        <item name="android:textColorPrimary">@color/colorLeafGreen</item>
         <item name="android:buttonBarNegativeButtonStyle">@style/AppTheme.Alert.Button.Positive</item>
         <item name="android:buttonBarPositiveButtonStyle">@style/AppTheme.Alert.Button.Negative</item>
     </style>
 
     <style name="AppTheme.Alert.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/LeafGreen</item>
+        <item name="android:textColor">@color/colorLeafGreen</item>
     </style>
     <style name="AppTheme.Alert.Button.Negative" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/LeafGreen</item>
+        <item name="android:textColor">@color/colorLeafGreen</item>
     </style>
     //Ende Style kalender
 

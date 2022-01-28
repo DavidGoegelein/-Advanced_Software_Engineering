@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.haushaltsapp.DeleteCategoryPackage.deleteCategorieAdapter;
+import com.example.haushaltsapp.DeleteCategoryPackage.deleteCategoryAdapter;
 import com.example.haushaltsapp.Database.Category;
 import com.example.haushaltsapp.Database.MySQLite;
 import java.util.ArrayList;
@@ -29,16 +29,16 @@ public class DeleteCategoryActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ArrayList<Category> categoryList;
-    private deleteCategorieAdapter.deleteCategorieClickListener listener;
-    private deleteCategorieAdapter deleteAdapter;
+    private deleteCategoryAdapter.deleteCategoryClickListener listener;
+    private deleteCategoryAdapter deleteAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delete_categorie);
+        setContentView(R.layout.activity_delete_category);
         mySQLite = new MySQLite(this);
-        categoryList = mySQLite.getAllCategory();
+        categoryList = mySQLite.getAllCategories();
         recyclerView = findViewById(R.id.deleteCategorieRecyclerView);
         setAdapter();
     }
@@ -46,13 +46,13 @@ public class DeleteCategoryActivity extends AppCompatActivity {
     //Anzeige der Kategorien
     private void setAdapter() {
         setOnClickListener();
-        deleteCategorieAdapter adapter = new deleteCategorieAdapter(categoryList,listener);
+        deleteCategoryAdapter adapter = new deleteCategoryAdapter(categoryList,listener);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator( new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        deleteAdapter = new deleteCategorieAdapter(categoryList,listener);
+        deleteAdapter = new deleteCategoryAdapter(categoryList,listener);
         recyclerView.setAdapter(deleteAdapter);
 
     }
@@ -61,7 +61,7 @@ public class DeleteCategoryActivity extends AppCompatActivity {
     //Auswahl einer Kategorie um diese zu löschen
     private void setOnClickListener(){
 
-        listener = new deleteCategorieAdapter.deleteCategorieClickListener() {
+        listener = new deleteCategoryAdapter.deleteCategoryClickListener() {
             @Override
             public void onClick(View v, int position) {
 
@@ -95,10 +95,10 @@ public class DeleteCategoryActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
 
                                     //suchen nach allen Einträgen mit Categorie und änderen der Categorie zu Sonstiges
-                                    mySQLite.ChangeCategorietoSonstiges(category);
+                                    mySQLite.changeCategoryToSonstiges(category);
                                     //Löschen der Kategorie
                                     mySQLite.deleteCategoryByName(category);
-                                    deleteAdapter.deleteCategorie(position);
+                                    deleteAdapter.deleteCategory(position);
                                     Toast toast = Toast.makeText(getApplicationContext(), category +" wird gelöscht",Toast.LENGTH_SHORT);
                                     toast.show();
                                 }

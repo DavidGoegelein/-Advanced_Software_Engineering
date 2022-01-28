@@ -52,7 +52,7 @@ public class DiagramViewActivity extends AppCompatActivity {
         private int year;
 
         private TextView editTextDate; //Datumsanzeige
-        private String dates;
+        private String date;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +63,9 @@ public class DiagramViewActivity extends AppCompatActivity {
 
             //Aktuelles Datum anzeigen
             editTextDate = (TextView) findViewById(R.id.editTextDate);
-            java.util.Calendar calender = Calendar.getInstance();
-            SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
-            editTextDate.setText(datumsformat.format(calender.getTime()));
+            Calendar calender = Calendar.getInstance();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            editTextDate.setText(dateFormat.format(calender.getTime()));
 
             setData();
         }
@@ -73,10 +73,10 @@ public class DiagramViewActivity extends AppCompatActivity {
         private void setData() {
 
             //Datum von Textview auslesen
-            dates = editTextDate.getText().toString();
-            day = Integer.parseInt(dates.substring(0,2));
-            month = Integer.parseInt(dates.substring(3,5));
-            year = Integer.parseInt(dates.substring(6,10));
+            date = editTextDate.getText().toString();
+            day = Integer.parseInt(date.substring(0,2));
+            month = Integer.parseInt(date.substring(3,5));
+            year = Integer.parseInt(date.substring(6,10));
 
             pieChart = findViewById(R.id.piechart);
             barChart = findViewById(R.id.barchart);
@@ -159,7 +159,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             tvetc2 = findViewById(R.id.tvect2);
             tvetc3 = findViewById(R.id.tvetc3);
 
-            ArrayList<Category> categories = mySQLite.getAllCategory();
+            ArrayList<Category> categories = mySQLite.getAllCategories();
             //Textfelder und Farben setzen
             setTextandColor( categories);
 
@@ -197,7 +197,7 @@ public class DiagramViewActivity extends AppCompatActivity {
                     lverkehrsmittel.setVisibility(View.VISIBLE);
 
                     verkehrsmittelname.setText(catName);
-                    round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
+                    round = mySQLite.getCategoryOutgoesMonth(day,month,year,catName);
                     tvVerkehrsmittel.setText(Float.toString(roundf(round,2))+" €");
                     rVerkehrsmittel.setVisibility(View.VISIBLE);
                     line1.setVisibility(View.VISIBLE);
@@ -208,7 +208,7 @@ public class DiagramViewActivity extends AppCompatActivity {
                         lwohnen.setVisibility(View.VISIBLE);
 
                         wohnenname.setText(catName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
+                        round = mySQLite.getCategoryOutgoesMonth(day,month,year,catName);
                         tvWohnen.setText(Float.toString(roundf(round,2))+" €");
                         rWohnen.setVisibility(View.VISIBLE);
                         line2.setVisibility(View.VISIBLE);
@@ -219,7 +219,7 @@ public class DiagramViewActivity extends AppCompatActivity {
                         llebensmittel.setVisibility(View.VISIBLE);
 
                         lebensmittelname.setText(catName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
+                        round = mySQLite.getCategoryOutgoesMonth(day,month,year,catName);
                         tvLebensmittel.setText(Float.toString(roundf(round,2))+" €");
                         rLebensmittel.setVisibility(View.VISIBLE);
                         line3.setVisibility(View.VISIBLE);
@@ -230,7 +230,7 @@ public class DiagramViewActivity extends AppCompatActivity {
                         lgesundheit.setVisibility(View.VISIBLE);
 
                         gesundheitname.setText(catName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
+                        round = mySQLite.getCategoryOutgoesMonth(day,month,year,catName);
                         tvGesundheit.setText(Float.toString(roundf(round,2))+" €");
                         rGesundheit.setVisibility(View.VISIBLE);
                         line4.setVisibility(View.VISIBLE);
@@ -241,7 +241,7 @@ public class DiagramViewActivity extends AppCompatActivity {
                         lfreizeit.setVisibility(View.VISIBLE);
 
                         freizeitname.setText(catName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
+                        round = mySQLite.getCategoryOutgoesMonth(day,month,year,catName);
                         tvFreizeit.setText(Float.toString(roundf(round,2))+" €");
                         rFreizeit.setVisibility(View.VISIBLE);
                         line5.setVisibility(View.VISIBLE);
@@ -252,7 +252,7 @@ public class DiagramViewActivity extends AppCompatActivity {
                         lsonstiges.setVisibility(View.VISIBLE);
 
                         sonstigesname.setText(catName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
+                        round = mySQLite.getCategoryOutgoesMonth(day,month,year,catName);
                         tvSonstiges.setText(Float.toString(roundf(round,2))+" €");
                         rSonstiges.setVisibility(View.VISIBLE);
                         line6.setVisibility(View.VISIBLE);
@@ -263,7 +263,7 @@ public class DiagramViewActivity extends AppCompatActivity {
                         letc1.setVisibility(View.VISIBLE);
 
                         etc1name.setText(catName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
+                        round = mySQLite.getCategoryOutgoesMonth(day,month,year,catName);
                         tvetc1.setText(Float.toString(roundf(round,2))+" €");
                         retc1.setVisibility(View.VISIBLE);
                         line7.setVisibility(View.VISIBLE);
@@ -274,7 +274,7 @@ public class DiagramViewActivity extends AppCompatActivity {
                         letc2.setVisibility(View.VISIBLE);
 
                         etc2name.setText(catName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
+                        round = mySQLite.getCategoryOutgoesMonth(day,month,year,catName);
                         tvetc2.setText(Float.toString(roundf(round,2))+" €");
                         retc2.setVisibility(View.VISIBLE);
                         line8.setVisibility(View.VISIBLE);
@@ -285,7 +285,7 @@ public class DiagramViewActivity extends AppCompatActivity {
                         letc3.setVisibility(View.VISIBLE);
 
                         etc3name.setText(catName);
-                        round = mySQLite.getCategorieOutgosMonth(day,month,year,catName);
+                        round = mySQLite.getCategoryOutgoesMonth(day,month,year,catName);
                         tvetc3.setText(Float.toString(roundf(round,2))+" €");
                         retc3.setVisibility(View.VISIBLE);
                         line9.setVisibility(View.VISIBLE);
@@ -295,7 +295,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             }
         }
 
-        //Kreisdiagramm mit anzeige der vorhandenen Kategorien im Ausgewählten Monat
+        //Kreisdiagramm mit Anzeige der vorhandenen Kategorien im Ausgewählten Monat
         public void pieChartKat (ArrayList<Category> categories){
             int num = 0;
             int catNum = categories.size();
@@ -305,7 +305,7 @@ public class DiagramViewActivity extends AppCompatActivity {
 
             while (num< catNum) {
                 catName = categories.get(num).getName_PK();
-                costs = mySQLite.getCategorieOutgosMonth(day,month,year,catName );
+                costs = mySQLite.getCategoryOutgoesMonth(day,month,year,catName );
                 catColor = categories.get(num).getColor();
 
                 pieChart.addPieSlice(
@@ -331,7 +331,7 @@ public class DiagramViewActivity extends AppCompatActivity {
 
             while (num < catnum) {
                 catName = categories.get(num).getName_PK();
-                costs = mySQLite.getCategorieOutgosMonth(day,month,year,catName );
+                costs = mySQLite.getCategoryOutgoesMonth(day,month,year,catName );
                 catColor = categories.get(num).getColor();
 
                 barChart.addBar(new BarModel(
@@ -347,14 +347,14 @@ public class DiagramViewActivity extends AppCompatActivity {
             barChart.setActivated(false);
         }
 
-        //Button zum Aktualisieren des Monats
+        //Button zum aktualisieren des Monats
         public void changeMonth(View view) {
             setData();
         }
 
         //Kalender zur Auswahl des Monats, der angezeigt werden soll
         public  void openCalender(View dateview) {
-            java.util.Calendar calender = java.util.Calendar.getInstance();
+            Calendar calender = Calendar.getInstance();
             year = calender.get(Calendar.YEAR);
             month = calender.get(Calendar.MONTH);
             day = calender.get(Calendar.DAY_OF_MONTH);
@@ -399,16 +399,16 @@ public class DiagramViewActivity extends AppCompatActivity {
             dateDialog.show();
         }
 
-        //Link zur Jahresansicht
+        //Intent zur Jahresansicht
         public void changeToAnnual(View view) {
             Intent switchToAnnualView = new Intent(this, AnnualViewActivity.class);
             startActivity(switchToAnnualView);
         }
 
-        //Link zum Monatsvergleich
-        public void changeToMonthcomparison(View view) {
-            Intent switchMonthcomparisonView= new Intent(this, MonthcomparisonViewActivity.class);
-            startActivity(switchMonthcomparisonView);
+        //Intent zum Monatsvergleich
+        public void changeToMonthComparison(View view) {
+            Intent switchMonthComparisonView = new Intent(this, MonthComparisonViewActivity.class);
+            startActivity(switchMonthComparisonView);
         }
 
 

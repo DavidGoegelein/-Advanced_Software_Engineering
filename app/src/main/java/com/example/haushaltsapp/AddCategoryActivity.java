@@ -26,7 +26,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     private MySQLite mySQLite;
     private View mColorPreview; //Feld, welches gewählte Farbe anzeigt
 
-    private int mDefaultColor = R.color.defaultCategory; //gewählte Farbe
+    private int mDefaultColor = R.color.colorDefaultCategory; //gewählte Farbe
     private String name = " "; // Name der Kategorie
     private double border = 0.0; //Limit der Kategorie
 
@@ -48,7 +48,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         mColorPreview = findViewById(R.id.preview_selected_color); //Kasten der später die Farbe anzeigt
 
         //default-Werte setzen
-        mDefaultColor = R.color.defaultCategory;
+        mDefaultColor = R.color.colorDefaultCategory;
         mColorPreview.setBackgroundColor(mDefaultColor);
         errorValue = 0;
     }
@@ -79,7 +79,7 @@ public class AddCategoryActivity extends AppCompatActivity {
 
     //Kategorie soll angelegt werden
     public void onClickOk(View view){
-        ArrayList<Category> categories = mySQLite.getAllCategory();
+        ArrayList<Category> categories = mySQLite.getAllCategories();
         if(categories.size() < MAX_LIMIT){ //können Kategorien noch angelegt werden?
             boolean valide = getValues(); //Achtung, wenn valide = false ist errorValue != 0
             if(valide){ //sind die Eingaben sinnvoll?
@@ -117,7 +117,7 @@ public class AddCategoryActivity extends AppCompatActivity {
             errorValue = 1;
             retValue = false;
         }else { //gibt es diesen Titel bereits?
-            ArrayList<Category> categories = mySQLite.getAllCategory();
+            ArrayList<Category> categories = mySQLite.getAllCategories();
             for( int i = 0; i < categories.size(); i++){
                 if(categories.get(i).getName_PK().equals(name)){
                     retValue = false;

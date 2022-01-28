@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
     // Setzt die Variablen day, month, year
     private void getDate() {
         Calendar calender = Calendar.getInstance();
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
-        String dates = datumsformat.format(calender.getTime());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String dates = dateFormat.format(calender.getTime());
         day = Integer.parseInt(dates.substring(0, 2));
         month = Integer.parseInt(dates.substring(3, 5));
         year = Integer.parseInt(dates.substring(6, 10));
@@ -85,19 +85,19 @@ public class MainActivity extends AppCompatActivity {
 
     //Kategorien anlegen
     private void setCategories(){
-        ArrayList<Category> categories = mySQLite.getAllCategory();
+        ArrayList<Category> categories = mySQLite.getAllCategories();
         if(categories.size() == 0){ //falls es noch keine Kategorien gibt, diese hier anlegen
-            Category category = new Category("Verkehrsmittel", getResources().getColor(R.color.Verkehrsmittel), 0.0);
+            Category category = new Category("Verkehrsmittel", getResources().getColor(R.color.colorVerkehrsmittel), 0.0);
             mySQLite.addCategory(category);
-            category = new Category("Wohnen",  getResources().getColor(R.color.Wohnen), 0.0);
+            category = new Category("Wohnen",  getResources().getColor(R.color.colorWohnen), 0.0);
             mySQLite.addCategory(category);
-            category = new Category("Lebensmittel", getResources().getColor(R.color.Lebensmittel), 0.0);
+            category = new Category("Lebensmittel", getResources().getColor(R.color.colorLebensmittel), 0.0);
             mySQLite.addCategory(category);
-            category = new Category("Gesundheit",getResources().getColor(R.color.Gesundheit), 0.0);
+            category = new Category("Gesundheit",getResources().getColor(R.color.colorGesundheit), 0.0);
             mySQLite.addCategory(category);
-            category = new Category("Freizeit", getResources().getColor(R.color.Freizeit), 0.0);
+            category = new Category("Freizeit", getResources().getColor(R.color.colorFreizeit), 0.0);
             mySQLite.addCategory(category);
-            category = new Category("Sonstiges", getResources().getColor(R.color.Sonstiges), 0.0);
+            category = new Category("Sonstiges", getResources().getColor(R.color.colorSonstiges), 0.0);
             mySQLite.addCategory(category);
         }
     }
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         //Testen, ob es einen solchen Eintrag gibt. Später
         //mit Methode in der DB ersetzen -> Laufzeit
         ArrayList<Intake> intakes = mySQLite.getMonthIntakes(day, month, year);
-        ArrayList<Outgo> outgoes = mySQLite.getMonthOutgos(day, month, year);
+        ArrayList<Outgo> outgoes = mySQLite.getMonthOutgoes(day, month, year);
 
         boolean existsIntake = false;
         boolean existsOutgo = false;
@@ -140,9 +140,9 @@ public class MainActivity extends AppCompatActivity {
         if (!(existsIntake || existsOutgo)) {
             double value = 0.0;
             if (month > 1) {
-                value = mySQLite.getValueIntakesMonth(31, month - 1, year) - mySQLite.getValueOutgosMonth(31, month - 1, year);
+                value = mySQLite.getValueIntakesMonth(31, month - 1, year) - mySQLite.getValueOutgoesMonth(31, month - 1, year);
             } else {
-                value = mySQLite.getValueIntakesMonth(31, 12, year - 1) - mySQLite.getValueOutgosMonth(31, 12, year - 1);
+                value = mySQLite.getValueIntakesMonth(31, 12, year - 1) - mySQLite.getValueOutgoesMonth(31, 12, year - 1);
             }
             if (value >= 0) { //Einnahme
                 Intake intake = new Intake(titel, value, 1, month, year, "einmalig");
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //runden auf zwei Nachkommazahlen
-    public float roundf(float number, int positions) {
+    public float roundF(float number, int positions) {
         return (float) ((int)number + (Math.round(Math.pow(10,positions)*(number-(int)number)))/(Math.pow(10,positions)));
     }
 
@@ -171,9 +171,9 @@ public class MainActivity extends AppCompatActivity {
         pieChart = findViewById(R.id.piechart);
         mBarChart = findViewById(R.id.barchart);
         //Daten von Monat aus Datenbank:
-        float outgo = roundf(mySQLite.getValueOutgosMonth(day,month,year),2);
-        float intake = roundf( mySQLite.getValueIntakesMonth(day,month,year),2);
-        float residualBudget = roundf(intake-outgo,2);
+        float outgo = roundF(mySQLite.getValueOutgoesMonth(day,month,year),2);
+        float intake = roundF( mySQLite.getValueIntakesMonth(day,month,year),2);
+        float residualBudget = roundF(intake-outgo,2);
 
         //Setzen der Werte in Textview
         tvIntake.setText(Float.toString(intake) + " €");

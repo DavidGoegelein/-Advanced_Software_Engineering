@@ -51,11 +51,11 @@ public class AddEntryActivity extends AppCompatActivity {
     //Werte der Einnahme oder Ausgabe
     private String name;
     private double value;
-    private String dates;
+    private String date;
     private int day;
     private int month;
     private int year;
-    private String cyclus;
+    private String cycle;
     private String category;
 
     //Aktuelles Datum. Notwendig um Budget-Eintrag anzupassen
@@ -153,7 +153,7 @@ public class AddEntryActivity extends AppCompatActivity {
         //Spinner Kategorie - nur anzeigen, wenn es eine Ausgabe ist
         spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
         if(selected.equals("Ausgabe")){
-            ArrayList<Category> list = mySQLite.getAllCategory();
+            ArrayList<Category> list = mySQLite.getAllCategories();
             ArrayAdapter<Category> adapter3 = new ArrayAdapter<Category>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, list);
             adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerCategory.setAdapter(adapter3);
@@ -169,14 +169,14 @@ public class AddEntryActivity extends AppCompatActivity {
      */
 
     public void onClickOk(View view){
-        boolean valide = getValues();
-        if(valide){ //Titel und Wert wurde gesetzt
+        boolean valid = getValues();
+        if(valid){ //Titel und Wert wurde gesetzt
 
             if(selected.equals("Einnahme")){ //Einnahme
-                Intake intake = new Intake(name, value, day, month, year, cyclus);
+                Intake intake = new Intake(name, value, day, month, year, cycle);
                 mySQLite.addIntake(intake);
             }else{ //Ausgabe
-                Outgo outgo = new Outgo(name, value, day, month, year, cyclus, category);
+                Outgo outgo = new Outgo(name, value, day, month, year, cycle, category);
                 mySQLite.addOutgo(outgo);
                 //Prüfen, ob ein gesetztes Limit für Kategorie oder Gesamt überschritten wird
                       checkCatLimitReached(category);
@@ -214,10 +214,10 @@ public class AddEntryActivity extends AppCompatActivity {
         boolean retValue = true;
 
         //Datum:
-        dates = editTextDate.getText().toString();
-        day = Integer.parseInt(dates.substring(0,2));
-        month = Integer.parseInt(dates.substring(3,5));
-        year = Integer.parseInt(dates.substring(6,10));
+        date = editTextDate.getText().toString();
+        day = Integer.parseInt(date.substring(0,2));
+        month = Integer.parseInt(date.substring(3,5));
+        year = Integer.parseInt(date.substring(6,10));
 
         if((month > monthCurrent && year >= yearCurrent) || (year > yearCurrent) ||(day > dayCurrent && month == monthCurrent && year == yearCurrent)){ //Eintrag liegt in der Zukunft
             errorValue = 1;
@@ -249,7 +249,7 @@ public class AddEntryActivity extends AppCompatActivity {
 
 
         //Zyklus
-        cyclus = spinnerCycle.getSelectedItem().toString();
+        cycle = spinnerCycle.getSelectedItem().toString();
 
         //Kategorie
         if(selected.equals("Ausgabe")){
@@ -289,9 +289,9 @@ public class AddEntryActivity extends AppCompatActivity {
 
     // Setzt die Variablen monthCurrent und yearCurrent mit dem aktuellen datum
     private void getDate(){
-        java.util.Calendar calender = java.util.Calendar.getInstance();
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
-        String dates = datumsformat.format(calender.getTime());
+        Calendar calender = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String dates = dateFormat.format(calender.getTime());
         dayCurrent = Integer.parseInt(dates.substring(0, 2));
         monthCurrent= Integer.parseInt(dates.substring(3,5));
         yearCurrent = Integer.parseInt(dates.substring(6,10));
@@ -324,8 +324,8 @@ public class AddEntryActivity extends AppCompatActivity {
                 }
 
                 //id des Eintrags ermitteln
-                int idIntake = mySQLite.getIntakeIdbyName(titel);
-                int idOutgo = mySQLite.getOutgoIdbyName(titel);
+                int idIntake = mySQLite.getIntakeIdByName(titel);
+                int idOutgo = mySQLite.getOutgoIdByName(titel);
                 if(idIntake > -1){
                     mySQLite.deleteIntakeById(idIntake); //Eintrag löschen
                 }else if(idOutgo > -1){
@@ -335,9 +335,9 @@ public class AddEntryActivity extends AppCompatActivity {
                 //Neuer Eintrag erstellen
                 double value = 0.0;
                 if (monthEntry > 1) {
-                    value = mySQLite.getValueIntakesMonth(31, monthEntry - 1, yearEntry) - mySQLite.getValueOutgosMonth(31, monthEntry - 1, yearEntry);
+                    value = mySQLite.getValueIntakesMonth(31, monthEntry - 1, yearEntry) - mySQLite.getValueOutgoesMonth(31, monthEntry - 1, yearEntry);
                 } else { //1
-                    value = mySQLite.getValueIntakesMonth(31, 12, yearEntry - 1) - mySQLite.getValueOutgosMonth(31, 12, yearEntry - 1);
+                    value = mySQLite.getValueIntakesMonth(31, 12, yearEntry - 1) - mySQLite.getValueOutgoesMonth(31, 12, yearEntry - 1);
                 }
                 if(value >= 0) { //Einnahme
                     Intake intake = new Intake(titel, value, 1, monthEntry, yearEntry, "einmalig");
@@ -457,7 +457,7 @@ public class AddEntryActivity extends AppCompatActivity {
         Boolean isPercentLimitReached;
         Boolean isPercentageButtonChecked = mySQLite.getStateLimitState("Gesamtlimit").equals("true");
         if(isPercentageButtonChecked){
-            percentOfBudget =  (int) mySQLite.getSateLimitValue("Gesamtlimit");
+            percentOfBudget =  (int) mySQLite.getStateLimitValue("Gesamtlimit");
             isPercentLimitReached =mySQLite.isPercentBudgetLimitReached(monthCurrent,yearCurrent, percentOfBudget);
             if(isPercentLimitReached && percentOfBudget>=0 ){
                 addPercentageNotification();

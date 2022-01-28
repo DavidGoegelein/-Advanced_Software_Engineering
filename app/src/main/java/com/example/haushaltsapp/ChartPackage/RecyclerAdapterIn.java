@@ -23,14 +23,14 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
         public TextView inName;
         private TextView inValue;
         private TextView inDate;
-        private TextView categorie;
+        private TextView category;
 
         public MyViewHolderIn(final View view) {
             super(view);
             inName = view.findViewById(R.id.Chartname);
             inValue = view.findViewById(R.id.ChartValue);
             inDate = view.findViewById(R.id.ChartDate);
-            categorie = view.findViewById(R.id.ChartCategorie);
+            category = view.findViewById(R.id.ChartCategorie);
 
             view.setOnClickListener(this);
         }
@@ -49,8 +49,8 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
     }
 
     //runden auf zwei Nachkommazahlen
-    public double round(double zahl, int stellen) {
-        return (double) ((int)zahl + (Math.round(Math.pow(10,stellen)*(zahl-(int)zahl)))/(Math.pow(10,stellen)));
+    public double round(double number, int digits) {
+        return (double) ((int) number + (Math.round(Math.pow(10, digits)*(number -(int) number)))/(Math.pow(10, digits)));
     }
 
     @Override
@@ -60,8 +60,8 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
         String name = intakeList.get(position).getName();
         holder.inName.setText(name);
 
-        double valuedouble = intakeList.get(position).getValue();
-        String value = Double.toString(round(valuedouble,2));
+        double valueDouble = intakeList.get(position).getValue();
+        String value = Double.toString(round(valueDouble,2));
         holder.inValue.setText(value+" €");
 
         String day = Integer.toString(intakeList.get(position).getDay());
@@ -71,8 +71,8 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
         holder.inDate.setText(date);
 
         //bei Einnahme keine Kategorie vorhanden
-        String categorieString = "Einnahmen";//IntakeList.get(position).getCategory();
-        holder.categorie.setText(categorieString);
+        String categoryString = "Einnahmen";//IntakeList.get(position).getCategory();
+        holder.category.setText(categoryString);
     }
 
     @Override

@@ -37,6 +37,8 @@
         <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/mipmap-anydpi-v26/ic_symbol.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/mipmap-anydpi-v26/ic_symbol_Haushaltsplaner.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/mipmap-anydpi-v26/ic_symbol_app.xml" value="0.3828125" />
+        <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/mipmap-anydpi-v26/ic_symbol_app_round.xml" value="0.3828125" />
         <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/mipmap-anydpi-v26/ic_symbol_round.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/User/Desktop/Haushaltsapp/-Advanced_Software_Engineering/app/src/main/res/xml/provider_paths.xml" value="0.29438405797101447" />
         <entry key="..\:/Users/misse/AppData/Local/platforms/android-31/data/res/layout/simple_spinner_dropdown_item.xml" value="0.1" />
@@ -113,6 +115,25 @@
         <entry key="..\:/Users/misse/Desktop/checkout/24.12_Leonie_V2/app/src/main/res/layout/activity_edit_entry.xml" value="0.2115036231884058" />
         <entry key="..\:/Users/misse/Desktop/checkout/24.12_Leonie_V2/app/src/main/res/layout/activity_show_entries.xml" value="0.2115036231884058" />
         <entry key="..\:/Users/misse/Desktop/checkout/24.12_Leonie_V2/app/src/main/res/layout/charttest.xml" value="0.1" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_adapter_list_view.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_add_category.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_add_entry.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_annual_view.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_budget_limit.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_calendar_event.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_chart_view.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_delete_categorie.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_diagram_view.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_edit_entry.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_main.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_monthcomparison_view.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_pdfcreator.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/activity_to_do_list.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/category_limit.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/chart_item.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/delete_category.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/new_task.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/misse/Desktop/checkout/27.01_David/app/src/main/res/layout/task_layout.xml" value="0.12360688956433637" />
         <entry key="..\:/Users/misse/Desktop/checkout/27.12_Leonie/app/src/main/res/layout/activity_add_category.xml" value="0.1743659420289855" />
         <entry key="..\:/Users/misse/Desktop/checkout/27.12_Leonie/app/src/main/res/layout/activity_add_entry.xml" value="0.146875" />
         <entry key="..\:/Users/misse/Desktop/checkout/27.12_Leonie/app/src/main/res/layout/activity_annual_view.xml" value="0.1037037037037037" />

@@ -48,7 +48,7 @@ import java.util.Objects;
 
 public class PDFCreatorActivity extends AppCompatActivity {
 
-    ////Variabeln zur Menünavigation
+    ///////////////////////////////
     private MySQLite mySQLite;
     ///////////////////////////////
 
@@ -72,7 +72,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
     private int numberOfPages;
     private long compareTime;
     private long intakeTime;
-    private long outgoeTime;
+    private long outgoTime;
 
     private Calendar intakeCalendar = Calendar.getInstance();
     private Calendar outgoCalendar = Calendar.getInstance();
@@ -89,10 +89,10 @@ public class PDFCreatorActivity extends AppCompatActivity {
 
         //aktuelles Datum auslesen und an Textview übergeben
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateForm = new SimpleDateFormat("dd.MM.yyyy");
-        dateSelect.setText(dateForm.format(calendar.getTime()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        dateSelect.setText(dateFormat.format(calendar.getTime()));
 
-        //Daten zur Übergaben an DatepickerDialog,übergeben. Ansonsten Start im Jahr 1970
+        //Daten zur Übergabe an DatepickerDialog. Ansonsten Start im Jahr 1970
         calendarYear  = calendar.get(Calendar.YEAR);
         calendarMonth = calendar.get(Calendar.MONTH);
         calendarDay   = calendar.get(Calendar.DAY_OF_MONTH);
@@ -189,7 +189,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Zyklus").setWidth(65).setFontSize(14).setBorder(Border.NO_BORDER)));
         tableOutgoes.addHeaderCell(new Cell().add(new Paragraph("Kategorie").setWidth(90).setFontSize(14).setBorder(Border.NO_BORDER)));
 
-        //Ausgaben aus Datenbank lesen
+        //Ausgaben aus Datenbank holen
         Cursor curOutgo = mySQLite.getWritableDatabase().rawQuery("SELECT * FROM outgo ORDER BY year,month,day", null);
         int countOutgo = curOutgo.getCount();
         curOutgo.moveToFirst();
@@ -204,12 +204,12 @@ public class PDFCreatorActivity extends AppCompatActivity {
             category =  curOutgo.getString(7);
 
             outgoCalendar.set(year,month,day,0,0,0);
-            outgoeTime = outgoCalendar.getTimeInMillis() + 999;
+            outgoTime = outgoCalendar.getTimeInMillis() + 999;
 
             dateString = day+"."+month+"."+year;
 
             //Vergleich mit ausgewähltem Startdatum
-            if(outgoeTime>=compareTime){
+            if(outgoTime >=compareTime){
 
                 tableOutgoes.addCell(new Cell().add(new Paragraph(name + "").setWidth(170).setFontSize(12)));
                 tableOutgoes.addCell(new Cell().add(new Paragraph(value + "").setWidth(60).setFontSize(12)));
@@ -231,7 +231,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Zyklus").setWidth(65).setFontSize(14).setBorder(Border.NO_BORDER)));
         tableIntakes.addHeaderCell(new Cell().add(new Paragraph("Kategorie").setWidth(90).setFontSize(14).setBorder(Border.NO_BORDER)));
 
-        //Einnahmen aus Datenbank lesen
+        //Einnahmen aus Datenbank holen
         Cursor curIntake = mySQLite.getWritableDatabase().rawQuery("SELECT * FROM intake ORDER BY year,month,day", null);
         int countIntake = curIntake.getCount();
         curIntake.moveToFirst();
@@ -250,7 +250,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
 
             dateString = day+"."+month+"."+year;
 
-            //Vergleich mit ausgewähltem Startdatum aus
+            //Vergleich mit ausgewähltem Startdatum
             if(intakeTime>=compareTime){
 
                 tableIntakes.addCell(new Cell().add(new Paragraph(name + "").setWidth(170).setFontSize(12)));

@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class MonthcomparisonViewActivity extends AppCompatActivity {
+public class MonthComparisonViewActivity extends AppCompatActivity {
     ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
     ///////////////////////////////
@@ -87,8 +87,9 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         tvM1in =findViewById(R.id.tvin_Month1);
         tvM2in =findViewById(R.id.tvin_Month2);
 
+        //Diagramme zurücksetzen und aufrufen
         barChartInOutComparison.clearChart();
-        barGraphComparision(month1,year1,month2,year2);
+        barGraphComparison(month1,year1,month2,year2);
         setTextInOut(month1,year1,month2,year2);
     }
 
@@ -107,7 +108,7 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         config.locale = locale;
         res.updateConfiguration(config, res.getDisplayMetrics());
 
-        DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this,R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dateDialog = new DatePickerDialog(MonthComparisonViewActivity.this,R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
@@ -141,7 +142,7 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     }
 
     //Kalender für auswahl des zweiten Monats der Anzeige
-    public  void openCalenderM2(View dateview) {
+    public  void openCalenderM2(View dateView) {
         Calendar calender = Calendar.getInstance();
         year2 = calender.get(Calendar.YEAR);
         month2 = calender.get(Calendar.MONTH);
@@ -155,7 +156,7 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
         config.locale = locale;
         res.updateConfiguration(config, res.getDisplayMetrics());
 
-        DatePickerDialog dateDialog = new DatePickerDialog(MonthcomparisonViewActivity.this,R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dateDialog = new DatePickerDialog(MonthComparisonViewActivity.this,R.style.datePickerStyle, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
@@ -189,34 +190,34 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     }
 
     //Runden auf zwei Nachkommazahlen
-    public float roundf(float number, int position) {
+    public float roundF(float number, int position) {
         return (float) ((int)number + (Math.round(Math.pow(10,position)*(number-(int)number)))/(Math.pow(10,position)));
     }
 
     //Balkendiagramm, mit Anzeige von zwei ausgewählten Monaten mit Ausgaben und Einnahmen
-    public void barGraphComparision(int month1, int year1, int month2, int year2) {
+    public void barGraphComparison(int month1, int year1, int month2, int year2) {
         String monthText1 = monthToString(month1);
         String monthText2 = monthToString(month2);
 
         //Monat 1
-        float intakeMonth1 = roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
+        float intakeMonth1 = roundF(mySQLite.getValueIntakesMonth(31,month1,year1),2);
         barChartInOutComparison.addBar(new BarModel(
                 "           "+ monthText1 + " "+ year1,
                 intakeMonth1,
                 Color.parseColor("#90BE6D")));
-        float outgoMonth1 = roundf(mySQLite.getValueOutgosMonth(31,month1,year1),2);
+        float outgoMonth1 = roundF(mySQLite.getValueOutgoesMonth(31,month1,year1),2);
         barChartInOutComparison.addBar(new BarModel(
                 "",//"Aus. "+monthText1,
                 outgoMonth1,
                 Color.parseColor("#F94144")));
 
         //Monat 2
-        float intakeMonth2 = roundf(mySQLite.getValueIntakesMonth(31,month2,year2),2);
+        float intakeMonth2 = roundF(mySQLite.getValueIntakesMonth(31,month2,year2),2);
         barChartInOutComparison.addBar(new BarModel(
                 "           "+ monthText2 + " "+ year2,
                 intakeMonth2,
                 Color.parseColor("#90BE6D")));
-        float outgoMonth2 = roundf(mySQLite.getValueOutgosMonth(31,month2,year2),2);
+        float outgoMonth2 = roundF(mySQLite.getValueOutgoesMonth(31,month2,year2),2);
          barChartInOutComparison.addBar(new BarModel(
                 "",//"Aus. "+monthText2,
                 outgoMonth2,
@@ -272,17 +273,17 @@ public class MonthcomparisonViewActivity extends AppCompatActivity {
     public void setTextInOut(int month1, int year1, int month2, int year2) {
         String monthText1 = monthToString(month1);
         String monthText2 = monthToString(month2);
-        float round = roundf(mySQLite.getValueOutgosMonth(31,month1,year1),2);
+        float round = roundF(mySQLite.getValueOutgoesMonth(31,month1,year1),2);
         tvM1out.setText(Float.toString(round)+" €");
         tvM1o.setText(monthText1 +"."+year1);
-        round = roundf(mySQLite.getValueIntakesMonth(31,month1,year1),2);
+        round = roundF(mySQLite.getValueIntakesMonth(31,month1,year1),2);
         tvM1in.setText(Float.toString(round)+" €");
         tvM1i.setText(monthText1 +"."+year1);
 
-        round = roundf(mySQLite.getValueOutgosMonth(31,month2,year2),2);
+        round = roundF(mySQLite.getValueOutgoesMonth(31,month2,year2),2);
         tvM2out.setText(Float.toString(round)+" €");
         tvM2o.setText(monthText2 +"."+year2);
-        round = roundf(mySQLite.getValueIntakesMonth(31,month2,year2),2);
+        round = roundF(mySQLite.getValueIntakesMonth(31,month2,year2),2);
         tvM2in.setText(Float.toString(round)+" €");
         tvM2i.setText(monthText2 +"."+year2);
     }

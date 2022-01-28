@@ -39,7 +39,6 @@ public abstract class EntryFinance implements Serializable {
         this.name = name;
     }
 
-
     public double getValue() {
         return value;
     }

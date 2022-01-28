@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Hintergrunddunkel"
+    android:background="@color/colorBackgroundGray"
     tools:context=".MainActivity">
 
 
@@ -24,7 +24,7 @@
             android:layout_marginBottom="10dp"
             android:elevation="10dp"
             app:cardCornerRadius="10dp"
-            app:cardBackgroundColor="@color/Hintergrund">
+            app:cardBackgroundColor="@color/colorBackgroundWhite">
 
 
             <LinearLayout
@@ -43,7 +43,7 @@
                     android:text="Übersicht"
                     android:textSize="35sp"
                     android:textStyle="bold"
-                    android:textColor="@color/Textcolorbright1"/>
+                    android:textColor="@color/colorTextGray"/>
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -94,7 +94,7 @@
                         <View
                             android:layout_width="25dp"
                             android:layout_height="match_parent"
-                            android:background="@color/Einnahmen" />
+                            android:background="@color/colorEinnahmen" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                             android:paddingLeft="10dp"
                             android:text="@string/Kat_Einnahmen"
                             android:textSize="18sp"
-                            android:textColor="@color/Textcolorbright1"/>
+                            android:textColor="@color/colorTextGray"/>
 
                     </LinearLayout>
 
@@ -115,7 +115,7 @@
                         <View
                             android:layout_width="25dp"
                             android:layout_height="match_parent"
-                            android:background="@color/Ausgaben" />
+                            android:background="@color/colorAusgaben" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -123,7 +123,7 @@
                             android:paddingLeft="10dp"
                             android:text="@string/Kat_Ausgaben"
                             android:textSize="18sp"
-                            android:textColor="@color/Textcolorbright1"/>
+                            android:textColor="@color/colorTextGray"/>
 
                     </LinearLayout>
 
@@ -136,7 +136,7 @@
                         <View
                             android:layout_width="25dp"
                             android:layout_height="match_parent"
-                            android:background="@color/Restbudget" />
+                            android:background="@color/colorRestBudget" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -144,7 +144,7 @@
                             android:paddingLeft="10dp"
                             android:text="@string/Kat_Restbudget"
                             android:textSize="18sp"
-                            android:textColor="@color/Textcolorbright1"/>
+                            android:textColor="@color/colorTextGray"/>
 
                     </LinearLayout>
 
@@ -164,7 +164,7 @@
                         android:text="Ausgaben und Einnahmen"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:textColor="@color/colorTextGray"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -172,7 +172,7 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -188,7 +188,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="@string/Kat_Einnahmen"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright1"/>
+                            android:textColor="@color/colorTextGray"/>
 
                         <TextView
                             android:id="@+id/tvEinnahmen"
@@ -198,7 +198,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Einnahmen"
+                            android:textColor="@color/colorEinnahmen"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
@@ -208,7 +208,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -224,7 +224,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="@string/Kat_Ausgaben"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright1"/>
+                            android:textColor="@color/colorTextGray"/>
 
                         <TextView
                             android:id="@+id/tvAusgaben"
@@ -234,7 +234,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Ausgaben"
+                            android:textColor="@color/colorAusgaben"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -245,7 +245,7 @@
                         android:layout_height="1dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/color_two" />
+                        android:background="@color/colorEggshell" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -261,7 +261,7 @@
                             android:fontFamily="sans-serif-light"
                             android:text="@string/Kat_Restbudget"
                             android:textSize="20sp"
-                            android:textColor="@color/Textcolorbright1"/>
+                            android:textColor="@color/colorTextGray"/>
 
                         <TextView
                             android:id="@+id/tvRestbudget"
@@ -271,15 +271,12 @@
                             android:fontFamily="sans-serif-light"
                             android:text="0"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/Restbudget"
+                            android:textColor="@color/colorRestBudget"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
-
                 </LinearLayout>
-
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </ScrollView>

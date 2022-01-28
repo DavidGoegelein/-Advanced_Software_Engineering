@@ -49,8 +49,8 @@ public class RecyclerAdapterOut extends RecyclerView.Adapter<RecyclerAdapterOut.
     }
 
     //runden auf zwei Nachkommazahlen
-    public double round(double number, int positions) {
-        return (double) ((int)number + (Math.round(Math.pow(10,positions)*(number-(int)number)))/(Math.pow(10,positions)));
+    public double round(double number, int digits) {
+        return (double) ((int)number + (Math.round(Math.pow(10, digits)*(number-(int)number)))/(Math.pow(10, digits)));
     }
 
     @Override

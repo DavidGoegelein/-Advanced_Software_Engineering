@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Hintergrunddunkel"
+    android:background="@color/colorBackgroundGray"
     tools:context=".PDFCreatorActivity">
 
     <ScrollView
@@ -21,7 +21,7 @@
             android:layout_marginBottom="10dp"
             android:elevation="10dp"
             app:cardCornerRadius="10dp"
-            app:cardBackgroundColor="@color/Hintergrund">
+            app:cardBackgroundColor="@color/colorBackgroundWhite">
 
 
             <LinearLayout
@@ -39,7 +39,7 @@
                     android:textSize="35sp"
                     android:gravity="center"
                     android:textStyle="bold"
-                    android:textColor="@color/Textcolorbright1"/>
+                    android:textColor="@color/colorTextGray"/>
 
 
                     <TextView
@@ -49,7 +49,7 @@
                         android:textSize="20sp"
                         android:layout_marginStart="20dp"
                         android:layout_marginBottom="20dp"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:textColor="@color/colorTextGray"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                         android:textSize="26sp"
                         android:text="Selected Date"
                         android:layout_marginStart="20dp"
-                        android:textColor="@color/Textcolorbright1"/>
+                        android:textColor="@color/colorTextGray"/>
 
                     <ImageView
                         android:id="@+id/calenderView"
@@ -78,10 +78,10 @@
                         android:id="@+id/createPdfButton"
                         android:layout_width="155dp"
                         android:layout_height="70dp"
-                        android:backgroundTint="@color/Button"
+                        android:backgroundTint="@color/colorButton"
                         android:text="PDF generieren"
                         android:layout_marginTop="100dp"
-                        android:textColor="@color/Textcolorbright1"
+                        android:textColor="@color/colorTextGray"
                         android:layout_gravity="center"/>
 
                     <Button
@@ -91,8 +91,8 @@
                         android:text="PDF anzeigen"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="120dp"
-                        android:backgroundTint="@color/Button"
-                        android:textColor="@color/Textcolorbright1"
+                        android:backgroundTint="@color/colorButton"
+                        android:textColor="@color/colorTextGray"
                         android:layout_gravity="center"/>
                 </LinearLayout>
         </androidx.cardview.widget.CardView>
