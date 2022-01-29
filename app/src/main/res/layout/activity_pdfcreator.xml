@@ -81,7 +81,7 @@
                         android:layout_height="70dp"
                         android:backgroundTint="@color/colorButton"
                         android:text="PDF generieren"
-                        android:layout_marginTop="200dp"
+                        android:layout_marginTop="100dp"
                         android:textColor="@color/colorTextGray"
                         android:layout_gravity="center"/>
 

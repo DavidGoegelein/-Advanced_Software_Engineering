@@ -225,7 +225,7 @@
                     tools:layout_editor_absoluteX="16dp">
 
                     <Button
-                        android:id="@+id/buttonChangeEntry"
+                        android:id="@+id/buttonOk"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="25dp"
@@ -235,7 +235,7 @@
                         android:textColor="@color/colorTextGray" />
 
                     <Button
-                        android:id="@+id/buttonDeleteEntry"
+                        android:id="@+id/buttonCancel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="50dp"
