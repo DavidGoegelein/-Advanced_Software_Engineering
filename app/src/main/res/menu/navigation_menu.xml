@@ -36,7 +36,7 @@
         android:title="Kalender"/>
 
     <item android:id="@+id/itemToDoListe"
-        android:title="To-Do Liste"/>
+        android:title="To-do-Liste"/>
 
     <item android:id="@+id/itemPdfCreator"
         android:title="Generiere PDF"/>
