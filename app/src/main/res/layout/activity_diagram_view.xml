@@ -11,7 +11,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewGraph"
@@ -45,7 +46,7 @@
 
 
                 <LinearLayout
-                    android:id="@+id/linearLayout2"
+                    android:id="@+id/linearLayoutMonthSelect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -54,14 +55,14 @@
 
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/textViewCurrency"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:text="Monat:"
                         android:textSize="18dp"
                         android:textStyle="bold"
-                        app:layout_constraintTop_toBottomOf="@+id/textView3"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewValue"
                         tools:layout_editor_absoluteX="55dp"
                         android:textColor="@color/colorTextLightGray"/>
 

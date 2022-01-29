@@ -9,7 +9,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewGraph"
@@ -40,25 +41,28 @@
                     android:textStyle="bold"
                     android:textColor="@color/colorTextGray"/>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        tools:layout_editor_absoluteX="34dp"
-                        tools:layout_editor_absoluteY="0dp">
+                    <TextView
+                        android:id="@+id/selectView"
+                        android:layout_width="180dp"
+                        android:layout_height="50dp"
+                        android:textSize="20dp"
+                        android:text="Selektiertes Datum:"
+                        android:layout_marginStart="20dp"
+                        android:textColor="@color/colorTextGray"/>
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="25dp"
-                            android:layout_marginBottom="10dp"
-                            android:text="Selektiertes Datum:"
-                            android:textColor="@color/colorTextGray"
-                            android:textSize="20sp" />
+                    <ImageView
+                        android:id="@+id/calenderView"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="50dp"
+                        app:srcCompat="@drawable/ic_baseline_event" />
+
+                </LinearLayout>
 
                         <TextView
                             android:id="@+id/calendarDate"
@@ -120,7 +124,7 @@
                             android:textColor="@color/colorTextGray" />
 
                         <Button
-                            android:id="@+id/createEvent2"
+                            android:id="@+id/showEvent"
                             android:layout_width="180dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center"
@@ -130,21 +134,9 @@
                             android:onClick="viewEvent"
                             android:text="Kalender anzeigen"
                             android:textColor="@color/colorTextGray" />
-                    </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/calenderView"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintHorizontal_bias="0.80"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.10"
-                        app:srcCompat="@drawable/ic_baseline_event" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </LinearLayout>
      </androidx.cardview.widget.CardView>
     </ScrollView>

@@ -15,7 +15,7 @@
             android:text="TextView1"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:id="@+id/textView1"
+            android:id="@+id/textViewBezeichnung"
             android:layout_weight="33.3"/>
 
         <TextView
@@ -24,7 +24,7 @@
             android:text="TextView2"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:id="@+id/textView2"
+            android:id="@+id/textViewLimit"
             android:layout_weight="33.2"/>
 
         <TextView
@@ -33,7 +33,7 @@
             android:text="TextView3"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:id="@+id/textView3"
+            android:id="@+id/textViewValue"
             android:layout_weight="33.2"/>
 
     </LinearLayout>

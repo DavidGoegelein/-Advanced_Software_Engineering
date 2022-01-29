@@ -9,7 +9,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewGraph"
@@ -31,17 +32,19 @@
                 android:weightSum="4">
 
                 <TextView
-                android:id="@+id/Name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Eintrag ändern "
-                android:textSize="35dp"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:textColor="@color/colorTextGray"/>
+                    android:id="@+id/Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:text="Eintrag ändern "
+                    android:textSize="35dp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorTextGray"/>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout1"
+
+
+                    android:id="@+id/linearLayoutBezeichnung"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="55dp"
@@ -56,7 +59,7 @@
 
 
                     <TextView
-                        android:id="@+id/textView1"
+                        android:id="@+id/textViewBezeichnung"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bezeichnung:"
@@ -75,7 +78,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout2"
+                    android:id="@+id/linearLayoutMonthSelect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
@@ -84,7 +87,7 @@
 
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/textViewValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Wert:"
@@ -103,7 +106,7 @@
                         android:textColor="@color/colorTextGray"/>
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/textViewEuro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="€"
@@ -115,15 +118,15 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout3"
+                    android:id="@+id/linearLayoutDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayoutMonthSelect"
                     tools:layout_editor_absoluteX="16dp">
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/textViewCurrency"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Datum:"
@@ -154,14 +157,14 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout4"
+                    android:id="@+id/linearLayoutCycle"
                     android:layout_width="325dp"
                     android:layout_height="53dp"
                     android:layout_marginTop="15dp"
                     tools:layout_editor_absoluteX="16dp">
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/textViewCycle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="20dp"
@@ -171,7 +174,7 @@
 
 
                     <Spinner
-                        android:id="@+id/spinnerCyclus"
+                        android:id="@+id/spinnerCycle"
                         android:layout_width="match_parent"
                         android:textSize="20dp"
                         android:layout_height="match_parent"
@@ -180,15 +183,15 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout5"
+                    android:id="@+id/linearLayoutCategory"
                     android:layout_width="325dp"
                     android:layout_height="53dp"
                     android:layout_marginTop="15dp"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayoutCycle"
                     tools:layout_editor_absoluteX="16dp">
 
                     <TextView
-                        android:id="@+id/textView8"
+                        android:id="@+id/textViewCategory"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:textSize="20dp"
@@ -211,11 +214,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="90dp"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayoutCategory"
                     tools:layout_editor_absoluteX="16dp">
 
                     <Button
-                        android:id="@+id/button2"
+                        android:id="@+id/buttonChangeEntry"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -227,7 +230,7 @@
                         android:textStyle="bold" />
 
                     <Button
-                        android:id="@+id/button3"
+                        android:id="@+id/buttonDeleteEntry"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onClickDelete"
@@ -239,7 +242,7 @@
                         android:textStyle="bold"/>
 
                     <Button
-                        android:id="@+id/button4"
+                        android:id="@+id/buttonBudgetCancel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onClickCancel"

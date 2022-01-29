@@ -9,7 +9,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewGraph"
@@ -25,11 +26,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="600dp"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginTop="10dp"
-                android:weightSum="4">
-
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/gfg_heading"
@@ -43,7 +42,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/textView1"
+                    android:id="@+id/textViewBezeichnung"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -93,7 +92,7 @@
                     </LinearLayout>
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/textViewLimit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -121,7 +120,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/textViewCurrency"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -140,7 +139,7 @@
                     android:layout_marginBottom="60dp">
 
                     <Button
-                        android:id="@+id/button2"
+                        android:id="@+id/buttonChangeEntry"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="45dp"
@@ -153,7 +152,7 @@
                         android:textStyle="bold"/>
 
                     <Button
-                        android:id="@+id/button3"
+                        android:id="@+id/buttonDeleteEntry"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -170,7 +169,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
 
         </androidx.cardview.widget.CardView>
     </ScrollView>

@@ -52,11 +52,11 @@ public class MonthComparisonViewActivity extends AppCompatActivity {
         editTextDateM1 = (TextView) findViewById(R.id.editTextDateM1);
         editTextDateM2 = (TextView) findViewById(R.id.editTextDateM2);
         Calendar calender = Calendar.getInstance();
-        SimpleDateFormat datumsformat = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         //Beide Datums auf aktuelles Datum setzen
-        editTextDateM1.setText(datumsformat.format(calender.getTime()));
-        editTextDateM2.setText(datumsformat.format(calender.getTime()));
+        editTextDateM1.setText(dateFormat.format(calender.getTime()));
+        editTextDateM2.setText(dateFormat.format(calender.getTime()));
 
         setData();
     }
@@ -73,7 +73,7 @@ public class MonthComparisonViewActivity extends AppCompatActivity {
         month2 = Integer.parseInt(datesM2.substring(3,5));
         year2 = Integer.parseInt(datesM2.substring(6,10));
 
-        barChartInOutComparison = findViewById(R.id.barchartinout);
+        barChartInOutComparison = findViewById(R.id.barChartInOut);
 
         tvM1o = findViewById(R.id.tvMonth1);
         tvM2o = findViewById(R.id.tvMonth2);

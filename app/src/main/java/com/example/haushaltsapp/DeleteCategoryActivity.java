@@ -39,7 +39,7 @@ public class DeleteCategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_delete_category);
         mySQLite = new MySQLite(this);
         categoryList = mySQLite.getAllCategories();
-        recyclerView = findViewById(R.id.deleteCategorieRecyclerView);
+        recyclerView = findViewById(R.id.deleteCategoryRecyclerView);
         setAdapter();
     }
 

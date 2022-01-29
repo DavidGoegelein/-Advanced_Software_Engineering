@@ -54,7 +54,7 @@ public class AnnualViewActivity extends AppCompatActivity {
 
         //Aktuelles Datum anzeigen
         editTextDate = (TextView) findViewById(R.id.editTextDate);
-        java.util.Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         editTextDate.setText(dateFormat.format(calendar.getTime()));
 
@@ -68,7 +68,7 @@ public class AnnualViewActivity extends AppCompatActivity {
         month = Integer.parseInt(date.substring(3,5));
         year = Integer.parseInt(date.substring(6,10));
 
-        barChartInOut = findViewById(R.id.barchartinout);
+        barChartInOut = findViewById(R.id.barChartInOut);
 
         //Anzeige Monat Ausgaben
         tvM1o = findViewById(R.id.tvMonth1);
@@ -135,7 +135,7 @@ public class AnnualViewActivity extends AppCompatActivity {
     //Balkendiagramm mit Einnahmen und Ausgaben der letzten 12 Monate
     public void barGraphMonthInOut() {
 
-        int mtextout = 1; //für Textausgabe
+        int mTextOut = 1; //für Textausgabe
         int monthThisYear = 1; //monate hochzählen
         int monthPreYear = month;
         int preYear = year-1; //Vorjahr
@@ -200,7 +200,7 @@ public class AnnualViewActivity extends AppCompatActivity {
                     Color.parseColor("#F94144")));
 
             //Anzeige von Werten in Text unter Diagramm
-            switch (mtextout) {
+            switch (mTextOut) {
                 case 1:
                     tvM1out.setText(Float.toString(outgosMonthX)+" €");
                     tvM1o.setText(monthname+"."+preYear);
@@ -280,7 +280,7 @@ public class AnnualViewActivity extends AppCompatActivity {
                     tvM13i.setText(monthname+"."+preYear);
                     break;
             }
-            mtextout++;
+            mTextOut++;
             monthPreYear++;
         }
 
@@ -340,7 +340,7 @@ public class AnnualViewActivity extends AppCompatActivity {
                     Color.parseColor("#F94144")));
 
             //Anzeige von Werten in Text unter Diagramm
-            switch (mtextout) {
+            switch (mTextOut) {
                 case 1:
                     tvM1out.setText(Float.toString(outgoMonthX)+" €");
                     tvM1o.setText(monthname+"."+year);
@@ -420,7 +420,7 @@ public class AnnualViewActivity extends AppCompatActivity {
                     tvM13i.setText(monthname+"."+year);
                     break;
             }
-            mtextout++;
+            mTextOut++;
             monthThisYear++;
         }
         //Darstellungsoptionen

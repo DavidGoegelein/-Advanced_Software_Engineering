@@ -291,7 +291,7 @@ public class ChartViewActivity extends  AppCompatActivity {
     }
 
     //Kalender zur Auswahl des Monats, der angezeigt werden soll
-    public  void openCalender(View dateview) {
+    public  void openCalender(View dateView) {
         Calendar calender = Calendar.getInstance();
         year = calender.get(Calendar.YEAR);
         month = calender.get(Calendar.MONTH);

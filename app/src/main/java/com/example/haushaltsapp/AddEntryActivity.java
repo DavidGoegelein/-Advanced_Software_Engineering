@@ -141,26 +141,26 @@ public class AddEntryActivity extends AppCompatActivity {
 
     //Methode um das Layout aufzubauen
     private void setLayout(){
-        TextView titel = (TextView) findViewById(R.id.titel);
-        titel.setText(selected+" anlegen");
+        TextView title = (TextView) findViewById(R.id.entryTitle);
+        title.setText(selected+" anlegen");
 
         //Spinner um den Zyklus anzugeben
-        spinnerCycle = (Spinner) findViewById(R.id.spinnerCyclus);
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,  R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCycle.setAdapter(adapter2);
+        spinnerCycle = (Spinner) findViewById(R.id.spinnerCycle);
+        ArrayAdapter<CharSequence> adapterCycle = ArrayAdapter.createFromResource(this,  R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
+        adapterCycle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCycle.setAdapter(adapterCycle);
 
         //Spinner Kategorie - nur anzeigen, wenn es eine Ausgabe ist
         spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
         if(selected.equals("Ausgabe")){
             ArrayList<Category> list = mySQLite.getAllCategories();
-            ArrayAdapter<Category> adapter3 = new ArrayAdapter<Category>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, list);
-            adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerCategory.setAdapter(adapter3);
+            ArrayAdapter<Category> adapterCategory = new ArrayAdapter<Category>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, list);
+            adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerCategory.setAdapter(adapterCategory);
         }else{ //Einnahme - muss nicht angezeigt werden
             spinnerCategory.setVisibility(View.INVISIBLE);
-            TextView categoryTitel = (TextView) findViewById(R.id.textView8);
-            categoryTitel.setVisibility(View.INVISIBLE);
+            TextView categoryTitle = (TextView) findViewById(R.id.textViewCategory);
+            categoryTitle.setVisibility(View.INVISIBLE);
         }
     }
 

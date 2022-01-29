@@ -71,7 +71,7 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
         holder.inDate.setText(date);
 
         //bei Einnahme keine Kategorie vorhanden
-        String categoryString = "Einnahmen";//IntakeList.get(position).getCategory();
+        String categoryString = "";//IntakeList.get(position).getCategory();
         holder.category.setText(categoryString);
     }
 

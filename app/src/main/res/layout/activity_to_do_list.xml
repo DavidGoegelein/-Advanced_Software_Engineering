@@ -9,7 +9,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewGraph"
@@ -34,7 +35,7 @@
                 android:layout_height="70dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="5dp"
-                android:text="To-Do Liste"
+                android:text="To-do-Liste"
                 android:textSize="35sp"
                 android:gravity="center"
                 android:textStyle="bold"

@@ -68,8 +68,8 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
     private void setCheckBoxes(){
         //checkBox
-        checkBoxTotal = findViewById(R.id.checkBox);
-        checkBoxCategory = findViewById(R.id.checkBox2);
+        checkBoxTotal = findViewById(R.id.checkBoxTotal);
+        checkBoxCategory = findViewById(R.id.checkBoxCategory);
 
         //Ggf Hacken setzen
         if(mySQLite.getStateLimitState("Gesamtlimit").equals("true")){
@@ -172,7 +172,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
         boolean checked = ((CheckBox) view).isChecked();
 
         switch(view.getId()) {
-            case R.id.checkBox: //Gesamtlimit
+            case R.id.checkBoxTotal: //Gesamtlimit
                 if (checked) {
                     if (checkBoxCategory.isChecked()) {
                         Toast.makeText(BudgetLimitActivity.this, "Es kann nur ein Limit betrachtet werden",
@@ -185,7 +185,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
                     showTotalBudgetNot();
                 }
                 break;
-            case R.id.checkBox2: //Kategorie
+            case R.id.checkBoxCategory: //Kategorie
                 if (checked) {
                     if (checkBoxTotal.isChecked()) {
                         Toast.makeText(BudgetLimitActivity.this, "Es kann nur ein Limit betrachtet werden",

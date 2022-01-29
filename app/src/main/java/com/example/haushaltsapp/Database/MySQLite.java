@@ -83,7 +83,7 @@ public class MySQLite extends SQLiteOpenHelper {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////
-    // Tabelle intake: id, name, calue, day, month, year, cycle
+    // Tabelle intake: id, name, value, day, month, year, cycle
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /*
@@ -481,14 +481,14 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     berücksichtigt, welche in einem bestimmtem Monat in einer bestimmten Kategorie getätigt wurden.
     Periodische Ausgaben wurden babei berücksichtigt
      */
-    public  float getCategoryOutgoesMonth(int day, int month, int year, String categorie)
+    public  float getCategoryOutgoesMonth(int day, int month, int year, String category)
     {
         float value = 0;
 
         // Einträge der vergangenen Monate mit dem zyklus monatlich
-        String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" AND "+KEY_CATEGORY+"= \""+ String.valueOf(categorie)+"\")";
+        String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" AND "+KEY_CATEGORY+"= \""+ String.valueOf(category)+"\")";
         // Einträge des ausgewählten Monats bis day 31
-        String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(31) + "\" AND "+KEY_CATEGORY+"= \""+ String.valueOf(categorie)+"\")";
+        String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(31) + "\" AND "+KEY_CATEGORY+"= \""+ String.valueOf(category)+"\")";
         String query = "SELECT SUM("+KEY_VALUE+") FROM " + TABLE_OUTGO + " WHERE "+condition1+" OR " +condition2;
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -561,7 +561,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
 
-    // Lösche Kategorie mit namen
+    // Lösche Kategorie bei Namen
     public void deleteCategoryByName(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_CATEGORY+" WHERE "+KEY_NAME+" = \""+name+"\"";
@@ -574,7 +574,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     }
 
     /*
-    Alle Categorien bekommen
+    Alle Kategorien bekommen
      */
     public ArrayList<Category> getAllCategories(){
         ArrayList<Category> categories = new ArrayList<Category>();
@@ -604,7 +604,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     }
 
     /*
-    Erhalte das Object Category mit dem namen
+    Erhalte das Object Category mit dem Namen
      */
     public Category getCategory(String name){
         Category category = new Category();
@@ -638,23 +638,24 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return i;
     }
 
-    //Suche Alle einträge mit bestimmter Categorie
-    //und ändere die Categorie in den Einträgen zu Sonstiges ab
+    //Suche alle Einträge mit bestimmter Kategorie
+    //und ändere die Kategorie in den Einträgen zu Sonstiges
     public void changeCategoryToSonstiges(String categoryName){
         SQLiteDatabase db = this.getWritableDatabase();
         int ID;
-        //alle Einträge mit gesuchter Categorie
+        //Filterung nach gesuchter Kategorie
         String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_CATEGORY+" = \""+ categoryName +"\"";
         Cursor cursor = db.rawQuery(query, null);
-        int countCursor = cursor.getCount();
-        cursor.moveToFirst();
-        for (int j = 0; j < countCursor; j++){
-            ID = Integer.parseInt(cursor.getString(0));
-            setOutgoCategory(ID, "Sonstiges");
+        if (cursor.moveToFirst())
+        {
+            do{
+                ID = Integer.parseInt(cursor.getString(0));
+                setOutgoCategory(ID, "Sonstiges");
+            }
+            while (cursor.moveToNext());
         }
         db.close();
     }
-
     //////////////////////////////////////////////////////////////////////////////////////////
     // To Do Listen: Task, Status, Type
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -670,7 +671,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
 
-// Ausgabe jeder angelegten Task
+// Ausgabe aller verfügbaren Tasks, durch Kategorisierung vorerst nicht mehr notwendig
     public List<TaskModel> getAllTasks(){
         List<TaskModel> taskList = new ArrayList<>();
 
@@ -717,7 +718,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
 
-    //Löschen der Task
+    //Löschen einer Task über ID
     public void deleteTask(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TODO, KEY_ID + "= ?", new String[] {String.valueOf(id)});
@@ -815,7 +816,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         value.put(KEY_NAME, name);
         value.put(KEY_STATE, state);
 
-        //id ermitteln
+        //Ermittlung der ID
         String query = "SELECT * FROM "+ TABLE_LIMIT_STATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){

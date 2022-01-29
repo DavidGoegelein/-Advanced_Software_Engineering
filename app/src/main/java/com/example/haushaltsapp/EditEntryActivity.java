@@ -183,22 +183,21 @@ public class EditEntryActivity extends AppCompatActivity {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerCategory.setAdapter(adapter);
 
-                // String aktuellCatagory = outgo.getCategory();
                 int spinnerPosition = adapter.getPosition(category);
                 spinnerCategory.setSelection(spinnerPosition);
             } else {
-                TextView textView1 = (TextView) findViewById(R.id.textView8);
-                textView1.setVisibility(View.GONE);
+                TextView textViewCat = (TextView) findViewById(R.id.textViewCategory);
+                textViewCat.setVisibility(View.GONE);
                 spinnerCategory.setVisibility(View.GONE);
             }
 
 
             //Spinner Zyklus
-            spinnerCycle = (Spinner) findViewById(R.id.spinnerCyclus);
-            ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
-            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerCycle.setAdapter(adapter2);
-            int index = adapter2.getPosition(cycle);
+            spinnerCycle = (Spinner) findViewById(R.id.spinnerCycle);
+            ArrayAdapter<CharSequence> adapterCycle = ArrayAdapter.createFromResource(this, R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
+            adapterCycle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerCycle.setAdapter(adapterCycle);
+            int index = adapterCycle.getPosition(cycle);
             spinnerCycle.setSelection(index);
 
             //name setzen
@@ -354,7 +353,7 @@ Abbrechen
     }
 
     /*
-    Funktion geht von moonthEntry +1 bis zum akuellen Monat/Jahr iteraqtiv durch
+    Funktion geht von monthEntry +1 bis zum akuellen Monat/Jahr iterativ durch
     löscht den Eintrag mit dem Budget und berechnet den neuen Wert
     ist der Wert positiv wird dieser in Einnahmen, ansonsten in Ausgaben, hinterlegt
      */

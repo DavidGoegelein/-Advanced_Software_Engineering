@@ -21,7 +21,7 @@ public class deleteCategoryAdapter extends RecyclerView.Adapter<deleteCategoryAd
     }
 
 
-    public class MyViewHolderCat extends  RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyViewHolderCat extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView catName;
 
         public MyViewHolderCat(final View view)
