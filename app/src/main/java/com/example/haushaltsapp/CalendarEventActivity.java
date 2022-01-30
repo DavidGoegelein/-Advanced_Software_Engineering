@@ -29,7 +29,6 @@ import java.util.Locale;
 
 public class CalendarEventActivity extends AppCompatActivity {
 
-
     private MySQLite mySQLite;
     private TextView dateSelect;
     private ImageView calenderView;
@@ -75,7 +74,7 @@ public class CalendarEventActivity extends AppCompatActivity {
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
+        //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit
         calendar.set(year,month,day,8,0,0);
         startDateInMilliSec = calendar.getTimeInMillis();
         calendar.set(year,month,day,9,0,0);
@@ -120,7 +119,7 @@ public class CalendarEventActivity extends AppCompatActivity {
                             }
                         }
 
-                        //Übergabe der Daten an Kalender-Objekt und Setzen von Start und Endzeit)
+                        //Übergabe der Daten an Kalender-Objekt und Setzen von Start- und Endzeit
                         calendar.set(year,month,day,8,0,0);
                         startDateInMilliSec = calendar.getTimeInMillis();
                         calendar.set(year,month,day,9,0,0);
@@ -146,7 +145,7 @@ public class CalendarEventActivity extends AppCompatActivity {
         });
     }
 
-    //Intent zum Einfügen von Events in einer Kalender Applikation
+    //Intent zum Einfügen von Events in eine Kalender-Applikation
     public void insertEvent(String title, String location, String description, boolean isAllDay, long beginTime, long endTime) {
         Intent insertEvent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
@@ -164,7 +163,7 @@ public class CalendarEventActivity extends AppCompatActivity {
         }
     }
 
-    //Intent zur Ansicht einer Kalender Applikation
+    //Intent zur Ansicht einer Kalender-Applikation
     public void viewEvent(View eventView) {
         Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
         builder.appendPath("time");
@@ -178,6 +177,7 @@ public class CalendarEventActivity extends AppCompatActivity {
         }
     }
 
+    //Menüaufruf
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -189,6 +189,7 @@ public class CalendarEventActivity extends AppCompatActivity {
         return true;
     }
 
+    //Menüauswahl
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

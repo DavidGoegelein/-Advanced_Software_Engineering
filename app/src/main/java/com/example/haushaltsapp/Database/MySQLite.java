@@ -56,7 +56,7 @@ public class MySQLite extends SQLiteOpenHelper {
     }
 
 
-    ////////////////////////////////MySQLite//////////////////////////////////////////////////////////
+    ////////////////////////////////MySQLite//////////////////////////////////////////////////
     private static final String TABLE_INTAKE= "intake";
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
@@ -87,7 +87,7 @@ public class MySQLite extends SQLiteOpenHelper {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /*
-    Funtkion um eine Einnahme in die Datenbank hinzuzufügen
+    Funtkion, um eine Einnahme der Datenbank hinzuzufügen
      */
     public void addIntake(Intake intake){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -104,9 +104,9 @@ public class MySQLite extends SQLiteOpenHelper {
     }
 
     /*
-       Funktion gibt eine ArrayList zurück, welche alle Einnahmen der Datenbank
-       beinhaltet
+       Die Funktion liefert Rückgabe einer ArrayList, welche alle Einnahmen der Datenbank beinhaltet
     */
+
     public ArrayList<Intake> getAllIntakes(){
         ArrayList<Intake> intakes = new ArrayList<Intake>();
 
@@ -139,8 +139,8 @@ public class MySQLite extends SQLiteOpenHelper {
 
 
     /*
-    Die Funktion liefert die Einnahme zurück welche die übergebene id besitzt
-    Sollte diese Id nicht existieren so wird eine "leere" Ausgabe (ohne name, value ect) zurück gegeben
+    Die Funktion liefert die Einnahme zurück, welche die übergebene ID besitzt
+    Sollte diese ID nicht existieren, so wird eine "leere" Ausgabe (ohne name, value ect) zurückgegeben
     */
     public Intake getIntakeById(int id){
         Intake intake = new Intake();
@@ -164,9 +164,10 @@ public class MySQLite extends SQLiteOpenHelper {
     }
 
     /*
-    Funktion liefert eine Id einer Einname, welche den übergebenen Namen aufweist
-    Wenn es eine solche Id nicht gibt, wird -1 zurück gegeben
+    Funktion liefert eine ID einer Einname, welche den übergebenen Namen aufweist.
+    Wenn es eine solche ID nicht gibt, wird -1 zurück gegeben.
      */
+
     public int getIntakeIdByName(String name){
         int result = -1;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -182,8 +183,8 @@ public class MySQLite extends SQLiteOpenHelper {
 
 
     /*
-    Funktion löscht die Einnahme welche die übergebne Id besitzt.
-    Sollte ein solcher Eintrag nicht exestieren wird die Datenbank ohne
+    Funktion löscht die Einnahme, welche die übergebne ID besitzt.
+    Sollte ein solcher Eintrag nicht existieren, wird die Datenbank ohne
     einen weiteren Vorgang geschlossen
     */
     public void deleteIntakeById(int id){
@@ -198,8 +199,8 @@ public class MySQLite extends SQLiteOpenHelper {
     }
 
     /*
-    Funktion dient dazu, die Zeile mit der übergebnen id mit den Informationen der
-    übergebenen Einnahme zu überschreiben. Sollte eine solche Id nicht exestieren, wird
+    Funktion dient dazu, die Zeile der Tabelle mit der übergebenen ID mit den Informationen der
+    übergebenen Einnahme zu überschreiben. Sollte eine solche ID nicht existieren, wird
     ein neuer Eintrag mit den gewünschten Daten angelegt.
      */
     public int updateIntake(Intake intake, int id){
@@ -218,14 +219,15 @@ public class MySQLite extends SQLiteOpenHelper {
 
 
     /*
-Funktion gibt eine Float-Wert zurück, welche alle Einnahmen der Datenbank
-berücksichtigt, welche vom 1.month.year bis day.month.year getätigt wurden.
-Periodische Ausgaben wurden dabei berücksichtigt.
-*/
+    Funktion gibt eine Float-Wert zurück, welcher alle Einnahmen der Datenbank
+    berücksichtigt, welche vom 1.month.year bis day.month.year getätigt wurden.
+    Periodische Ausgaben sind hierbei berücksichtigt.
+    */
+
     public ArrayList<Intake> getMonthIntakes(int day, int month, int year) {
         ArrayList<Intake> intakes = new ArrayList<Intake>();
 
-        // Einträge der vergangenen Monate mit dem zyklus monatlich
+        // Einträge der vergangenen Monate mit dem Zyklus monatlich
         String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" )";
         // Einträge des aktuellen Monats
         String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(day) +"\")";
@@ -233,7 +235,6 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-
 
         if (cursor != null) {
             Intake intake = null;
@@ -260,12 +261,12 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     /*
     Funktion gibt eine ArrayList zurück, welche alle Einnahmen der Datenbank
     beinhaltet, welche vom 1.month.year bis day.month.year getätigt wurden.
-    Periodische Ausgaben wurden dabei berücksichtigt.
-     */
+    Periodische Ausgaben sind hierbei berücksichtigt.
+    */
     public float getValueIntakesMonth(int day, int month, int year) {
         float value = 0;
 
-        // Einträge der vergangenen Monate mit dem zyklus monatlich
+        // Einträge der vergangenen Monate mit dem Zyklus monatlich
         String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" )";
         // Einträge des aktuellen Monats
         String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(day) +"\")";
@@ -291,7 +292,8 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
     /*
      Funktion dient dazu, die übergebene Ausgabe in die Datenbank einzutragen
-      */
+    */
+
     public void addOutgo(Outgo outgo){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -310,9 +312,9 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
 
     /*
-    Funktion gibt eine ArrayList zurück, welche alle Ausgaben der Datenbank
-    beinhaltet
-     */
+    Funktion gibt eine ArrayList zurück, welche alle Ausgaben der Datenbank beinhaltet
+    */
+
     public ArrayList<Outgo> getAllOutgoes(){
         ArrayList<Outgo> outgoes = new ArrayList<Outgo>();
 
@@ -344,9 +346,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
 
     /*
-    Die Funktion liefert die Ausgabe zurück welche die übergebene id besitzt
-    Sollte diese Id nicht existieren so wird eine "leere" Ausgabe (ohne name, value ect) zurück gegeben
+    Die Funktion liefert die Ausgabe zurück welche die übergebene ID besitzt
+    Sollte diese ID nicht existieren so wird eine "leere" Ausgabe (ohne name, value ect) zurückgegeben
      */
+
     public Outgo getOutgoById(int id){
         Outgo outgo = new Outgo();
 
@@ -370,10 +373,11 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     }
 
     /*
-    Funktion löscht die Ausgabe welche die übergebne Id besitzt.
-    Sollte ein solcher Eintrag nicht exestieren wird die Datenbank ohne
+    Funktion löscht die Ausgabe, welche die übergebene ID besitzt.
+    Sollte ein solcher Eintrag nicht existieren wird die Datenbank ohne
     einen weiteren Vorgang geschlossen
      */
+
     public void deleteOutgoById(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_ID+" = "+id;
@@ -388,10 +392,11 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
 
     /*
-    Funktion dient dazu, die Zeile mit der übergebnen id mit den Informationen der
-    übergebenen Ausgabe zu überschreiben. Sollte eine solche Id nicht exestieren, wird
+    Funktion dient dazu, die Zeile der Datenbank mit der übergebenen ID mit den Informationen der
+    übergebenen Ausgabe zu überschreiben. Sollte eine solche ID nicht existieren, wird
     ein neuer Eintrag mit den gewünschten Daten angelegt.
      */
+
     public int updateOutgo(Outgo outgo, int id){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -410,12 +415,13 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     /*
    Funktion gibt eine ArrayList zurück, welche alle Ausgaben der Datenbank
    beinhaltet, welche vom 1.month.year bis day.month.year getätigt wurden.
-   Periodische Ausgaben wurden dabei berücksichtigt.
+   Periodische Ausgaben sind dabei berücksichtigt.
     */
+
     public ArrayList<Outgo> getMonthOutgoes(int day, int month, int year) {
         ArrayList<Outgo> outgos = new ArrayList<Outgo>();
 
-        // Einträge der vergangenen Monate mit dem zyklus monatlich
+        // Einträge der vergangenen Monate mit dem Zyklus monatlich
         String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" )";
         // Einträge des aktuellen Monats
         String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(day) +"\")";
@@ -453,9 +459,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
     /*
    Funktion gibt eine Float-Wert zurück, welche alle Ausgaben der Datenbank
-   berücksichtigt, welche vom 1.month.year bis day.month.year getätigt wurden.
-   Periodische Ausgaben wurden dabei berücksichtigt.
+   berücksichtigt, die vom 1.month.year bis day.month.year getätigt wurden.
+   Periodische Ausgaben sind dabei berücksichtigt.
     */
+
     public float getValueOutgoesMonth(int day, int month, int year) {
         float value = 0;
         // Einträge der vergangenen Monate mit dem zyklus monatlich
@@ -477,10 +484,11 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     }
 
     /*
-    Funktion gibt einen Float-Wert zurück, wlecher alle Ausgabe der Datenbank
-    berücksichtigt, welche in einem bestimmtem Monat in einer bestimmten Kategorie getätigt wurden.
-    Periodische Ausgaben wurden babei berücksichtigt
+    Funktion gibt einen Float-Wert zurück, welcher alle Ausgabe der Datenbank
+    berücksichtigt, welche in einem bestimmtem Monat und in einer bestimmten Kategorie getätigt wurden.
+    Periodische Ausgaben sind babei berücksichtigt
      */
+
     public  float getCategoryOutgoesMonth(int day, int month, int year, String category)
     {
         float value = 0;
@@ -505,9 +513,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
 
     /*
-    Funktion gibt die Id mit der Ausgabe zurück, welche den übergebnenen Namen hat
-    gibt es einen solchen Eintrag nicht, wird -1 zurück gegeben
+    Funktion gibt die ID mit der Ausgabe zurück, welche den übergebenen Namen hat.
+    Gibt es diesen Eintrag nicht, wird -1 zurückgegeben.
      */
+
     public int getOutgoIdByName(String name){
         int result = -1;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -521,7 +530,8 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return result;
     }
 
-    //Methode zum änderen der Kategorie eines Outputs
+    //Methode zum Setzen der Kategorie eines Outgoes
+
     public void setOutgoCategory(int id, String category){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -535,8 +545,9 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /*
-    Category hinzufügen
+    Hinzufügen einer Kategorie Category
      */
+
     public void addCategory(Category category){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -549,7 +560,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         Log.d("addCategory", category.toString());
     }
 
-    // Lösche Kategorie mit id
+    /*
+    Löschen einer Kategorie mit übergebenen ID
+     */
+
     public void deleteCategoryById(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_CATEGORY+" WHERE "+KEY_ID+" = "+id;
@@ -561,7 +575,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
 
-    // Lösche Kategorie bei Namen
+    /*
+    Löschen einer Kategorie mit übergebenen Namen
+     */
+
     public void deleteCategoryByName(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_CATEGORY+" WHERE "+KEY_NAME+" = \""+name+"\"";
@@ -574,8 +591,9 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     }
 
     /*
-    Alle Kategorien bekommen
+    Auslesen aller angelegten Kategorien
      */
+
     public ArrayList<Category> getAllCategories(){
         ArrayList<Category> categories = new ArrayList<Category>();
 
@@ -604,8 +622,9 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     }
 
     /*
-    Erhalte das Object Category mit dem Namen
-     */
+    Erhalte das Object Category mit dem übergebenen Namen
+    */
+
     public Category getCategory(String name){
         Category category = new Category();
 
@@ -624,6 +643,9 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return category;
     }
 
+    /*
+    Aktualisieren einer übergebenen Kategorie
+     */
 
     public int updateCategory(Category category){
 
@@ -638,8 +660,11 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return i;
     }
 
-    //Suche alle Einträge mit bestimmter Kategorie
-    //und ändere die Kategorie in den Einträgen zu Sonstiges
+
+    /*
+    Sucht alle mit bestimmter Kategorie assoziierten Ausgaben und ändert dessen Kategorie zu Sonstiges
+    */
+
     public void changeCategoryToSonstiges(String categoryName){
         SQLiteDatabase db = this.getWritableDatabase();
         int ID;
@@ -657,10 +682,13 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
     //////////////////////////////////////////////////////////////////////////////////////////
-    // To Do Listen: Task, Status, Type
+    // To-do-listen: Task, Status, Type
     //////////////////////////////////////////////////////////////////////////////////////////
 
-// Einfügen einer Task
+    /*
+    Einfügen einer Task in die To-do Tabelle
+    */
+
     public void insertTask(TaskModel task){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -671,7 +699,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
 
-// Ausgabe aller verfügbaren Tasks, durch Kategorisierung vorerst nicht mehr notwendig
+    /*
+    Ausgabe aller verfügbaren Tasks
+    */
+
     public List<TaskModel> getAllTasks(){
         List<TaskModel> taskList = new ArrayList<>();
 
@@ -698,7 +729,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return taskList;
     }
 
-    //Aktualisieren einer Task
+    /*
+    Aktualisierung einer Task
+    */
+
     public void updateTask(int id, String task){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -709,7 +743,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     }
 
 
-    //Auffrischen des Task Status
+    /*
+    Überschreibung des Status einer Task über ID
+    */
+
     public void updateTaskStatus(int id, int status){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -718,7 +755,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
 
-    //Löschen einer Task über ID
+    /*
+    Löschen einer Task über ID
+    */
+
     public void deleteTask(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TODO, KEY_ID + "= ?", new String[] {String.valueOf(id)});
@@ -726,7 +766,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
 
     }
 
-    // Sortiere Task nach Type
+    /*
+    Filterung aller Task nach Type
+    */
+
     public List<TaskModel> getTaskByType(String type){
         List<TaskModel> taskList = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -754,6 +797,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
     // Tabelle limitState: id, name, value, state
     //////////////////////////////////////////////////////////////////////////////////////////
 
+    /*
+    Methode zur Prüfung, ob ein gesetztes Budgetlimit einer Kategorie (wenn angelegt) erreicht wurde
+    */
+
     public boolean isCatBudgetLimitReached(int month, int year, String category, double categoryLimit) {
         Double monthCatValue = 0.0;
         boolean isLimitReached = false;
@@ -769,6 +816,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return isLimitReached;
 
     }
+
+    /*
+    Methode zur Prüfung, ob ein gesetztes prozentuales Gesamtbudget erreicht wurde
+    */
 
     public boolean isPercentBudgetLimitReached(int month, int year, Integer percentOfBudget){
         Double monthOutgoValue = 0.0 ;
@@ -796,8 +847,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return isLimitReached;
     }
 
-    //LimitState hinzufügen
-    //value ist default 0.0
+    /*
+    Hinzufügen eines Limits
+    */
+
     public void addLimitState(String name, String state){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -808,7 +861,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         db.close();
     }
 
-    //Update LimitState
+    /*
+    Aktualisieren eines Limits
+    */
+
     public int updateLimitState(String name, String state){
         int id = -1;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -828,7 +884,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return i;
     }
 
-    //Limit ersetzen. Primär für Gesamtlimit
+    /*
+    Limit ersetzen. Primär für Gesamtlimit
+    */
+
     public int updateStateLimit(String name, double valueLimit, String state){
         int id = -1;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -837,7 +896,7 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         value.put(KEY_VALUE, valueLimit);
         value.put(KEY_STATE, state);
 
-        //id ermitteln
+        //Ermittlung der ID
         String query = "SELECT * FROM "+ TABLE_LIMIT_STATE +" WHERE "+KEY_NAME+" = \""+name+"\"";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
@@ -849,7 +908,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return i;
     }
 
-    //status ermitteln
+    /*
+    Ermittlung des Status des gesetzten Limits
+    */
+
     public String getStateLimitState(String name){
         String state = "";
 
@@ -866,7 +928,10 @@ Periodische Ausgaben wurden dabei berücksichtigt.
         return state;
     }
 
-    //Wert ermitteln
+    /*
+   Ermittlung des Wert des gesetzten Limits
+    */
+
     public double getStateLimitValue(String name){
         double value = 0.0;
 

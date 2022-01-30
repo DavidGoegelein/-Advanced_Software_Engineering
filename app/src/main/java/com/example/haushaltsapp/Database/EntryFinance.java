@@ -2,6 +2,11 @@ package com.example.haushaltsapp.Database;
 
 import java.io.Serializable;
 
+/*
+Abstrakte Klasse Finanzen
+id, name, value, day, month, year, cycle
+ */
+
 public abstract class EntryFinance implements Serializable {
     int id_PK;
     String name;

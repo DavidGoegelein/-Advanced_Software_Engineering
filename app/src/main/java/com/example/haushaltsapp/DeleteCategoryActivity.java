@@ -23,9 +23,8 @@ import java.util.ArrayList;
 
 public class DeleteCategoryActivity extends AppCompatActivity {
 
-    ////Variabeln zur Menünavigation
+
     private MySQLite mySQLite;
-    ///////////////////////////////
 
     private RecyclerView recyclerView;
     private ArrayList<Category> categoryList;
@@ -37,6 +36,8 @@ public class DeleteCategoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delete_category);
+
+        //Erstellung Datenbank-Objekt und Auslesen der Daten
         mySQLite = new MySQLite(this);
         categoryList = mySQLite.getAllCategories();
         recyclerView = findViewById(R.id.deleteCategoryRecyclerView);
@@ -58,7 +59,7 @@ public class DeleteCategoryActivity extends AppCompatActivity {
     }
 
 
-    //Auswahl einer Kategorie um diese zu löschen
+    //Auswahl einer Kategorie, um diese zu löschen
     private void setOnClickListener(){
 
         listener = new deleteCategoryAdapter.deleteCategoryClickListener() {
@@ -118,6 +119,7 @@ public class DeleteCategoryActivity extends AppCompatActivity {
         };
     }
 
+    //Menüaufruf
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -127,7 +129,7 @@ public class DeleteCategoryActivity extends AppCompatActivity {
         return true;
     }
 
-
+    //Menüauswahl
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

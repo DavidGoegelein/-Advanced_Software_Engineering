@@ -27,6 +27,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
     private MySQLite db;
     public static String type ="";
 
+    //Setzen eines neuen Typs (Kategorie)
     public static void setNewType(String newType){
         type=newType;
     }
@@ -45,7 +46,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
     @Nullable
     @Override
-    //Aufruf des New Task Layouts
+    //Aufruf des NewTask Layouts
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,@Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_task, container, false);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
@@ -58,7 +59,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         newTaskText = requireView().findViewById(R.id.newTaskText);
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
 
-        //Check, um zu überprüfen ob neue Task angelegt wird oder vorheriger Task editiert
+        //Überprüfung, ob neue Task angelegt wird oder vorheriger Task editiert
         boolean isUpdate = false;
         final Bundle bundle = getArguments();
         if(bundle != null){
@@ -76,9 +77,10 @@ public class AddNewTask extends BottomSheetDialogFragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
-            //Prüfen, ob ein leerer Eintrag im Textfeld vorliegt
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Überprüfung, ob ein leerer Eintrag im Textfeld vorliegt
                 if(s.toString().equals("")){
                     //Button ausschalten, wenn kein Text im Textfeld steht
                     newTaskSaveButton.setEnabled(false);

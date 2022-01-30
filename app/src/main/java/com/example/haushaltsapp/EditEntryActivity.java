@@ -41,7 +41,7 @@ public class EditEntryActivity extends AppCompatActivity {
     private EditText editTextName;
     private EditText editTextValue;
     private TextView editTextDate;
-    private ImageView calenderView; //Kalender
+    private ImageView calenderView;
 
     private String entry;
     private int id;
@@ -73,9 +73,9 @@ public class EditEntryActivity extends AppCompatActivity {
 
         mySQLite = new MySQLite(this); //Datenbank
 
-        getDate(); //setze monthCurrent und yearCurrent mit dem aktuellen Datum
+        getDate(); //Setzt monthCurrent und yearCurrent mit dem aktuellen Datum
 
-        //Werte aus der ermitteln, des zu ändernden Eintrags
+        //Werte ermitteln, des zu ändernden Eintrags
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             return;
@@ -117,7 +117,7 @@ public class EditEntryActivity extends AppCompatActivity {
 
         //Kalender
         calenderView = findViewById(R.id.calenderView);
-        month = month - 1; // Januar ist 0, demnach monat um 1 minimieren
+        month = month - 1; // Januar ist 0, demnach Monat um 1 verringern
         //Setzen von Listener auf dem Kalender Symbol
         calenderView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,7 +147,7 @@ public class EditEntryActivity extends AppCompatActivity {
         });
     }
 
-        // Setzt die Variablen monthCurrent und yearCurrent mit dem aktuellen datum
+        // Setzt die Variablen monthCurrent und yearCurrent mit dem aktuellen Datum
         private void getDate() {
             Calendar calender =Calendar.getInstance();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
@@ -194,23 +194,20 @@ public class EditEntryActivity extends AppCompatActivity {
 
             //Spinner Zyklus
             spinnerCycle = (Spinner) findViewById(R.id.spinnerCycle);
-            ArrayAdapter<CharSequence> adapterCycle = ArrayAdapter.createFromResource(this, R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
+            ArrayAdapter<CharSequence> adapterCycle = ArrayAdapter.createFromResource(this, R.array.spinner_cycle, android.R.layout.simple_spinner_item);
             adapterCycle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerCycle.setAdapter(adapterCycle);
             int index = adapterCycle.getPosition(cycle);
             spinnerCycle.setSelection(index);
 
-            //name setzen
+            //Name setzen
             editTextName = (EditText) findViewById(R.id.Bezeichnung);
             editTextName.setText(name);
 
-            //value setzen
+            //Wert setzen
             editTextValue = (EditText) findViewById(R.id.editTextNumberDecimal);
             DecimalFormat df = new DecimalFormat("0.00");
             editTextValue.setText(df.format(value));
-
-            //Datum setzen
-            editTextDate = (TextView) findViewById(R.id.editTextDate);
 
             //Datum setzen
             editTextDate = (TextView) findViewById(R.id.editTextDate);
@@ -231,7 +228,7 @@ public class EditEntryActivity extends AppCompatActivity {
             editTextDate.setText(dateStr);
         }
 
-        //ändern
+        //Methode Änderung-Button
         public void onClickChange(View view) {
 
             boolean valid = getValues(); //erhalte die gewünschten Werte
@@ -255,7 +252,7 @@ public class EditEntryActivity extends AppCompatActivity {
             }
         }
 
-        //Löschen
+        //Methode Löschen-Button
         public void onClickDelete(View view) {
             if (entry.equals("Outgo")) {
                 mySQLite.deleteOutgoById(id);
@@ -317,15 +314,13 @@ public class EditEntryActivity extends AppCompatActivity {
             return retValue;
         }
 
-    /*
-Abbrechen
-*/
+    //Methode Abbruch-Button
     public void onClickCancel(View view){
         Intent switchToChartActivity= new Intent(this, ChartViewActivity.class);
         startActivity(switchToChartActivity);
     }
 
-    //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
+    //Methode öffnet ein Fenster, um den Benutzer auf unterschiedliche Fehler hinzuweisen.
     private void informUser(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Hinweis");
@@ -353,14 +348,15 @@ Abbrechen
     }
 
     /*
-    Funktion geht von monthEntry +1 bis zum akuellen Monat/Jahr iterativ durch
+    Funktion geht von monthEntry +1 bis zum akuellen Monat/Jahr iterativ durch,
     löscht den Eintrag mit dem Budget und berechnet den neuen Wert
     ist der Wert positiv wird dieser in Einnahmen, ansonsten in Ausgaben, hinterlegt
      */
+
     private void setBudgetEntry(int monthEntry,int yearEntry){
         if((monthEntry < monthCurrent) || (yearEntry < yearCurrent)){
             do{
-                // Erst hochzählen da man den nächsten Monat braucht
+                // Erst hochzählen, da man den nächsten Monat braucht
                 if(monthEntry == 12){
                     monthEntry = 1;
                     yearEntry = yearEntry +1;
@@ -377,7 +373,7 @@ Abbrechen
                     title = title +12+"."+(yearEntry-1);
                 }
 
-                //id des Eintrags ermitteln
+                //ID des Eintrags ermitteln
                 int idIntake = mySQLite.getIntakeIdByName(title);
                 int idOutgo = mySQLite.getOutgoIdByName(title);
                 if(idIntake > -1){

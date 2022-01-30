@@ -48,7 +48,7 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
         return new MyViewHolderIn(itemView);
     }
 
-    //runden auf zwei Nachkommazahlen
+    //Runden auf zwei Nachkommazahlen
     public double round(double number, int digits) {
         return (double) ((int) number + (Math.round(Math.pow(10, digits)*(number -(int) number)))/(Math.pow(10, digits)));
     }
@@ -70,8 +70,8 @@ public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.My
         String date = day+"."+month+"."+year;
         holder.inDate.setText(date);
 
-        //bei Einnahme keine Kategorie vorhanden
-        String categoryString = "";//IntakeList.get(position).getCategory();
+        //Bei Einnahme keine Kategorie vorhanden
+        String categoryString = "";
         holder.category.setText(categoryString);
     }
 

@@ -27,6 +27,7 @@ public class SwipeHandler extends ItemTouchHelper.SimpleCallback {
         return false;
     }
 
+    //Methodenaufruf, bei Rechts- oder Linkswischen
     @Override
     public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
         final int position = viewHolder.getAdapterPosition();
@@ -54,6 +55,7 @@ public class SwipeHandler extends ItemTouchHelper.SimpleCallback {
         }
     }
 
+    //Überprüfung der Wischrichtung
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

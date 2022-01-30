@@ -30,9 +30,8 @@ import java.util.Locale;
 
 public class DiagramViewActivity extends AppCompatActivity {
 
-        ////Variabeln zur Menünavigation
+
         private MySQLite mySQLite;
-        ///////////////////////////////
 
         private LinearLayout lVerkehrsmittel, lWohnen, lLebensmittel, lGesundheit, lFreizeit, lSonstiges, lEtc1, lEtc2, lEtc3;
         private View wohnenColor, lebensmittelColor, gesundheitColor, verkehrsmittelColor, freizeitColor, sonstigesColor, etc1Color, etc2Color, etc3Color;
@@ -46,7 +45,6 @@ public class DiagramViewActivity extends AppCompatActivity {
         private PieChart pieChart;
         private BarChart barChart;
 
-        //aktuelles Datum
         private int day;
         private int month;
         private int year;
@@ -59,9 +57,10 @@ public class DiagramViewActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_diagram_view);
 
+            //Datenbank-Objekt
             mySQLite = new MySQLite(this);
 
-            //Aktuelles Datum anzeigen
+            //Aktuelles Datum auslesen und anzeigen
             editTextDate = (TextView) findViewById(R.id.editTextDate);
             Calendar calender = Calendar.getInstance();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
@@ -166,12 +165,12 @@ public class DiagramViewActivity extends AppCompatActivity {
             //Diagramme zurücksetzten
             pieChart.clearChart();
             barChart.clearChart();
-            //Diagram Methoden aufrufen
+            //Diagramm Methoden aufrufen
             pieChartCat(categories);
             barGraphCat(categories);
         }
 
-        //Runden auf zwei Nachkommazahlen
+        //Runden einer Float-Zahl auf zwei Nachkommazahlen
         public float roundF(float number, int positions) {
             return (float) ((int)number + (Math.round(Math.pow(10,positions)*(number-(int)number)))/(Math.pow(10,positions)));
         }
@@ -295,7 +294,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             }
         }
 
-        //Kreisdiagramm mit Anzeige der vorhandenen Kategorien im Ausgewählten Monat
+        //Kreisdiagramm mit Anzeige der vorhandenen Kategorien im ausgewählten Monat
         public void pieChartCat(ArrayList<Category> categories){
             int num = 0;
             int catNum = categories.size();
@@ -347,7 +346,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             barChart.setActivated(false);
         }
 
-        //Button zum aktualisieren des Monats
+        //Button zum Aktualisieren des Monats
         public void changeMonth(View view) {
             setData();
         }
@@ -359,7 +358,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             month = calender.get(Calendar.MONTH);
             day = calender.get(Calendar.DAY_OF_MONTH);
 
-            //Kalender auf Deutsch umstellen
+            //Kalenderanzeige auf Deutsch umstellen
             Locale locale = new Locale("de");
             Locale.setDefault(locale);
             Resources res = this.getResources();
@@ -411,7 +410,7 @@ public class DiagramViewActivity extends AppCompatActivity {
             startActivity(switchMonthComparisonView);
         }
 
-
+    //Menüaufruf
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -424,7 +423,7 @@ public class DiagramViewActivity extends AppCompatActivity {
         return true;
     }
 
-
+    //Menüauswahl
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

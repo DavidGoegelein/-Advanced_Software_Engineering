@@ -2,6 +2,11 @@ package com.example.haushaltsapp.Database;
 
 import java.io.Serializable;
 
+/*
+Repräsentation einer Kategorie
+id, name, color, border
+ */
+
 public class Category implements Serializable {
     int id;
     String name_PK;

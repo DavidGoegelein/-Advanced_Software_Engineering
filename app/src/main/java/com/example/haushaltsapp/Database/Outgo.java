@@ -2,8 +2,10 @@ package com.example.haushaltsapp.Database;
 
 /*
 Repräsentation einer Ausgabe
-id, name, value, day, month, year, cyclus, category
+id, name, value, day, month, year, cycle, category
+Spezialisierung aus EntryFinance
  */
+
 public class Outgo extends EntryFinance {
     String category;
 

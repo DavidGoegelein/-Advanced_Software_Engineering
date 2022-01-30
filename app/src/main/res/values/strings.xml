@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Haushaltsapp</string>
 
-    <string-array name="spinner_cyclus">
+    <string-array name="spinner_cycle">
         <item>einmalig</item>
         <item>monatlich</item>
     </string-array>

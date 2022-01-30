@@ -44,6 +44,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Überprüfung, ob die Task vor dem Betätigen der Checkbox schon "abgehakt" war
                 if (isChecked) {
                     if (previousStatus!=0){
                         db.updateTaskStatus(item.getId(), 0);
@@ -75,11 +76,13 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         return activity;
     }
 
+    //Setzen aller Tasks und Benachrichtigung, dass Einträge geändert wurden
     public void setTasks(List<TaskModel> todoList) {
         this.todoList = todoList;
         notifyDataSetChanged();
     }
 
+    //Löschen eines Items über die Position im View
     public void deleteItem(int position) {
         TaskModel item = todoList.get(position);
         db.deleteTask(item.getId());
@@ -87,6 +90,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         notifyItemRemoved(position);
     }
 
+    //Editieren eines Items über die Position im View
     public void editItem(int position) {
         TaskModel item = todoList.get(position);
         Bundle bundle = new Bundle();

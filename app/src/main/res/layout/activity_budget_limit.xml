@@ -32,7 +32,7 @@
 
                 <TextView
                     android:id="@+id/budgetLimitText"
-                    android:text="Budget Limit"
+                    android:text="Budget-Limit"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginTop="15dp"

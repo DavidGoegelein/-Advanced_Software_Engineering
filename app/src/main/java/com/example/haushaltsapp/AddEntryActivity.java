@@ -62,10 +62,10 @@ public class AddEntryActivity extends AppCompatActivity {
     private int dayCurrent, monthCurrent, yearCurrent;
 
     /*
-    1: gewähltes Datum liegt in der Zukunft
-    2: der Titel wurde nicht gesetzt
-    3: es wurde kein Wert gesetzt
-    4: der gesetzte Wert ist keine Valide eingabe (z.B. 3 Nachkommastellen)
+    1: Gewähltes Datum liegt in der Zukunft
+    2: Der Titel wurde nicht gesetzt
+    3: Es wurde kein Wert gesetzt
+    4: Der gesetzte Wert ist keine Valide eingabe (z.B. 3 Nachkommastellen)
      */
     private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
 
@@ -78,7 +78,7 @@ public class AddEntryActivity extends AppCompatActivity {
 
         errorValue = 0; //default
 
-        getDate(); //setze monthCurrent und yearCurrent mit dem aktuellen Datum
+        getDate(); //Setzt monthCurrent und yearCurrent mit dem aktuellen Datum
 
         //Was soll angelegt werden? Eine Einnahme oder eine Ausgabe?
         Intent intent = getIntent();
@@ -144,9 +144,9 @@ public class AddEntryActivity extends AppCompatActivity {
         TextView title = (TextView) findViewById(R.id.entryTitle);
         title.setText(selected+" anlegen");
 
-        //Spinner um den Zyklus anzugeben
+        //Spinner, um den Zyklus anzugeben
         spinnerCycle = (Spinner) findViewById(R.id.spinnerCycle);
-        ArrayAdapter<CharSequence> adapterCycle = ArrayAdapter.createFromResource(this,  R.array.spinner_cyclus, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapterCycle = ArrayAdapter.createFromResource(this,  R.array.spinner_cycle, android.R.layout.simple_spinner_item);
         adapterCycle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCycle.setAdapter(adapterCycle);
 
@@ -157,7 +157,8 @@ public class AddEntryActivity extends AppCompatActivity {
             ArrayAdapter<Category> adapterCategory = new ArrayAdapter<Category>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, list);
             adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerCategory.setAdapter(adapterCategory);
-        }else{ //Einnahme - muss nicht angezeigt werden
+        }else{
+            //Einnahme - muss nicht angezeigt werden
             spinnerCategory.setVisibility(View.INVISIBLE);
             TextView categoryTitle = (TextView) findViewById(R.id.textViewCategory);
             categoryTitle.setVisibility(View.INVISIBLE);
@@ -172,18 +173,21 @@ public class AddEntryActivity extends AppCompatActivity {
         boolean valid = getValues();
         if(valid){ //Titel und Wert wurde gesetzt
 
-            if(selected.equals("Einnahme")){ //Einnahme
+            if(selected.equals("Einnahme")){
+                //Einnahme
                 Intake intake = new Intake(name, value, day, month, year, cycle);
                 mySQLite.addIntake(intake);
-            }else{ //Ausgabe
+            }else{
+                //Ausgabe
                 Outgo outgo = new Outgo(name, value, day, month, year, cycle, category);
                 mySQLite.addOutgo(outgo);
-                //Prüfen, ob ein gesetztes Limit für Kategorie oder Gesamt überschritten wird
+
+                //Überprüfung, ob ein gesetztes Limit für Kategorie oder Gesamt überschritten wird
                       checkCatLimitReached(category);
                       checkPercentageLimitReached();
             }
 
-            //Wenn der Eintrag in der Vergangenheit liegt muss der Budget-Eintrag angepasst werden
+            //Wenn der Eintrag in der Vergangenheit liegt, muss der Budget-Eintrag angepasst werden
             if((month < monthCurrent) || (year < yearCurrent)) {
                 setBudgetEntry(month, year);
             }
@@ -193,13 +197,14 @@ public class AddEntryActivity extends AppCompatActivity {
             startActivity(switchToMainActivity);
         }else{
             informUser(); //Was für ein Fehler ist aufgetreten?
-            errorValue = 0; //danach zurücksetzen
+            errorValue = 0; //Danach zurücksetzen
         }
     }
 
     /*
     Abbrechen gedrückt
     */
+
     public void onClickCancel(View view){
         Intent switchToMainActivity= new Intent(this, MainActivity.class);
         startActivity(switchToMainActivity);
@@ -210,6 +215,7 @@ public class AddEntryActivity extends AppCompatActivity {
     Funktion um die eingegebenen Werte zu ermitteln
     Warnt, falls eine Eingabe nicht sinnvoll ist
      */
+
     private boolean getValues(){
         boolean retValue = true;
 
@@ -260,7 +266,7 @@ public class AddEntryActivity extends AppCompatActivity {
     }
 
 
-    //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
+    //Methode öffnet ein Fenster, um den Benutzer auf unterschiedliche Fehler hinzuweisen.
     private void informUser(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Hinweis");
@@ -298,10 +304,11 @@ public class AddEntryActivity extends AppCompatActivity {
     }
 
     /*
-    Funktion geht von moonthEntry +1 bis zum akuellen Monat/Jahr iteraqtiv durch
-    löscht den Eintrag mit dem Budget und berechnet den neuen Wert
-    ist der Wert positiv wird dieser in Einnahmen, ansonsten in Ausgaben, hinterlegt
+    Funktion geht von monthEntry +1 bis zum akuellen Monat/Jahr iterativ durch,
+    löscht den Eintrag mit dem Budget und berechnet den neuen Wert.
+    Ist der Wert positiv wird dieser in Einnahmen, ansonsten in Ausgaben, hinterlegt
      */
+
     private void setBudgetEntry(int monthEntry,int yearEntry){
         if((monthEntry < monthCurrent) || (yearEntry < yearCurrent)){
 
@@ -323,7 +330,7 @@ public class AddEntryActivity extends AppCompatActivity {
                     titel = titel+12+"."+(yearEntry-1);
                 }
 
-                //id des Eintrags ermitteln
+                //ID des Eintrags ermitteln
                 int idIntake = mySQLite.getIntakeIdByName(titel);
                 int idOutgo = mySQLite.getOutgoIdByName(titel);
                 if(idIntake > -1){
@@ -351,7 +358,7 @@ public class AddEntryActivity extends AppCompatActivity {
         }
     }
 
-    //Menü
+    //Aufruf Menü
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -367,7 +374,7 @@ public class AddEntryActivity extends AppCompatActivity {
         return true;
     }
 
-    //Menü
+    //Menüauswahl
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

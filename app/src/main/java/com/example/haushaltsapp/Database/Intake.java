@@ -1,9 +1,11 @@
 package com.example.haushaltsapp.Database;
 
 /*
-Repräsentation einer Einnahme
-id, name, value, day, month, ywar, cyclus
+Repräsentation einer Einnahmne,
+id, name, value, day, month, year, cycle
+Spezialisierung aus EntryFinance
  */
+
 public class Intake extends EntryFinance {
 
     public Intake(){

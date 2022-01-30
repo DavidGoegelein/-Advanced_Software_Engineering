@@ -23,16 +23,14 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class MonthComparisonViewActivity extends AppCompatActivity {
-    ////Variabeln zur Menünavigation
+
     private MySQLite mySQLite;
-    ///////////////////////////////
 
     private BarChart barChartInOutComparison;
 
     private TextView tvM1o, tvM2o, tvM1i, tvM2i;
     private TextView tvM1out, tvM2out,tvM1in, tvM2in;
 
-    //aktuelles Datum
     private int day1, day2;
     private int month1, month2;
     private int year1, year2;
@@ -54,7 +52,7 @@ public class MonthComparisonViewActivity extends AppCompatActivity {
         Calendar calender = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
-        //Beide Datums auf aktuelles Datum setzen
+        //Beide Daten auf aktuelles Datum setzen
         editTextDateM1.setText(dateFormat.format(calender.getTime()));
         editTextDateM2.setText(dateFormat.format(calender.getTime()));
 
@@ -93,14 +91,14 @@ public class MonthComparisonViewActivity extends AppCompatActivity {
         setTextInOut(month1,year1,month2,year2);
     }
 
-    //Kalender für auswahl des ersten Monats der Anzeige
+    //Kalender für Auswahl des ersten Monats der Anzeige
     public  void openCalenderM1(View dateview) {
         Calendar calender = Calendar.getInstance();
         year1 = calender.get(Calendar.YEAR);
         month1 = calender.get(Calendar.MONTH);
         day1 = calender.get(Calendar.DAY_OF_MONTH);
 
-        //Kalender auf Deutsch umstellen
+        //Kalenderanzeige auf Deutsch umstellen
         Locale locale = new Locale("de");
         Locale.setDefault(locale);
         Resources res = this.getResources();
@@ -141,7 +139,7 @@ public class MonthComparisonViewActivity extends AppCompatActivity {
         dateDialog.show();
     }
 
-    //Kalender für auswahl des zweiten Monats der Anzeige
+    //Kalender für Auswahl des zweiten Monats der Anzeige
     public  void openCalenderM2(View dateView) {
         Calendar calender = Calendar.getInstance();
         year2 = calender.get(Calendar.YEAR);
@@ -189,12 +187,12 @@ public class MonthComparisonViewActivity extends AppCompatActivity {
         dateDialog.show();
     }
 
-    //Runden auf zwei Nachkommazahlen
+    //Runden eines Float-Wertes auf zwei Nachkommazahlen
     public float roundF(float number, int position) {
         return (float) ((int)number + (Math.round(Math.pow(10,position)*(number-(int)number)))/(Math.pow(10,position)));
     }
 
-    //Balkendiagramm, mit Anzeige von zwei ausgewählten Monaten mit Ausgaben und Einnahmen
+    //Balkendiagramm, Anzeige von zwei ausgewählten Monaten mit Ausgaben und Einnahmen
     public void barGraphComparison(int month1, int year1, int month2, int year2) {
         String monthText1 = monthToString(month1);
         String monthText2 = monthToString(month2);
@@ -288,12 +286,13 @@ public class MonthComparisonViewActivity extends AppCompatActivity {
         tvM2i.setText(monthText2 +"."+year2);
     }
 
-    //Button zum setzen der Daten zu aktualisierung des Monats
+    //Button zum Setzen der Daten zur Aktualisierung des Monats
     public void changeMonth(View view) {
         setData();
     }
 
 
+    //Menüaufruf
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -301,6 +300,7 @@ public class MonthComparisonViewActivity extends AppCompatActivity {
         return true;
     }
 
+    //Menüauswahl
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){

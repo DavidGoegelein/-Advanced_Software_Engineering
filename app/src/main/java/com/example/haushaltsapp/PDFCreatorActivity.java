@@ -48,9 +48,8 @@ import java.util.Objects;
 
 public class PDFCreatorActivity extends AppCompatActivity {
 
-    ///////////////////////////////
+
     private MySQLite mySQLite;
-    ///////////////////////////////
 
     private Button createPdfButton;
     private Button viewPdfButton;
@@ -87,7 +86,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         calenderView = findViewById(R.id.calenderView);
         mySQLite = new MySQLite(this);
 
-        //aktuelles Datum auslesen und an Textview übergeben
+        //Aktuelles Datum auslesen und an Textview übergeben
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         dateSelect.setText(dateFormat.format(calendar.getTime()));
@@ -149,6 +148,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         createPdfButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                     try {
+                        //Aufruf der Methode bei Button-Klick "Generiere PDF"
                         printPDF();
                         Toast.makeText(getApplicationContext(), "PDF erstellt!",Toast.LENGTH_SHORT).show();
 
@@ -161,6 +161,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
 
         viewPdfButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                //Aufruf der Methode bei Button-Klick "PDF Anzeigen"
                 viewPdf();
             }
         });
@@ -169,6 +170,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
 
     public void printPDF()throws FileNotFoundException {
 
+        //Erstellung PDF-Dokument und Filepath
         File file=new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"Haushaltplaner.pdf");
         PdfWriter pdfWriter = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
@@ -265,6 +267,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         curIntake.close();
         mySQLite.close();
 
+        //Hinzufügen der Tabellen zum Dokument
         document.add(tableOutgoes);
         document.add(new AreaBreak());
         document.add(tableIntakes);
@@ -299,7 +302,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         }
     }
 
-
+    //Menüaufruf
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -312,7 +315,7 @@ public class PDFCreatorActivity extends AppCompatActivity {
         return true;
     }
 
-
+    //Menüauswahl
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

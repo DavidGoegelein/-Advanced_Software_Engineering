@@ -26,18 +26,15 @@ import java.util.regex.Pattern;
 
 public class BudgetLimitActivity extends AppCompatActivity {
 
-    ////Variabeln zur Menünavigation
     private MySQLite mySQLite;
     private LinearLayout linearLayout;
     private CheckBox checkBoxTotal, checkBoxCategory;
-
 
     //Variablen für Gesamtlimit
     private String totalString = "Gesamtbudget";
     private double totalLimit = 0; //Dafaultvalue
     private int totalColor = 0; //Dafaultvalue
 
-    //aktuelles Datum
     private int day;
     private int month;
     private int year;
@@ -47,6 +44,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
     2: Gesamtbudget einer Kategorie wird überschritten
     4: Eingabe bezüglich des Wertes ist Fehlerhaft (3 Nachkommastellen)
      */
+
     private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
 
     @Override
@@ -54,10 +52,10 @@ public class BudgetLimitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget_limit);
 
-        //Datenbank
+        //Aufruf der Datenbank
         mySQLite = new MySQLite(this);
 
-        //Layout aufbauen - wird aber nicht angezeigt
+        //Layout aufbauen
         setLayout();
 
         //Letzte Werte der Checkbox setzen
@@ -67,11 +65,10 @@ public class BudgetLimitActivity extends AppCompatActivity {
     }
 
     private void setCheckBoxes(){
-        //checkBox
-        checkBoxTotal = findViewById(R.id.checkBoxTotal);
+        checkBoxTotal = findViewById(R.id.checkBoxTotal);   //Checkbox
         checkBoxCategory = findViewById(R.id.checkBoxCategory);
 
-        //Ggf Hacken setzen
+        //Ggf Haken setzen
         if(mySQLite.getStateLimitState("Gesamtlimit").equals("true")){
             checkBoxTotal.setChecked(true);
             //Möglichkeit, um den Wert für das Gesamtlimit zu setzen
@@ -322,7 +319,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
 
     }
 
-    //Menü
+    //Menüaufruf
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -334,7 +331,7 @@ public class BudgetLimitActivity extends AppCompatActivity {
         return true;
     }
 
-    //Menü
+    //Menüauswahl
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

@@ -24,7 +24,7 @@
         android:title="Kategorie löschen"/>
 
     <item android:id="@+id/itemBudgetLimit"
-        android:title="Budget Limit festlegen"/>
+        android:title="Budget-Limit festlegen"/>
 
     <item android:id="@+id/itemDiagramView"
         android:title="Diagrammansicht"/>

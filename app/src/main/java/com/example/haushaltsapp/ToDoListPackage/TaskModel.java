@@ -1,7 +1,9 @@
 package com.example.haushaltsapp.ToDoListPackage;
 
-//Aufbau einer Task
-//To Do Models
+/*
+Repräsentation einer Task
+id, status, task, type
+ */
 
 public class TaskModel {
     private int id, status;

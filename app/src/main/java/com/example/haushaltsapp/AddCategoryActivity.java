@@ -20,7 +20,7 @@ import com.example.haushaltsapp.Database.MySQLite;
 
 public class AddCategoryActivity extends AppCompatActivity {
 
-    //Wie viele Kategorien kann man maximal in Summe anlegen?
+    //Maximale Anzahl der anlegbaren Kategorien
     private final int MAX_LIMIT = 9;
 
     private MySQLite mySQLite;
@@ -31,9 +31,9 @@ public class AddCategoryActivity extends AppCompatActivity {
     private double border = 0.0; //Limit der Kategorie
 
     /*
-    1: der Titel wurde nicht gesetzt
-    2: den Titel gibt es schon
-    3: es können keine weiteren Kategorien angelegt werden
+    1: Titel wurde nicht gesetzt
+    2: Titel gibt es schon
+    3: Können keine weiteren Kategorien angelegt werden
      */
 
     private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
@@ -47,7 +47,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         mySQLite = new MySQLite(this);
         mColorPreview = findViewById(R.id.preview_selected_color); //Kasten der später die Farbe anzeigt
 
-        //default-Werte setzen
+        //Setzen von Default-Werten
         mDefaultColor = R.color.colorDefaultCategory;
         mColorPreview.setBackgroundColor(mDefaultColor);
         errorValue = 0;
@@ -55,7 +55,7 @@ public class AddCategoryActivity extends AppCompatActivity {
 
 
 
-    //um die Farhe auszuwählen
+    //Auswählen der Farbe
     public void pickColor(View view){
         new ColorPickerPopup.Builder(AddCategoryActivity.this).initialColor(
                 Color.RED).enableBrightness(true)
@@ -80,7 +80,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     //Kategorie soll angelegt werden
     public void onClickOk(View view){
         ArrayList<Category> categories = mySQLite.getAllCategories();
-        if(categories.size() < MAX_LIMIT){ //können Kategorien noch angelegt werden?
+        if(categories.size() < MAX_LIMIT){ //Können Kategorien noch angelegt werden?
             boolean valide = getValues(); //Achtung, wenn valide = false ist errorValue != 0
             if(valide){ //sind die Eingaben sinnvoll?
                 Category category = new Category(name, mDefaultColor, border); //Kategorie hinzufügen
@@ -93,19 +93,19 @@ public class AddCategoryActivity extends AppCompatActivity {
         }
 
         if(errorValue > 0){ //Fehler ist aufgetreten. Benutzer hinweisen
-            informUser(); //öffnet einen Dialog mit Fehlerhinweis
-            errorValue = 0; //muss zurückgesetzt werden
+            informUser(); //Öffnet einen Dialog mit Fehlerhinweis
+            errorValue = 0; //Zurücksetzen des errorValues
         }
     }
 
-    //bei Abbruch zurück zur Startseite
+    //Bei Abbruch zurück zur Startseite
     public void onClickBreak(View view){
         Intent switchToMain = new Intent(this, MainActivity.class);
         startActivity(switchToMain);
     }
 
 
-    //um die eingetragene Werte zu ermitteln
+    //Um die eingetragenen Werte zu ermitteln
     private boolean getValues() {
 
         boolean retValue = true;
@@ -127,7 +127,6 @@ public class AddCategoryActivity extends AppCompatActivity {
             }
         }
 
-        //Limit
         EditText editTextValue = (EditText) findViewById(R.id.editTextLimit);
         String valueString = editTextValue.getText().toString();
         valueString = valueString.replace(",","."); //Komma muss mit einem Punkt ersetzt werden
@@ -137,7 +136,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     }
 
 
-    //Methode öffnet ein Fenster um den Benutzer auf unterschiedliche Fehler hinzuweisen.
+    //Methode öffnet ein Fenster, um den Benutzer auf unterschiedliche Fehler hinzuweisen.
     private void informUser(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Hinweis");
@@ -161,8 +160,7 @@ public class AddCategoryActivity extends AppCompatActivity {
     }
 
 
-
-    //Menü
+    //Aufruf des Menüs
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -175,7 +173,7 @@ public class AddCategoryActivity extends AppCompatActivity {
         return true;
     }
 
-    //Menü
+    //Menüauswahl
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

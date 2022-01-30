@@ -31,10 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private PieChart pieChart;
     private BarChart mBarChart;
 
-    //beide Datanbanken anlegen für die Einnahmen und Ausgaben
     private MySQLite mySQLite = new MySQLite(this, null, null, 0);
 
-    //aktuelles Datum
     private int day;
     private int month;
     private int year;
@@ -114,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        //Testen, ob es einen solchen Eintrag gibt. Später
-        //mit Methode in der DB ersetzen -> Laufzeit
+        //Testen, ob es einen solchen Eintrag gibt.
         ArrayList<Intake> intakes = mySQLite.getMonthIntakes(day, month, year);
         ArrayList<Outgo> outgoes = mySQLite.getMonthOutgoes(day, month, year);
 
@@ -135,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //falls nicht -> Eintrag erstellen
-        //wenn value negaitv -> Outgo wenn positiv Intake
+        //Falls nicht -> Eintrag erstellen
+        //Wenn Value negativ -> Outgo. Wenn positiv -> Intake
         if (!(existsIntake || existsOutgo)) {
             double value = 0.0;
             if (month > 1) {
@@ -156,14 +153,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //runden auf zwei Nachkommazahlen
+    //Runden eines Float-Wertes auf zwei Nachkommazahlen
     public float roundF(float number, int positions) {
         return (float) ((int)number + (Math.round(Math.pow(10,positions)*(number-(int)number)))/(Math.pow(10,positions)));
     }
 
-    //Werte aus der Datenbank
     private void setData() {
-        //Setzen der textview
+        //Setzen der Textview
         tvIntake = findViewById(R.id.tvEinnahmen);
         tvOutgo = findViewById(R.id.tvAusgaben);
         tvResidualBudget = findViewById(R.id.tvRestbudget);
@@ -189,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //Kreisdiagramm mit Ausgaben und Restbudget des aktuellen Monats
+    //Kreisdiagramm mit Ausgaben und Restbudget des aktuellen Monats füllen
     public void pieChart(float outgoValue, float budget) {
         pieChart.addPieSlice(new PieModel(
                 "Ausgaben",
@@ -231,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Menüaufruf
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -243,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
+    //Menüauswahl
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
