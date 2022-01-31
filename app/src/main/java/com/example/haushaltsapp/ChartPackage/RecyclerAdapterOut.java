@@ -10,6 +10,10 @@ import com.example.haushaltsapp.R;
 import com.example.haushaltsapp.Database.Outgo;
 import java.util.ArrayList;
 
+/*
+Adapter für Tabellenansicht - Ausgaben
+ */
+
 public class RecyclerAdapterOut extends RecyclerView.Adapter<RecyclerAdapterOut.MyViewHolderOut> {
 
     private ArrayList<Outgo> outgoList;

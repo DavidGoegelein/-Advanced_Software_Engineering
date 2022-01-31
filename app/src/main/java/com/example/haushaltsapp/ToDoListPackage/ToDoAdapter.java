@@ -14,6 +14,10 @@ import com.example.haushaltsapp.R;
 import com.example.haushaltsapp.ToDoListActivity;
 import java.util.List;
 
+/*
+Adapter zum Verwalten der To-do-Listen
+ */
+
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     private List<TaskModel> todoList;

@@ -10,6 +10,10 @@ import com.example.haushaltsapp.R;
 import com.example.haushaltsapp.Database.Intake;
 import java.util.ArrayList;
 
+/*
+Adapter für Tabellenansicht - Einnahmen
+ */
+
 public class RecyclerAdapterIn extends RecyclerView.Adapter<RecyclerAdapterIn.MyViewHolderIn> {
     private ArrayList<Intake> intakeList;
     private RecyclerViewClickListenerIn listener;

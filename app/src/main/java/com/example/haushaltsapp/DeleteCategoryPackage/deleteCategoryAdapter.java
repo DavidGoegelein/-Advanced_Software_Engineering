@@ -10,6 +10,10 @@ import com.example.haushaltsapp.R;
 import com.example.haushaltsapp.Database.Category;
 import java.util.ArrayList;
 
+/*
+Adapter zum Löschen von Kategorien
+ */
+
 public class deleteCategoryAdapter extends RecyclerView.Adapter<deleteCategoryAdapter.MyViewHolderCat> {
 
     private ArrayList<Category> categoryList;
