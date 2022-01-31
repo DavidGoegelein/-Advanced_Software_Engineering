@@ -4,19 +4,19 @@ import java.io.Serializable;
 
 /*
 Repräsentation einer Kategorie
-id, name, color, border
  */
-
 public class Category implements Serializable {
     int id;
     String name_PK;
     int color;
     double border;
 
+    // Dafault Konstruktor
     public Category(){
         super();
     }
 
+    // Konstruktor
     public Category(String name_PK, int color, double border){
         super();
         this.name_PK = name_PK;
@@ -24,9 +24,12 @@ public class Category implements Serializable {
         this.border = border;
     }
 
+    @Override
     public String toString(){
         return name_PK;
     }
+
+    // Getter und Setter
 
     public int getId() {
         return id;

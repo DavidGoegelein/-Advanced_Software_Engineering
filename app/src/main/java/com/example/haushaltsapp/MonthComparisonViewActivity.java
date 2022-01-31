@@ -22,6 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+/*
+Activity zum Monatsvergleich
+ */
 public class MonthComparisonViewActivity extends AppCompatActivity {
 
     private MySQLite mySQLite;

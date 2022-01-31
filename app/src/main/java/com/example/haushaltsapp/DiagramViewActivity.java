@@ -27,7 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-
+/*
+Activity zur Ansicht von Kreis- und Balkendiagramm
+ */
 public class DiagramViewActivity extends AppCompatActivity {
 
 
@@ -300,17 +302,19 @@ public class DiagramViewActivity extends AppCompatActivity {
             int catNum = categories.size();
             String catName;
             float costs;
+            float costsround;
             int catColor;
 
             while (num< catNum) {
                 catName = categories.get(num).getName_PK();
                 costs = mySQLite.getCategoryOutgoesMonth(day,month,year,catName );
+                costsround =roundF(costs,2);
                 catColor = categories.get(num).getColor();
 
                 pieChart.addPieSlice(
                         new PieModel(
                                 catName,
-                                costs,
+                                costsround,
                                 catColor));
                 num++;
             }
@@ -326,16 +330,18 @@ public class DiagramViewActivity extends AppCompatActivity {
             int catNum = categories.size();
             String catName;
             float costs;
+            float costsround;
             int catColor;
 
             while (num < catNum) {
                 catName = categories.get(num).getName_PK();
                 costs = mySQLite.getCategoryOutgoesMonth(day,month,year,catName );
+                costsround =roundF(costs,2);
                 catColor = categories.get(num).getColor();
 
                 barChart.addBar(new BarModel(
                         //catName,      //Anzeige von Kategorie als Achsenbeschriftung
-                        costs,
+                        costsround,
                         catColor
                 ));
                 num++;

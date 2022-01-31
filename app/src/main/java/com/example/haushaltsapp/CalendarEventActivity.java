@@ -27,6 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+/*
+Activity zum Verwalten von Kalenderapplikationen
+ */
 public class CalendarEventActivity extends AppCompatActivity {
 
     private MySQLite mySQLite;

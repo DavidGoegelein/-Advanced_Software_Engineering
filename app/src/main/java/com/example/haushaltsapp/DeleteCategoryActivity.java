@@ -20,7 +20,9 @@ import com.example.haushaltsapp.Database.Category;
 import com.example.haushaltsapp.Database.MySQLite;
 import java.util.ArrayList;
 
-
+/*
+Activity zum Löschen von Kategorien
+ */
 public class DeleteCategoryActivity extends AppCompatActivity {
 
 

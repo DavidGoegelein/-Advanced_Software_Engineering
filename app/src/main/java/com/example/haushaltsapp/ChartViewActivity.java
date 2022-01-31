@@ -31,6 +31,9 @@ import com.example.haushaltsapp.Database.Intake;
 import com.example.haushaltsapp.Database.MySQLite;
 import com.example.haushaltsapp.Database.Outgo;
 
+/*
+Activity für die Tabellenansicht
+ */
 public class ChartViewActivity extends  AppCompatActivity {
 
     private MySQLite mySQLite;
@@ -65,6 +68,11 @@ public class ChartViewActivity extends  AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         editTextDate.setText(dateFormat.format(calendar.getTime()));
+
+        Calendar calender = Calendar.getInstance();
+        year = calender.get(Calendar.YEAR);
+        month = calender.get(Calendar.MONTH)+1; //month hier eins weniger, deshalb +1
+        day = calender.get(Calendar.DAY_OF_MONTH);
 
         //Spinner zur Auswahl von Einnahmen oder Ausgaben
         spinner = findViewById(R.id.SpinnerInOut);
@@ -297,6 +305,7 @@ public class ChartViewActivity extends  AppCompatActivity {
         year = calender.get(Calendar.YEAR);
         month = calender.get(Calendar.MONTH);
         day = calender.get(Calendar.DAY_OF_MONTH);
+          //  calender.set(year,(month+1),day);
 
         //Kalenderanzeige auf Deutsch umstellen
         Locale locale = new Locale("de");

@@ -38,13 +38,16 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*
+Activity um eine Einnahme oder Ausgabe anzulegen
+ */
 public class AddEntryActivity extends AppCompatActivity {
 
     private MySQLite mySQLite;
 
-    private String selected; //Einnahme oder Ausgabe
+    private String selected; //Einnahme oder Ausgabe je nach dem, was im Menü ausgewählt wurde
 
-    private Spinner spinnerCycle, spinnerCategory; //Zyklus, Kategorie
+    private Spinner spinnerCycle, spinnerCategory; //Spinner für Zyklus, Kategorie
     private TextView editTextDate; //Datum
     private ImageView calenderView; //Kalender
 
@@ -64,7 +67,7 @@ public class AddEntryActivity extends AppCompatActivity {
     /*
     1: Gewähltes Datum liegt in der Zukunft
     2: Der Titel wurde nicht gesetzt
-    3: Es wurde kein Wert gesetzt
+    3: Es wurde kein Wert gesetzt (value = 0.00)
     4: Der gesetzte Wert ist keine Valide eingabe (z.B. 3 Nachkommastellen)
      */
     private int errorValue; //bei entsprechendem Fehler wird ein Dialog geöffnet, um den Benutzer darauf hinzuweisen
@@ -76,14 +79,13 @@ public class AddEntryActivity extends AppCompatActivity {
 
         mySQLite = new MySQLite(this);
 
-        errorValue = 0; //default
+        errorValue = 0; //Default Wert
 
         getDate(); //Setzt monthCurrent und yearCurrent mit dem aktuellen Datum
 
         //Was soll angelegt werden? Eine Einnahme oder eine Ausgabe?
         Intent intent = getIntent();
         selected = intent.getStringExtra("Selected");
-
 
         //Layout erstellen
         setLayout();
@@ -139,8 +141,11 @@ public class AddEntryActivity extends AppCompatActivity {
     }
 
 
-    //Methode um das Layout aufzubauen
+    /*
+    Methode, um das Layout entsprechend aufzubauen
+     */
     private void setLayout(){
+        //Titel setzen -> Einname anlegen oder Ausgabe anlegen
         TextView title = (TextView) findViewById(R.id.entryTitle);
         title.setText(selected+" anlegen");
 
@@ -158,21 +163,21 @@ public class AddEntryActivity extends AppCompatActivity {
             adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerCategory.setAdapter(adapterCategory);
         }else{
-            //Einnahme - muss nicht angezeigt werden
+            //Einnahme - Spinner darf nicht angezeigt werden
             spinnerCategory.setVisibility(View.INVISIBLE);
             TextView categoryTitle = (TextView) findViewById(R.id.textViewCategory);
             categoryTitle.setVisibility(View.INVISIBLE);
         }
     }
 
+
     /*
-    Eingabe Anlegen
+        Methode, die beim Klicken des Ok-Buttons aufgerufen wird
      */
-
     public void onClickOk(View view){
-        boolean valid = getValues();
-        if(valid){ //Titel und Wert wurde gesetzt
+        boolean valid = getValues(); // sind die Angaben valide? wenn nein -> errorValue != 0
 
+        if(valid){ //Titel und Wert wurde gesetzt
             if(selected.equals("Einnahme")){
                 //Einnahme
                 Intake intake = new Intake(name, value, day, month, year, cycle);
@@ -195,17 +200,19 @@ public class AddEntryActivity extends AppCompatActivity {
             //Zurück zur Main
             Intent switchToMainActivity= new Intent(this, MainActivity.class);
             startActivity(switchToMainActivity);
-        }else{
+
+        }else{ //Die Angaben waren nicht sinnvoll und der Benutzer muss darauf hingewiesen werden
             informUser(); //Was für ein Fehler ist aufgetreten?
             errorValue = 0; //Danach zurücksetzen
         }
     }
 
-    /*
-    Abbrechen gedrückt
-    */
 
+    /*
+    Methode, die beim Klicken des Abbrechen-Buttons aufgerufen wird
+     */
     public void onClickCancel(View view){
+        //zurück zur Main-Seite
         Intent switchToMainActivity= new Intent(this, MainActivity.class);
         startActivity(switchToMainActivity);
     }
@@ -213,9 +220,8 @@ public class AddEntryActivity extends AppCompatActivity {
 
     /*
     Funktion um die eingegebenen Werte zu ermitteln
-    Warnt, falls eine Eingabe nicht sinnvoll ist
+    Achtung - setzt bei einer nicht sinnvolle Eingabe errorValue != 0
      */
-
     private boolean getValues(){
         boolean retValue = true;
 
@@ -224,7 +230,7 @@ public class AddEntryActivity extends AppCompatActivity {
         day = Integer.parseInt(date.substring(0,2));
         month = Integer.parseInt(date.substring(3,5));
         year = Integer.parseInt(date.substring(6,10));
-
+        //Datum liegt in der Zukunft
         if((month > monthCurrent && year >= yearCurrent) || (year > yearCurrent) ||(day > dayCurrent && month == monthCurrent && year == yearCurrent)){ //Eintrag liegt in der Zukunft
             errorValue = 1;
             retValue = false;
@@ -232,7 +238,7 @@ public class AddEntryActivity extends AppCompatActivity {
 
         //Wert anzeigen lassen:
         EditText editTextValue = (EditText) findViewById(R.id.editTextNumberDecimal);
-        Pattern p = Pattern.compile("^\\d+([\\.,]\\d{2})?$");
+        Pattern p = Pattern.compile("^\\d+([\\.,]\\d{2})?$"); // 10 oder 10,00 oder 10.00 erlaubt
         Matcher m = p.matcher(editTextValue.getText().toString());
         if(m.find()){ //Eintrag ist valide
             value = Double.parseDouble(editTextValue.getText().toString().replace(",",".")); //Eingabe mit Komma abfangen
@@ -240,7 +246,7 @@ public class AddEntryActivity extends AppCompatActivity {
                 errorValue = 3;
                 retValue = false;
             }
-        }else{
+        }else{ //es wurde z.B. 10.000 angegeben
             errorValue = 4;
             retValue = false;
         }
@@ -249,7 +255,7 @@ public class AddEntryActivity extends AppCompatActivity {
         EditText editTextName = (EditText) findViewById(R.id.Bezeichnung);
         name = editTextName.getText().toString();
         if(name.equals("Titel") || name.trim().isEmpty()){
-            errorValue = 2;
+            errorValue = 2; //Es wurde kein Titel gesetzt
             retValue = false;
         }
 
@@ -266,18 +272,21 @@ public class AddEntryActivity extends AppCompatActivity {
     }
 
 
-    //Methode öffnet ein Fenster, um den Benutzer auf unterschiedliche Fehler hinzuweisen.
+    /*
+    Methode öffnet einen Dialog, um den Benutzer auf unterschiedliche Fehler hinzuweisen.
+     */
     private void informUser(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Hinweis");
+        builder.setTitle("Hinweis"); //Titel des Dialogs
 
+        //Hinweistext des Dialogs
         if(errorValue == 1){
             builder.setMessage("Das gewählte Datum liegt in der Zukunft.");
         }else if(errorValue == 2){
             builder.setMessage("Bitte setzen Sie einen Titel.");
         }else if(errorValue == 3){
             builder.setMessage("Bitte geben Sie einen Wert an.");
-        }else{ // errorValue 4
+        }else if(errorValue == 4){
             builder.setMessage("Ihre Eingabe bezüglich des Werts ist nicht valide.");
         }
 
@@ -289,11 +298,13 @@ public class AddEntryActivity extends AppCompatActivity {
                     }
                 });
         AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        alertDialog.show(); //Dialog anzeigen
         month--; //damit im Kalender der aktuelle Monat angezeigt wird.
     }
 
-    // Setzt die Variablen monthCurrent und yearCurrent mit dem aktuellen datum
+    /*
+     Setzt die Variablen dayCurrent, monthCurrent und yearCurrent mit dem aktuellen Datum
+     */
     private void getDate(){
         Calendar calender = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
@@ -305,10 +316,9 @@ public class AddEntryActivity extends AppCompatActivity {
 
     /*
     Funktion geht von monthEntry +1 bis zum akuellen Monat/Jahr iterativ durch,
-    löscht den Eintrag mit dem Budget und berechnet den neuen Wert.
+    löscht den Eintrag "Übertrag vom XX.YYYY" mit dem Budget und berechnet den neuen Wert.
     Ist der Wert positiv wird dieser in Einnahmen, ansonsten in Ausgaben, hinterlegt
      */
-
     private void setBudgetEntry(int monthEntry,int yearEntry){
         if((monthEntry < monthCurrent) || (yearEntry < yearCurrent)){
 
@@ -321,8 +331,7 @@ public class AddEntryActivity extends AppCompatActivity {
                     monthEntry = monthEntry + 1;
                 }
 
-                //Eintrag muss aus der Datenbank enfernt werden
-                //Wie der Eintrag lautet
+                //Titel des Eintrags ermitteln
                 String titel = "Übertrag vom ";
                 if(monthEntry > 1){
                     titel = titel+(monthEntry-1)+"."+yearEntry;
@@ -339,22 +348,23 @@ public class AddEntryActivity extends AppCompatActivity {
                     mySQLite.deleteOutgoById(idOutgo); //Eintrag löschen
                 }
 
-                //Neuer Eintrag erstellen
+                //Neuer Wert für den Eintrag ermitteln
                 double value = 0.0;
                 if (monthEntry > 1) {
                     value = mySQLite.getValueIntakesMonth(31, monthEntry - 1, yearEntry) - mySQLite.getValueOutgoesMonth(31, monthEntry - 1, yearEntry);
                 } else { //1
                     value = mySQLite.getValueIntakesMonth(31, 12, yearEntry - 1) - mySQLite.getValueOutgoesMonth(31, 12, yearEntry - 1);
                 }
-                if(value >= 0) { //Einnahme
+                //Eintrag "Übertrag vom XX.YYYY" erstellen
+                if(value >= 0) { //als Einnahme
                     Intake intake = new Intake(titel, value, 1, monthEntry, yearEntry, "einmalig");
                     mySQLite.addIntake(intake);
-                }else{ //Ausgabe
-                    value = value * (-1);
+                }else{ //als Ausgabe
+                    value = value * (-1); //Betrag bilden
                     Outgo outgo = new Outgo(titel, value, 1, monthEntry, yearEntry, "einmalig","Sonstiges");
                     mySQLite.addOutgo(outgo);
                 }
-            }while (!((monthEntry == monthCurrent) && (yearEntry == yearCurrent)));
+            }while (!((monthEntry == monthCurrent) && (yearEntry == yearCurrent))); //bis zm aktuellen Monat
         }
     }
 

@@ -45,7 +45,9 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
-
+/*
+Activity zum Generieren von PDF-Dateien
+ */
 public class PDFCreatorActivity extends AppCompatActivity {
 
 

@@ -32,6 +32,9 @@ import java.util.Collections;
 import java.util.List;
 import androidx.appcompat.app.AlertDialog;
 
+/*
+Activity zum Verwalten vo To-do-Listen
+ */
 public class ToDoListActivity extends AppCompatActivity implements ToDoInterface, AdapterView.OnItemSelectedListener {
 
 

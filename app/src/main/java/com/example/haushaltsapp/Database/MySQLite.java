@@ -12,7 +12,9 @@ import java.util.List;
 
 public class MySQLite extends SQLiteOpenHelper {
 
+    // Datenbankversion
     private static final int DATABASE_VERSION = 1;
+    // Name der Datenbank
     private static final String DATABASE_NAME = "BudgetAppDB";
 
     public MySQLite(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
@@ -23,6 +25,7 @@ public class MySQLite extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    // Erstellen der Tabellen
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_Intake_TABLE = "CREATE TABLE intake ( " + "id INTEGER PRIMARY KEY AUTOINCREMENT, " +  "name TEXT, "+"value DOUBLE, "+"day INTEGER, "+"month INTEGER, "+"year INTEGER, " +"cycle TEXT)";
@@ -41,6 +44,7 @@ public class MySQLite extends SQLiteOpenHelper {
         db.execSQL(CREATE_Limit_TABLE);
     }
 
+    //Tabellen aktuallisieren
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS intake");
@@ -57,7 +61,7 @@ public class MySQLite extends SQLiteOpenHelper {
 
 
     ////////////////////////////////MySQLite//////////////////////////////////////////////////
-    private static final String TABLE_INTAKE= "intake";
+    private static final String TABLE_INTAKE= "intake"; //id, name, value, day, month, year, cycle
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_VALUE = "value";
@@ -66,10 +70,10 @@ public class MySQLite extends SQLiteOpenHelper {
     private static final String KEY_YEAR = "year";
     private static final String KEY_CYCLE = "cycle";
     //////////////////////////////////////////////////////////////////////////////////////////
-    private static final String TABLE_OUTGO= "outgo";
+    private static final String TABLE_OUTGO= "outgo"; //id, name, value, day, month, year, cycle, categoryName
     private static final String KEY_CATEGORY = "categoryName";
     //////////////////////////////////////////////////////////////////////////////////////////
-    private static final String TABLE_CATEGORY = "category";
+    private static final String TABLE_CATEGORY = "category"; //id, name, color, border
     private static final String KEY_COLOR = "color";
     private static final String KEY_BORDER = "border";
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +82,7 @@ public class MySQLite extends SQLiteOpenHelper {
     private static final String KEY_STATUS = "status";
     private static final String KEY_TYPE = "type";
     //////////////////////////////////////////////////////////////////////////////////////////
-    private static final String TABLE_LIMIT_STATE = "limitState";
+    private static final String TABLE_LIMIT_STATE = "limitState"; // id, name, border, state
     private static final String KEY_STATE = "state";
 
 
@@ -87,10 +91,11 @@ public class MySQLite extends SQLiteOpenHelper {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /*
-    Funtkion, um eine Einnahme der Datenbank hinzuzufügen
+    Funtkion, um eine Einnahme der Tabelle TABLE_INTAKE hinzuzufügen
      */
     public void addIntake(Intake intake){
         SQLiteDatabase db = this.getWritableDatabase();
+
         ContentValues value = new ContentValues();
         value.put(KEY_NAME, intake.getName());
         value.put(KEY_VALUE, intake.getValue());
@@ -99,21 +104,22 @@ public class MySQLite extends SQLiteOpenHelper {
         value.put(KEY_YEAR, intake.getYear());
         value.put(KEY_CYCLE, intake.getCycle());
 
-        db.insert(TABLE_INTAKE, null, value);
-        db.close();
+        db.insert(TABLE_INTAKE, null, value); //neue Zeile in der Tabelle
+        db.close(); // Datenbank schließen
     }
 
-    /*
-       Die Funktion liefert Rückgabe einer ArrayList, welche alle Einnahmen der Datenbank beinhaltet
-    */
 
+    /*
+    Die Funktion liefert Rückgabe einer ArrayList, welche alle Einnahmen der Datenbank beinhaltet.
+    Sortiert nach dem Datum. Aufsteigend
+    */
     public ArrayList<Intake> getAllIntakes(){
-        ArrayList<Intake> intakes = new ArrayList<Intake>();
+        ArrayList<Intake> intakes = new ArrayList<Intake>(); //Rückgabewert
 
         String query = "SELECT * FROM "+TABLE_INTAKE +" ORDER BY "+KEY_YEAR+", "+KEY_MONTH+", "+KEY_DAY;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor != null){
+        if(cursor != null){ //Tabelle enthaelt mindestens eine Zeile
             Intake intake = null;
             if(cursor.moveToFirst()){
                 do{
@@ -129,27 +135,26 @@ public class MySQLite extends SQLiteOpenHelper {
                     intakes.add(intake);
                 }while(cursor.moveToNext());
             }
-
         }
 
-        db.close();
-        Log.d("getAllIntakes", intakes.toString());
-        return intakes;
+        db.close(); //Datenbank schließen
+        return intakes; // alle Einnahmen sortiert nach Datum
     }
 
 
     /*
-    Die Funktion liefert die Einnahme zurück, welche die übergebene ID besitzt
-    Sollte diese ID nicht existieren, so wird eine "leere" Ausgabe (ohne name, value ect) zurückgegeben
+    Die Funktion liefert die Einnahme zurück, welche die übergebene ID besitzt.
+    Sollte diese ID nicht existieren, eine Einnahme mit default-Werten fuer die jeweiligen
+    Attribute zurück gegeben
     */
     public Intake getIntakeById(int id){
-        Intake intake = new Intake();
+        Intake intake = new Intake(); //Rückgabewert
 
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_ID+" = "+id;
 
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()){
+        if(cursor.moveToFirst()){ //Ein solcher Eintrag existiert
             intake.setId_PK(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID)));
             intake.setName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_NAME)));
             intake.setValue(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_VALUE)));
@@ -158,26 +163,27 @@ public class MySQLite extends SQLiteOpenHelper {
             intake.setYear(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_YEAR)));
             intake.setCycle(cursor.getString(cursor.getColumnIndexOrThrow(KEY_CYCLE)));
         }
-        db.close();
+        db.close(); //Datenbank schließen
 
-        return intake;
+        return intake; //Einname zurueck geben
     }
+
 
     /*
     Funktion liefert eine ID einer Einname, welche den übergebenen Namen aufweist.
     Wenn es eine solche ID nicht gibt, wird -1 zurück gegeben.
      */
-
     public int getIntakeIdByName(String name){
-        int result = -1;
+        int result = -1; //default Rückgabewert
+
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_NAME+" = \""+name+"\"";
-
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()){
-            result = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
+        if(cursor.moveToFirst()){ //Ein solcher Eintrag mit dem Namen existiert
+            result = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID)); //result überschreiben
         }
-        db.close();
+
+        db.close(); //Datenbank schließen
         return result;
     }
 
@@ -185,25 +191,26 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Funktion löscht die Einnahme, welche die übergebne ID besitzt.
     Sollte ein solcher Eintrag nicht existieren, wird die Datenbank ohne
-    einen weiteren Vorgang geschlossen
+    einen weiteren Vorgang geschlossen.
     */
     public void deleteIntakeById(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_INTAKE+" WHERE "+KEY_ID+" = "+id;
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()){
+        if(cursor.moveToFirst()){ //Ein solcher Eintrag exisitert
             String idIntake = cursor.getString(0);
-            db.delete(TABLE_INTAKE, KEY_ID+" = ?", new String[]{idIntake});
+            db.delete(TABLE_INTAKE, KEY_ID+" = ?", new String[]{idIntake}); //lösche Eintrag
         }
-        db.close();
+        db.close(); //
     }
+
 
     /*
     Funktion dient dazu, die Zeile der Tabelle mit der übergebenen ID mit den Informationen der
     übergebenen Einnahme zu überschreiben. Sollte eine solche ID nicht existieren, wird
     ein neuer Eintrag mit den gewünschten Daten angelegt.
      */
-    public int updateIntake(Intake intake, int id){
+    public void updateIntake(Intake intake, int id){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
         value.put(KEY_NAME, intake.getName());
@@ -212,24 +219,23 @@ public class MySQLite extends SQLiteOpenHelper {
         value.put(KEY_MONTH, intake.getMonth());
         value.put(KEY_YEAR, intake.getYear());
         value.put(KEY_CYCLE, intake.getCycle());
-        int i = db.update(TABLE_INTAKE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
-        db.close();
-        return i;
+        db.update(TABLE_INTAKE, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
+        db.close(); //Datenbank schließen
     }
 
 
     /*
-    Funktion gibt eine Float-Wert zurück, welcher alle Einnahmen der Datenbank
-    berücksichtigt, welche vom 1.month.year bis day.month.year getätigt wurden.
-    Periodische Ausgaben sind hierbei berücksichtigt.
+    Funktion gibt eine ArrayList zurück, welche alle Einnahmen der Datenbank
+    beinhaltet, welche vom 1.month.year bis day.month.year getätigt wurden.
+    Periodische Ausgaben aus vergangenen Monaten sind hierbei berücksichtigt.
+    Sortiert nach dem Datum aufsteigend
     */
-
     public ArrayList<Intake> getMonthIntakes(int day, int month, int year) {
-        ArrayList<Intake> intakes = new ArrayList<Intake>();
+        ArrayList<Intake> intakes = new ArrayList<Intake>(); //Rückgabewert
 
         // Einträge der vergangenen Monate mit dem Zyklus monatlich
         String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" )";
-        // Einträge des aktuellen Monats
+        // Einträge des aktuellen Monats vom 1.month.year bis day.month.year
         String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(day) +"\")";
         String query = "SELECT * FROM " + TABLE_INTAKE + " WHERE "+condition1+" OR " +condition2+" ORDER BY "+KEY_YEAR+", "+KEY_MONTH+", "+KEY_DAY;
 
@@ -259,30 +265,22 @@ public class MySQLite extends SQLiteOpenHelper {
     }
 
     /*
-    Funktion gibt eine ArrayList zurück, welche alle Einnahmen der Datenbank
-    beinhaltet, welche vom 1.month.year bis day.month.year getätigt wurden.
+    Funktion gibt eine Float-Wert zurück, welcher alle Einnahmen der Datenbank
+    berücksichtigt, welche vom 1.month.year bis day.month.year getätigt wurden.
     Periodische Ausgaben sind hierbei berücksichtigt.
     */
     public float getValueIntakesMonth(int day, int month, int year) {
-        float value = 0;
+        float value = 0; //Rückgabewert
 
-        // Einträge der vergangenen Monate mit dem Zyklus monatlich
-        String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" )";
-        // Einträge des aktuellen Monats
-        String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(day) +"\")";
-        String query = "SELECT SUM("+KEY_VALUE+") FROM " + TABLE_INTAKE + " WHERE "+condition1+" OR " +condition2;
+        ArrayList<Intake> intakes = getMonthIntakes(day, month, year); // Alle relevanten Einträge
 
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-
-
-        if (cursor.moveToFirst()) {
-            value = (float) cursor.getDouble(0);
+        //Summe aller Werte bestimmen
+        for(int i = 0; i < intakes.size(); i++){
+            value = value + (float) (intakes.get(i).getValue());
         }
-
-        db.close();
         return value;
     }
+
 
 
 
@@ -291,9 +289,8 @@ public class MySQLite extends SQLiteOpenHelper {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /*
-     Funktion dient dazu, die übergebene Ausgabe in die Datenbank einzutragen
+     Funktion dient dazu, eine Ausgabe in der Tabelle TABLE_OUTGO anzulegen
     */
-
     public void addOutgo(Outgo outgo){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -306,17 +303,16 @@ public class MySQLite extends SQLiteOpenHelper {
         value.put(KEY_CATEGORY, outgo.getCategory());
 
         db.insert(TABLE_OUTGO, null, value);
-        db.close();
-        Log.d("addOutgo", outgo.toString());
+        db.close(); // Datenbank schließen
     }
 
 
     /*
-    Funktion gibt eine ArrayList zurück, welche alle Ausgaben der Datenbank beinhaltet
+    Funktion gibt eine ArrayList zurück, welche alle Ausgaben der Datenbank beinhaltet.
+    Sortiert nach dem Datum. Aufsteigend
     */
-
     public ArrayList<Outgo> getAllOutgoes(){
-        ArrayList<Outgo> outgoes = new ArrayList<Outgo>();
+        ArrayList<Outgo> outgoes = new ArrayList<Outgo>(); //Rückgabewert
 
         String query = "SELECT * FROM "+TABLE_OUTGO+" ORDER BY "+KEY_YEAR+", "+KEY_MONTH+", "+KEY_DAY;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -339,25 +335,25 @@ public class MySQLite extends SQLiteOpenHelper {
                 }while(cursor.moveToNext());
             }
         }
-        db.close();
-        Log.d("getAllOutgos", outgoes.toString());
+        db.close(); //Datenbank schließen
+
         return outgoes;
     }
 
 
     /*
-    Die Funktion liefert die Ausgabe zurück welche die übergebene ID besitzt
-    Sollte diese ID nicht existieren so wird eine "leere" Ausgabe (ohne name, value ect) zurückgegeben
+    Die Funktion liefert die Ausgabe zurück, welche die übergebene ID besitzt.
+    Sollte diese ID nicht existieren, wird eine Ausgabe mit default-Werten fuer die jeweiligen
+    Attribute zurück gegeben
      */
-
     public Outgo getOutgoById(int id){
-        Outgo outgo = new Outgo();
+        Outgo outgo = new Outgo(); // Rückgabewert
 
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_ID+" = "+id;
 
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()){
+        if(cursor.moveToFirst()){ // Ein solcher Eintrag mit der ID existiert
             outgo.setId_PK(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID)));
             outgo.setName(cursor.getString(cursor.getColumnIndexOrThrow(KEY_NAME)));
             outgo.setValue(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_VALUE)));
@@ -367,7 +363,7 @@ public class MySQLite extends SQLiteOpenHelper {
             outgo.setCycle(cursor.getString(cursor.getColumnIndexOrThrow(KEY_CYCLE)));
             outgo.setCategory(cursor.getString(cursor.getColumnIndexOrThrow(KEY_CATEGORY)));
         }
-        db.close();
+        db.close(); // Datenbank schließen
 
         return outgo;
     }
@@ -375,19 +371,19 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Funktion löscht die Ausgabe, welche die übergebene ID besitzt.
     Sollte ein solcher Eintrag nicht existieren wird die Datenbank ohne
-    einen weiteren Vorgang geschlossen
+    einen weiteren Vorgang geschlossen.
      */
-
     public void deleteOutgoById(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_ID+" = "+id;
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()){
-            String idOutgo = cursor.getString(0);
-            db.delete(TABLE_OUTGO, KEY_ID+" = ?", new String[]{idOutgo});
 
+        if(cursor.moveToFirst()){ //Ein solcher Eintrag exisitert
+            String idOutgo = cursor.getString(0);
+            db.delete(TABLE_OUTGO, KEY_ID+" = ?", new String[]{idOutgo}); //Eintrag löschen
         }
-        db.close();
+
+        db.close(); //Datenbank schließen
     }
 
 
@@ -396,8 +392,7 @@ public class MySQLite extends SQLiteOpenHelper {
     übergebenen Ausgabe zu überschreiben. Sollte eine solche ID nicht existieren, wird
     ein neuer Eintrag mit den gewünschten Daten angelegt.
      */
-
-    public int updateOutgo(Outgo outgo, int id){
+    public void updateOutgo(Outgo outgo, int id){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
         value.put(KEY_NAME, outgo.getName());
@@ -407,29 +402,29 @@ public class MySQLite extends SQLiteOpenHelper {
         value.put(KEY_YEAR, outgo.getYear());
         value.put(KEY_CYCLE, outgo.getCycle());
         value.put(KEY_CATEGORY, outgo.getCategory());
-        int i = db.update(TABLE_OUTGO, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
-        db.close();
-        return i;
+        //In die Datenbank schreiben
+        db.update(TABLE_OUTGO, value, KEY_ID+" = ?", new String[] { String.valueOf(id) });
+        db.close(); //Datenbank schließen
     }
+
 
     /*
    Funktion gibt eine ArrayList zurück, welche alle Ausgaben der Datenbank
    beinhaltet, welche vom 1.month.year bis day.month.year getätigt wurden.
    Periodische Ausgaben sind dabei berücksichtigt.
+   Sortiert nach dem Datum - aufsteigend
     */
-
     public ArrayList<Outgo> getMonthOutgoes(int day, int month, int year) {
-        ArrayList<Outgo> outgos = new ArrayList<Outgo>();
+        ArrayList<Outgo> outgos = new ArrayList<Outgo>(); //Rückgabewert
 
         // Einträge der vergangenen Monate mit dem Zyklus monatlich
         String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" )";
-        // Einträge des aktuellen Monats
+        // Einträge des aktuellen Monats vom 1.month.year bis day.month.year
         String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(day) +"\")";
         String query = "SELECT * FROM " + TABLE_OUTGO + " WHERE "+condition1+" OR " +condition2+" ORDER BY "+KEY_YEAR+", "+KEY_MONTH+", "+KEY_DAY;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-
 
         if (cursor != null) {
             Outgo outgo = null;
@@ -451,7 +446,7 @@ public class MySQLite extends SQLiteOpenHelper {
                 while (cursor.moveToNext()) ;
             }
         }
-        db.close();
+        db.close(); //Datenbank schließen
 
         return outgos;
     }
@@ -462,24 +457,15 @@ public class MySQLite extends SQLiteOpenHelper {
    berücksichtigt, die vom 1.month.year bis day.month.year getätigt wurden.
    Periodische Ausgaben sind dabei berücksichtigt.
     */
-
     public float getValueOutgoesMonth(int day, int month, int year) {
-        float value = 0;
-        // Einträge der vergangenen Monate mit dem zyklus monatlich
-        String condition1 = "(" + KEY_CYCLE + " = \"monatlich\" AND "+KEY_YEAR + " <= \"" + String.valueOf(year)+"\" AND "+KEY_MONTH+"< \""+ String.valueOf(month) +"\" )";
-        // Einträge des aktuellen Monats
-        String condition2 = "("+ KEY_YEAR + " = \"" + String.valueOf(year) + "\" AND " + KEY_MONTH + " = \"" + String.valueOf(month) +"\" AND "+KEY_DAY+" <= \""+String.valueOf(day) +"\")";
-        String query = "SELECT SUM("+KEY_VALUE+") FROM " + TABLE_OUTGO + " WHERE "+condition1+" OR " +condition2+" ORDER BY "+KEY_YEAR+", "+KEY_MONTH+", "+KEY_DAY;
+        float value = 0; //Rückgabewert
 
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Outgo> outgos = getMonthOutgoes(day, month, year); // Alle relevanten Einträge
 
-        if (cursor.moveToFirst()) {
-            value = (float) cursor.getDouble(0);
+        //Summe aller Werte bestimmen
+        for(int i = 0; i < outgos.size(); i++){
+            value = value + (float) (outgos.get(i).getValue());
         }
-
-        db.close();
-
         return value;
     }
 
@@ -487,10 +473,9 @@ public class MySQLite extends SQLiteOpenHelper {
     Funktion gibt einen Float-Wert zurück, welcher alle Ausgabe der Datenbank
     berücksichtigt, welche in einem bestimmtem Monat und in einer bestimmten Kategorie getätigt wurden.
     Periodische Ausgaben sind babei berücksichtigt
+    Sortiert nach dem Datum - aufsteigend
      */
-
-    public  float getCategoryOutgoesMonth(int day, int month, int year, String category)
-    {
+    public  float getCategoryOutgoesMonth(int day, int month, int year, String category) {
         float value = 0;
 
         // Einträge der vergangenen Monate mit dem zyklus monatlich
@@ -516,22 +501,22 @@ public class MySQLite extends SQLiteOpenHelper {
     Funktion gibt die ID mit der Ausgabe zurück, welche den übergebenen Namen hat.
     Gibt es diesen Eintrag nicht, wird -1 zurückgegeben.
      */
-
     public int getOutgoIdByName(String name){
-        int result = -1;
+        int result = -1; //Rückgabewert mit Default Wert
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_OUTGO+" WHERE "+KEY_NAME+" = \""+name+"\"";
 
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()){
+        if(cursor.moveToFirst()){ //Ein solcher Eintrag exisitert
             result = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
         }
-        db.close();
+        db.close(); //Datenabnk schließen
         return result;
     }
 
-    //Methode zum Setzen der Kategorie eines Outgoes
-
+    /*
+    Methode zum Setzen der Kategorie eines Outgoes
+    */
     public void setOutgoCategory(int id, String category){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -547,7 +532,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Hinzufügen einer Kategorie Category
      */
-
     public void addCategory(Category category){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -578,7 +562,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Löschen einer Kategorie mit übergebenen Namen
      */
-
     public void deleteCategoryByName(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_CATEGORY+" WHERE "+KEY_NAME+" = \""+name+"\"";
@@ -593,7 +576,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Auslesen aller angelegten Kategorien
      */
-
     public ArrayList<Category> getAllCategories(){
         ArrayList<Category> categories = new ArrayList<Category>();
 
@@ -800,7 +782,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Methode zur Prüfung, ob ein gesetztes Budgetlimit einer Kategorie (wenn angelegt) erreicht wurde
     */
-
     public boolean isCatBudgetLimitReached(int month, int year, String category, double categoryLimit) {
         Double monthCatValue = 0.0;
         boolean isLimitReached = false;
@@ -820,7 +801,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Methode zur Prüfung, ob ein gesetztes prozentuales Gesamtbudget erreicht wurde
     */
-
     public boolean isPercentBudgetLimitReached(int month, int year, Integer percentOfBudget){
         Double monthOutgoValue = 0.0 ;
         Double monthIntakeValue = 0.0;
@@ -850,7 +830,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Hinzufügen eines Limits
     */
-
     public void addLimitState(String name, String state){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
@@ -864,7 +843,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Aktualisieren eines Limits
     */
-
     public int updateLimitState(String name, String state){
         int id = -1;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -887,7 +865,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Limit ersetzen. Primär für Gesamtlimit
     */
-
     public int updateStateLimit(String name, double valueLimit, String state){
         int id = -1;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -911,7 +888,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
     Ermittlung des Status des gesetzten Limits
     */
-
     public String getStateLimitState(String name){
         String state = "";
 
@@ -931,7 +907,6 @@ public class MySQLite extends SQLiteOpenHelper {
     /*
    Ermittlung des Wert des gesetzten Limits
     */
-
     public double getStateLimitValue(String name){
         double value = 0.0;
 

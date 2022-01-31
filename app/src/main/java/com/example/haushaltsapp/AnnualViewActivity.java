@@ -22,10 +22,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+/*
+Activity zum Jahresvergleich
+ */
+
 public class AnnualViewActivity extends AppCompatActivity {
 
     private MySQLite mySQLite;
-    ///////////////////////////////
 
     private BarChart barChartInOut;
 
@@ -38,7 +41,7 @@ public class AnnualViewActivity extends AppCompatActivity {
     private int month;
     private int year;
 
-    private TextView editTextDate; //Datum
+    private TextView editTextDate;
     private String date;
 
 

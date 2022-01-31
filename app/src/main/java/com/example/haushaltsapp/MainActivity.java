@@ -23,7 +23,9 @@ import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.PieModel;
 
-
+/*
+Startseite
+ */
 public class MainActivity extends AppCompatActivity {
 
     //Textviews und Diagramme
@@ -61,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // Setzt die Variablen day, month, year
+    /*
+    Methode setzt die Variablen day, month, year mit aktuellem Datum
+     */
     private void getDate() {
         Calendar calender = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
@@ -71,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
         year = Integer.parseInt(dates.substring(6, 10));
     }
 
-    //LimitState default anlegen
+    /*
+    Methode setzt beim aller ersten Ausführen der App beide Limits als nicht gesetzt
+     */
     private void setLimitState() {
         String state = mySQLite.getStateLimitState("Gesamtlimit");
         if (state.equals("")) {
@@ -81,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //Kategorien anlegen
+    /*
+    Methode legt beim aller ersten Ausführen der App die default Kategorien an
+    */
     private void setCategories(){
         ArrayList<Category> categories = mySQLite.getAllCategories();
         if(categories.size() == 0){ //falls es noch keine Kategorien gibt, diese hier anlegen
@@ -100,7 +108,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Übertrage das Budget des letzten Monats
+
+    /*
+    Methode erstellt den Eintrag "Übertrag vom XX.YYYY" falls dieser noch nicht existiert
+     */
     private void setLastBudget() {
         //Prüfen ob es einen solchen Eintrag gibt
         //Dazu erst den gewünschten Titel generieren
@@ -124,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (!existsIntake) { //Laufzeit
+        if (!existsIntake) { //Laufzeit -> Wenn ein Eintrag bereits in Einnahmen bestimmt
             for (int i = 0; i < outgoes.size(); i++) {
                 if (outgoes.get(i).getName().equals(titel)) {
                     existsOutgo = true;

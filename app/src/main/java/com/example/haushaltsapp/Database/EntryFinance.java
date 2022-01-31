@@ -3,10 +3,9 @@ package com.example.haushaltsapp.Database;
 import java.io.Serializable;
 
 /*
-Abstrakte Klasse Finanzen
-id, name, value, day, month, year, cycle
+Abstrakte Klasse - Eintrag (kein Objekt dieser Klasse anlegbar)
+Intake (Einnahme) und Outgo (Ausgabe) erben von EntryFinance (Eintrag)
  */
-
 public abstract class EntryFinance implements Serializable {
     int id_PK;
     String name;
@@ -14,10 +13,12 @@ public abstract class EntryFinance implements Serializable {
     int day, month, year;
     String cycle;
 
+    // Default Konstruktor
     public EntryFinance() {
         super();
     }
 
+    // Konstruktor
     public EntryFinance(String name, double value, int day, int month, int year, String cycle) {
         super();
         this.name = name;
@@ -27,6 +28,8 @@ public abstract class EntryFinance implements Serializable {
         this.year = year;
         this.cycle = cycle;
     }
+
+    // Getter und Setter
 
     public int getId_PK() {
         return id_PK;
